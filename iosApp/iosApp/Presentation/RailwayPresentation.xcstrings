@@ -1,0 +1,159 @@
+{
+ "sourceLanguage": "en",
+ "strings": {
+  "journey.warningConfirmed": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Operator-confirmed strike disruption"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Disservizio per sciopero confermato dall’operatore"
+     }
+    }
+   }
+  },
+  "journey.warningStale": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Strike information may be outdated."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Le informazioni sugli scioperi potrebbero non essere aggiornate."
+     }
+    }
+   }
+  },
+  "journey.warningUnknown": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Strike coverage is unavailable for this period."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Copertura scioperi non disponibile per questo periodo."
+     }
+    }
+   }
+  },
+  "journey.strikeImpactNone": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Strike warning"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Avviso sciopero"
+     }
+    }
+   }
+  },
+  "journey.strikeImpactPotential": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Possible strike disruption"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Possibili disagi per sciopero"
+     }
+    }
+   }
+  },
+  "journey.strikeImpactLikely": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Likely strike disruption"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Probabili disagi per sciopero"
+     }
+    }
+   }
+  },
+  "journey.strikeInterval": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Strike period: %@ – %@"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Periodo dello sciopero: %@ – %@"
+     }
+    }
+   }
+  },
+  "journey.strikeSource": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Source: %@"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Fonte: %@"
+     }
+    }
+   }
+  },
+  "journey.strikePartial": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Based on timetable overlap only: the operator and strike area are not confirmed."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Solo in base alla sovrapposizione con l’orario: operatore e area dello sciopero non confermati."
+     }
+    }
+   }
+  }
+ },
+ "version": "1.0"
+}

@@ -1,0 +1,10 @@
+-- T7.14 corrective: presentation-only monitor refresh health.
+--
+-- A failed refresh (offline fallback or warning-backed stale replay) must
+-- stay visible as stale-with-warning on the retained snapshot, including
+-- across recreation — without ever becoming a new accepted train
+-- observation. These columns carry only the typed failure and its instant;
+-- they never touch the snapshot, events, version, ordering generation or
+-- endedAt. Pre-existing rows keep NULL (no recorded failure).
+ALTER TABLE active_monitor ADD COLUMN refresh_failure TEXT;
+ALTER TABLE active_monitor ADD COLUMN refresh_failed_at_epoch_ms INTEGER;

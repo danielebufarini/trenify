@@ -1,0 +1,7 @@
+CREATE TABLE favorite_route (
+    id TEXT NOT NULL PRIMARY KEY,
+    origin_station_id TEXT NOT NULL REFERENCES station(id),
+    destination_station_id TEXT NOT NULL REFERENCES station(id),
+    UNIQUE (origin_station_id, destination_station_id),
+    CHECK (origin_station_id != destination_station_id)
+);

@@ -1,0 +1,87 @@
+# macOS / Finder
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Gradle / Kotlin / Compose Multiplatform
+.gradle/
+**/build/
+build/
+.kotlin/
+kotlin-js-store/
+.kotlin-js-store/
+out/
+captures/
+
+# IntelliJ IDEA / Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+local.properties
+.externalNativeBuild/
+.cxx/
+
+# Android generated artifacts
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+bin/
+gen/
+lint-results*.html
+lint-results*.xml
+lint-results*.txt
+
+# Signing keys and provisioning material
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+*.provisionprofile
+
+# Xcode user-specific files
+xcuserdata/
+**/xcuserdata/
+*.xcuserstate
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.xccheckout
+*.xcscmblueprint
+*.moved-aside
+
+# Xcode / Swift build outputs
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM
+*.dSYM.zip
+.build/
+.swiftpm/
+
+# CocoaPods generated dependencies, if added later
+Pods/
+
+# Generated archives commonly used for handoff
+*.zip
+
+/doc/
+/.trenify-derived/

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="alerts_title">Alerts</string>
+    <string name="alerts_detail_title">Strike details</string>
+    <string name="alerts_notifications">Strike notifications</string>
+    <string name="alerts_permission_missing">Notifications are not permitted</string>
+    <string name="alerts_empty">No upcoming strikes</string>
+    <string name="alerts_not_found">Strike no longer available</string>
+    <string name="alerts_status_scheduled">Scheduled strike</string>
+    <string name="alerts_status_modified">Modified strike</string>
+    <string name="alerts_status_revoked">Revoked strike</string>
+    <string name="alerts_status_completed">Completed strike</string>
+    <string name="alerts_interval">Strike period: %1$s – %2$s</string>
+    <string name="alerts_area">Area: %1$s</string>
+    <string name="alerts_relevance_local">Local</string>
+    <string name="alerts_relevance_provincial">Provincial</string>
+    <string name="alerts_relevance_regional">Regional</string>
+    <string name="alerts_relevance_interregional">Interregional</string>
+    <string name="alerts_relevance_national">National</string>
+    <string name="alerts_relevance_unknown">Relevance unknown</string>
+    <string name="alerts_mode">Mode: %1$s</string>
+    <string name="alerts_unions">Unions: %1$s</string>
+    <string name="alerts_workforce">Workforce: %1$s</string>
+    <string name="alerts_operators">Operators: %1$s</string>
+    <string name="alerts_notes">Notes: %1$s</string>
+    <string name="alerts_source">Source: %1$s</string>
+    <string name="alerts_reference_open">Open official source</string>
+    <string name="alerts_reference_unavailable">Official source unavailable</string>
+    <string name="alerts_reference_failed">Could not open official source</string>
+    <string name="alerts_guaranteed_unavailable">Guaranteed-service information unavailable</string>
+    <string name="alerts_railway_relevant">Railway strike</string>
+    <string name="alerts_not_railway_relevant">Not railway relevant</string>
+</resources>

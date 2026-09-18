@@ -1,0 +1,8 @@
+-- T7.11 terminal lifecycle: stable terminal-transition instant for naturally
+-- ended monitors (ARRIVED / final CANCELLED). NULL while ACTIVE; set once at
+-- the first committed terminal transition and never moved. This is the
+-- lifecycle state: it is separate from the two-day active-monitor safety
+-- expiry (expires_at_epoch_ms), which limits ACTIVE monitors only.
+-- Pre-existing rows keep NULL (active semantics); endedAt is never fabricated
+-- for migrated rows.
+ALTER TABLE active_monitor ADD COLUMN ended_at_epoch_ms INTEGER;

@@ -1,0 +1,11 @@
+CREATE TABLE train_search_history (
+    id TEXT NOT NULL PRIMARY KEY,
+    train_number TEXT NOT NULL,
+    service_date TEXT,
+    origin_station_id TEXT,
+    origin_name TEXT,
+    operator_name TEXT,
+    destination_name TEXT,
+    submitted_at INTEGER NOT NULL
+);
+CREATE INDEX train_search_history_submitted ON train_search_history(submitted_at DESC);

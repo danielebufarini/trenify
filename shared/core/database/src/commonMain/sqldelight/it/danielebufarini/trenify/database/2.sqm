@@ -1,0 +1,40 @@
+CREATE TABLE active_monitor (
+    id TEXT NOT NULL PRIMARY KEY,
+    train_run_id TEXT NOT NULL UNIQUE,
+    provider_id TEXT NOT NULL,
+    train_number TEXT NOT NULL,
+    origin_ref TEXT NOT NULL,
+    service_date TEXT NOT NULL,
+    enabled INTEGER NOT NULL,
+    delay_threshold_minutes INTEGER,
+    notify_delay INTEGER NOT NULL,
+    notify_platform INTEGER NOT NULL,
+    notify_cancellation INTEGER NOT NULL,
+    notify_departure INTEGER NOT NULL,
+    notify_arrival INTEGER NOT NULL,
+    created_at_epoch_ms INTEGER NOT NULL,
+    expires_at_epoch_ms INTEGER
+);
+CREATE INDEX active_monitor_enabled_expiry ON active_monitor(enabled, expires_at_epoch_ms);
+
+CREATE TABLE monitor_state (
+    monitor_id TEXT NOT NULL PRIMARY KEY REFERENCES active_monitor(id) ON DELETE CASCADE,
+    snapshot TEXT NOT NULL,
+    freshness_kind TEXT NOT NULL,
+    fetched_at_epoch_ms INTEGER,
+    source_timestamp_epoch_ms INTEGER,
+    freshness_age_ms INTEGER,
+    evaluated_at_epoch_ms INTEGER NOT NULL,
+    last_event_type TEXT,
+    last_event_payload TEXT
+);
+
+CREATE TABLE monitor_event (
+    event_key TEXT NOT NULL PRIMARY KEY,
+    monitor_id TEXT NOT NULL REFERENCES active_monitor(id) ON DELETE CASCADE,
+    event_type TEXT NOT NULL,
+    payload TEXT NOT NULL,
+    emitted_at_epoch_ms INTEGER NOT NULL,
+    notified_at_epoch_ms INTEGER
+);
+CREATE INDEX monitor_event_notification ON monitor_event(monitor_id, event_type, notified_at_epoch_ms);

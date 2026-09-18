@@ -1,0 +1,12 @@
+CREATE TABLE journey_search_history (
+    id TEXT NOT NULL PRIMARY KEY,
+    origin_station_id TEXT NOT NULL REFERENCES station(id),
+    destination_station_id TEXT NOT NULL REFERENCES station(id),
+    origin_name TEXT NOT NULL,
+    destination_name TEXT NOT NULL,
+    requested_at INTEGER NOT NULL,
+    search_mode TEXT NOT NULL,
+    submitted_at INTEGER NOT NULL,
+    CHECK (origin_station_id != destination_station_id)
+);
+CREATE INDEX journey_search_history_submitted ON journey_search_history(submitted_at DESC);

@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="journey_results_title">Risultati</string>
+    <string name="journey_detail_title">Dettagli viaggio</string>
+    <string name="journey_back">Indietro</string>
+    <string name="journey_sort_label">Ordina per</string>
+    <string name="journey_sort_departure">Partenza</string>
+    <string name="journey_sort_arrival">Arrivo</string>
+    <string name="journey_sort_duration">Durata</string>
+    <string name="journey_sort_changes">Cambi</string>
+    <string name="journey_direct">Diretto</string>
+    <plurals name="journey_changes">
+        <item quantity="one">%1$d cambio</item>
+        <item quantity="other">%1$d cambi</item>
+    </plurals>
+    <string name="journey_via">via %1$s</string>
+    <string name="journey_window">Partenze %1$s – %2$s</string>
+    <string name="journey_loading">Caricamento soluzioni…</string>
+    <string name="journey_refreshing">Aggiornamento…</string>
+    <string name="journey_empty">Nessuna soluzione trovata per questa ricerca.</string>
+    <string name="journey_retry">Riprova</string>
+    <string name="journey_refresh">Aggiorna</string>
+    <string name="journey_error_offline">Nessuna connessione. Controlla la connessione e riprova.</string>
+    <string name="journey_error_offline_cached">Nessuna connessione. Mostro gli ultimi dati disponibili.</string>
+    <string name="journey_error_temporary">Le informazioni ferroviarie sono temporaneamente non disponibili.</string>
+    <string name="journey_error_not_found">Nessuna soluzione corrisponde a questa ricerca.</string>
+    <string name="journey_error_invalid_request">La richiesta non è valida. Controlla i dati inseriti e riprova.</string>
+    <string name="journey_error_unsupported">Queste informazioni non sono disponibili dalle fonti configurate.</string>
+    <string name="journey_error_invalid_response">Il servizio ferroviario ha restituito dati imprevisti.</string>
+    <plurals name="journey_warnings">
+        <item quantity="one">%1$d avviso sciopero</item>
+        <item quantity="other">%1$d avvisi sciopero</item>
+    </plurals>
+    <string name="journey_status_on_time">In orario</string>
+    <string name="journey_status_delayed">Ritardo + %1$d min</string>
+    <string name="journey_status_running">In viaggio</string>
+    <string name="journey_status_not_departed">Non ancora partito</string>
+    <string name="journey_status_arrived">Arrivato</string>
+    <string name="journey_status_cancelled">Cancellato</string>
+    <string name="journey_status_partially_cancelled">Parzialmente cancellato</string>
+    <string name="journey_status_diverted">Deviato</string>
+    <string name="journey_status_rescheduled">Riprogrammato</string>
+    <string name="journey_status_no_realtime">Nessun dato in tempo reale</string>
+    <string name="journey_status_checking">Verifica realtime…</string>
+    <string name="journey_realtime_unavailable">Dati realtime non disponibili per questa tratta.</string>
+    <string name="journey_platform_expected">Binario previsto: %1$s</string>
+    <string name="journey_platform_actual">Binario effettivo: %1$s</string>
+    <string name="journey_train_unknown">Dettagli treno non disponibili</string>
+    <string name="journey_train_action">Stato treno</string>
+    <string name="journey_leg_title">Tratta %1$d di %2$d</string>
+    <string name="journey_change_at">Cambio a %1$s</string>
+    <string name="journey_wait">attesa %1$d min</string>
+    <string name="journey_buy">Continua su %1$s</string>
+    <string name="journey_buy_failed">Impossibile aprire la pagina di prenotazione.</string>
+    <string name="journey_not_found">Questo viaggio non è più disponibile.</string>
+    <string name="journey_resolving">Caricamento viaggio…</string>
+    <string name="journey_sort_current">Ordina: %1$s</string>
+    <string name="journey_sources">Fonti: %1$s</string>
+    <string name="journey_source_unknown">Fonte sconosciuta</string>
+    <string name="journey_favorite_error">Non è stato possibile aggiornare il preferito.</string>
+</resources>

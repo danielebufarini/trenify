@@ -1,0 +1,31 @@
+-- T7.11 corrective pass 2: persistence-shared refresh ordering.
+--
+-- Two independent repository/AppGraph instances (foreground Activity vs
+-- background service) share one SQLite database but their instance-local
+-- SingleFlight/dispatcher ordering cannot order each other. A provider
+-- observation initiated earlier must never overwrite state accepted from a
+-- later refresh invocation merely because the older response completed
+-- later — for both the shared train_run cache and the monitoring
+-- observation evaluated from it.
+--
+-- Ordering model (issued/accepted request generations, per train):
+-- - every refreshTrain invocation acquires a monotonic order token BEFORE
+--   the network suspension by bumping issued_generation;
+-- - a provider response commits only when its token is newer than the
+--   currently accepted generation (accepted_generation < token), at which
+--   point it also becomes the accepted generation, atomically with the
+--   cache write;
+-- - an earlier successful response may still commit while a later request
+--   is pending (its token is newer than anything accepted so far); the
+--   later response overwrites it when it arrives. A failed request commits
+--   nothing and never blocks the database.
+--
+-- monitor_state.accepted_refresh_generation carries the generation backing
+-- the accepted snapshot so a superseded observation can never be
+-- rebranded as current by a CAS retry. Pre-existing rows keep 0 (oldest).
+CREATE TABLE train_refresh_order (
+    train_run_id TEXT NOT NULL PRIMARY KEY,
+    issued_generation INTEGER NOT NULL DEFAULT 0,
+    accepted_generation INTEGER NOT NULL DEFAULT 0
+);
+ALTER TABLE monitor_state ADD COLUMN accepted_refresh_generation INTEGER NOT NULL DEFAULT 0;

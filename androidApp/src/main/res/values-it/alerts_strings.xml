@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="alerts_title">Avvisi</string>
+    <string name="alerts_detail_title">Dettagli sciopero</string>
+    <string name="alerts_notifications">Notifiche scioperi</string>
+    <string name="alerts_permission_missing">Le notifiche non sono consentite</string>
+    <string name="alerts_empty">Nessuno sciopero in programma</string>
+    <string name="alerts_not_found">Sciopero non più disponibile</string>
+    <string name="alerts_status_scheduled">Sciopero programmato</string>
+    <string name="alerts_status_modified">Sciopero modificato</string>
+    <string name="alerts_status_revoked">Sciopero revocato</string>
+    <string name="alerts_status_completed">Sciopero concluso</string>
+    <string name="alerts_interval">Periodo sciopero: %1$s – %2$s</string>
+    <string name="alerts_area">Area: %1$s</string>
+    <string name="alerts_relevance_local">Locale</string>
+    <string name="alerts_relevance_provincial">Provinciale</string>
+    <string name="alerts_relevance_regional">Regionale</string>
+    <string name="alerts_relevance_interregional">Interregionale</string>
+    <string name="alerts_relevance_national">Nazionale</string>
+    <string name="alerts_relevance_unknown">Rilevanza non nota</string>
+    <string name="alerts_mode">Modalità: %1$s</string>
+    <string name="alerts_unions">Sindacati: %1$s</string>
+    <string name="alerts_workforce">Personale: %1$s</string>
+    <string name="alerts_operators">Operatori: %1$s</string>
+    <string name="alerts_notes">Note: %1$s</string>
+    <string name="alerts_source">Fonte: %1$s</string>
+    <string name="alerts_reference_open">Apri fonte ufficiale</string>
+    <string name="alerts_reference_unavailable">Fonte ufficiale non disponibile</string>
+    <string name="alerts_reference_failed">Impossibile aprire la fonte ufficiale</string>
+    <string name="alerts_guaranteed_unavailable">Informazioni sui servizi garantiti non disponibili</string>
+    <string name="alerts_railway_relevant">Sciopero ferroviario</string>
+    <string name="alerts_not_railway_relevant">Non rilevante per le ferrovie</string>
+</resources>

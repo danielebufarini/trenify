@@ -1,0 +1,51 @@
+CREATE TABLE station (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    normalized_name TEXT NOT NULL,
+    fetched_at INTEGER NOT NULL
+);
+CREATE INDEX station_search ON station(normalized_name);
+
+CREATE TABLE station_external_id (
+    provider_id TEXT NOT NULL,
+    external_id TEXT NOT NULL,
+    station_id TEXT NOT NULL REFERENCES station(id),
+    PRIMARY KEY (provider_id, external_id)
+);
+CREATE INDEX station_external_internal ON station_external_id(station_id, provider_id);
+
+CREATE TABLE train_run (
+    id TEXT NOT NULL PRIMARY KEY,
+    provider_id TEXT NOT NULL,
+    train_number TEXT NOT NULL,
+    service_date TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    fetched_at INTEGER NOT NULL,
+    source_timestamp INTEGER
+);
+CREATE INDEX train_number_date ON train_run(train_number, service_date);
+
+CREATE TABLE train_stop (
+    train_run_id TEXT NOT NULL REFERENCES train_run(id) ON DELETE CASCADE,
+    stop_index INTEGER NOT NULL,
+    payload TEXT NOT NULL,
+    PRIMARY KEY (train_run_id, stop_index)
+);
+
+CREATE TABLE realtime_cache (
+    cache_key TEXT NOT NULL PRIMARY KEY,
+    payload TEXT NOT NULL,
+    fetched_at INTEGER NOT NULL,
+    source_timestamp INTEGER
+);
+
+CREATE TABLE recent_station (
+    station_id TEXT NOT NULL PRIMARY KEY REFERENCES station(id),
+    visited_at INTEGER NOT NULL
+);
+CREATE INDEX recent_station_time ON recent_station(visited_at);
+
+CREATE TABLE favorite_station (
+    station_id TEXT NOT NULL PRIMARY KEY REFERENCES station(id)
+);
+

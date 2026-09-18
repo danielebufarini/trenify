@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="saved_favorites">Preferiti</string>
+    <string name="saved_favoriteStations">Stazioni salvate</string>
+    <string name="saved_favoriteRoutes">Percorsi salvati</string>
+    <string name="saved_favoriteTrains">Treni salvati</string>
+    <string name="saved_journeyHistory">Cronologia viaggi</string>
+    <string name="saved_trainHistory">Cronologia treni</string>
+    <string name="saved_empty">Niente salvato per ora</string>
+    <string name="saved_favoritesEmpty">Nessun preferito</string>
+    <string name="saved_journeyHistoryEmpty">Nessuna ricerca viaggio</string>
+    <string name="saved_trainHistoryEmpty">Nessuna ricerca treno</string>
+    <string name="saved_remove">Rimuovi</string>
+    <string name="saved_repeat">Ripeti</string>
+    <string name="saved_clearHistory">Cancella cronologia</string>
+    <string name="saved_loadError">Impossibile caricare i dati salvati</string>
+    <string name="saved_updateError">Impossibile salvare la modifica</string>
+    <string name="saved_trainNumber">Treno %1$s</string>
+    <string name="saved_unknownDate">Data sconosciuta</string>
+    <string name="saved_searchedAt">Ricerca: %1$s</string>
+    <string name="saved_departAfter">Partenza dopo</string>
+    <string name="saved_arriveBy">Arrivo entro</string>
+    <string name="saved_open">Apri</string>
+</resources>

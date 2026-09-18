@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mon_active">Attivi</string>
+    <string name="mon_recentlyEnded">Conclusi di recente</string>
+    <string name="mon_empty">Nessun treno monitorato</string>
+    <string name="mon_noActive">Nessun monitoraggio attivo</string>
+    <string name="mon_noSnapshot">Riepilogo non disponibile</string>
+    <string name="mon_nextStop">Prossima fermata</string>
+    <string name="mon_lastChecked">Ultimo controllo</string>
+    <string name="mon_endedAt">Monitoraggio terminato</string>
+    <string name="mon_notificationsError">Impossibile aggiornare le notifiche</string>
+    <string name="mon_bestEffort">Il monitoraggio avviene solo su questo dispositivo e si interrompe quando l’app non può aggiornare. Nessuna garanzia di continuità in background.</string>
+</resources>

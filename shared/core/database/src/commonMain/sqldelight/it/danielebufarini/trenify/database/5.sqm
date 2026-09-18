@@ -1,0 +1,8 @@
+CREATE TABLE favorite_train (
+    id TEXT NOT NULL PRIMARY KEY,
+    train_number TEXT NOT NULL,
+    origin_name TEXT,
+    operator_name TEXT,
+    destination_name TEXT
+);
+CREATE INDEX favorite_train_number ON favorite_train(train_number);

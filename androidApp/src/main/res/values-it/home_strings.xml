@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="home_title">Dove vuoi andare?</string>
+    <string name="home_from">Da</string>
+    <string name="home_to">A</string>
+    <string name="home_from_placeholder">Scegli origine</string>
+    <string name="home_to_placeholder">Scegli destinazione</string>
+    <string name="home_swap">Inverti origine e destinazione</string>
+    <string name="home_date">Data</string>
+    <string name="home_time">Ora</string>
+    <string name="home_search_trains">Cerca treni</string>
+    <string name="home_mode_depart">Partenza dopo</string>
+    <string name="home_mode_arrive">Arrivo entro</string>
+    <string name="home_train_entry">Cerca per numero treno</string>
+    <string name="home_station_entry">Tabelloni stazione</string>
+    <string name="home_recent">Ricerche recenti</string>
+    <string name="home_recent_empty">Nessuna ricerca recente</string>
+    <string name="home_favorites">Preferiti</string>
+    <string name="home_favorites_empty">Nessun preferito</string>
+    <string name="home_history">Cronologia</string>
+    <string name="home_invalid">Controlla origine, destinazione, data e ora</string>
+    <string name="home_suggestions">Suggerimenti</string>
+    <string name="home_train_number">Treno %1$s</string>
+    <string name="home_save_route">Salva percorso</string>
+    <string name="home_remove_route">Rimuovi percorso</string>
+    <string name="home_searching_stations">Ricerca stazioni…</string>
+    <string name="home_load_error">Non è stato possibile caricare le stazioni salvate.</string>
+    <string name="home_error_offline_cached">Nessuna connessione. Vengono mostrati gli ultimi dati disponibili.</string>
+    <string name="home_error_offline">Nessuna connessione. Controlla la connessione e riprova.</string>
+    <string name="home_error_temporary">Le informazioni ferroviarie sono temporaneamente non disponibili.</string>
+    <string name="home_error_train_not_found">Nessun treno corrisponde al numero inserito.</string>
+    <string name="home_error_invalid_request">La richiesta non è valida. Controlla i dati inseriti e riprova.</string>
+    <string name="home_error_unsupported">Queste informazioni non sono disponibili nelle fonti configurate.</string>
+    <string name="home_error_invalid_response">Il servizio ferroviario ha restituito dati imprevisti.</string>
+</resources>

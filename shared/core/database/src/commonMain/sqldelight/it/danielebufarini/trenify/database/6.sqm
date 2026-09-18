@@ -1,0 +1,1 @@
+ALTER TABLE favorite_train ADD COLUMN origin_station_id TEXT;

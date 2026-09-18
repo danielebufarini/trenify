@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="journey_warning_confirmed">Disservizio per sciopero confermato dall\'operatore</string>
+    <string name="journey_warning_stale">Le informazioni sugli scioperi potrebbero non essere aggiornate.</string>
+    <string name="journey_warning_unknown">Copertura scioperi non disponibile per questo periodo.</string>
+    <string name="journey_strike_impact_none">Avviso sciopero</string>
+    <string name="journey_strike_impact_potential">Possibili disagi per sciopero</string>
+    <string name="journey_strike_impact_likely">Probabili disagi per sciopero</string>
+    <string name="journey_strike_interval">Periodo dello sciopero: %1$s – %2$s</string>
+    <string name="journey_strike_source">Fonte: %1$s</string>
+    <string name="journey_strike_partial">Solo in base alla sovrapposizione con l’orario: operatore e area dello sciopero non confermati.</string>
+</resources>

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="home_title">Where are you going?</string>
+    <string name="home_from">From</string>
+    <string name="home_to">To</string>
+    <string name="home_from_placeholder">Choose origin</string>
+    <string name="home_to_placeholder">Choose destination</string>
+    <string name="home_swap">Swap origin and destination</string>
+    <string name="home_date">Date</string>
+    <string name="home_time">Time</string>
+    <string name="home_search_trains">Search trains</string>
+    <string name="home_mode_depart">Depart after</string>
+    <string name="home_mode_arrive">Arrive by</string>
+    <string name="home_train_entry">Search by train number</string>
+    <string name="home_station_entry">Station boards</string>
+    <string name="home_recent">Recent searches</string>
+    <string name="home_recent_empty">No recent searches yet</string>
+    <string name="home_favorites">Favorites</string>
+    <string name="home_favorites_empty">No favorites yet</string>
+    <string name="home_history">History</string>
+    <string name="home_invalid">Check origin, destination, date and time</string>
+    <string name="home_suggestions">Suggestions</string>
+    <string name="home_train_number">Train %1$s</string>
+    <string name="home_save_route">Save route</string>
+    <string name="home_remove_route">Remove route</string>
+    <string name="home_searching_stations">Searching stations…</string>
+    <string name="home_load_error">Saved stations could not be loaded.</string>
+    <string name="home_error_offline_cached">No connection. Showing the latest available data.</string>
+    <string name="home_error_offline">No connection. Check your connection and try again.</string>
+    <string name="home_error_temporary">Railway information is temporarily unavailable.</string>
+    <string name="home_error_train_not_found">No train matches the entered number.</string>
+    <string name="home_error_invalid_request">The request is not valid. Check the entered information and try again.</string>
+    <string name="home_error_unsupported">This information is not available from the configured sources.</string>
+    <string name="home_error_invalid_response">The railway service returned unexpected data.</string>
+</resources>

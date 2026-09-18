@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mon_active">Active</string>
+    <string name="mon_recentlyEnded">Recently ended</string>
+    <string name="mon_empty">No monitored trains</string>
+    <string name="mon_noActive">No active monitors</string>
+    <string name="mon_noSnapshot">Snapshot unavailable</string>
+    <string name="mon_nextStop">Next stop</string>
+    <string name="mon_lastChecked">Last checked</string>
+    <string name="mon_endedAt">Monitoring ended</string>
+    <string name="mon_notificationsError">Could not update notifications</string>
+    <string name="mon_bestEffort">Monitoring runs on this device only and stops when the app cannot refresh. No continuous background guarantee.</string>
+</resources>

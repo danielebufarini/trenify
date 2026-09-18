@@ -1,0 +1,8 @@
+<resources>
+    <string name="shell_search">Search</string>
+    <string name="shell_monitoring">Monitoring</string>
+    <string name="shell_saved">Saved</string>
+    <string name="shell_alerts">Alerts</string>
+    <string name="shell_settings">Settings</string>
+    <string name="shell_back">Back</string>
+</resources>

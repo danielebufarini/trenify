@@ -1,0 +1,8 @@
+<resources>
+    <string name="shell_search">Cerca</string>
+    <string name="shell_monitoring">Monitoraggio</string>
+    <string name="shell_saved">Salvati</string>
+    <string name="shell_alerts">Avvisi</string>
+    <string name="shell_settings">Impostazioni</string>
+    <string name="shell_back">Indietro</string>
+</resources>

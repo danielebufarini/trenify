@@ -1,0 +1,635 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "se.loading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caricamento…"
+          }
+        }
+      }
+    },
+    "se.bestEffort": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updates in the background are best-effort and their timing is decided by the operating system."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gli aggiornamenti in background vengono effettuati quando possibile e le tempistiche sono decise dal sistema operativo."
+          }
+        }
+      }
+    },
+    "se.notificationsSection": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifiche"
+          }
+        }
+      }
+    },
+    "se.notifications": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifiche"
+          }
+        }
+      }
+    },
+    "se.notificationsDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When off, Trenify delivers no notifications. Monitored trains keep refreshing on a best-effort basis."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se disattivate, Trenify non invia notifiche. I treni monitorati continuano ad aggiornarsi quando possibile."
+          }
+        }
+      }
+    },
+    "se.permissionDenied": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System notifications are disabled, so Trenify cannot deliver notifications. Monitoring stays active."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le notifiche di sistema sono disattivate: Trenify non può inviare notifiche. Il monitoraggio resta attivo."
+          }
+        }
+      }
+    },
+    "se.defaultsSection": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monitoring defaults"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valori predefiniti monitoraggio"
+          }
+        }
+      }
+    },
+    "se.delayThreshold": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delay threshold (minutes)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soglia di ritardo (minuti)"
+          }
+        }
+      }
+    },
+    "se.thresholdHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifies when the delay reaches this threshold or moves past another multiple of it, including recovery to a lower value. Applies to newly monitored trains."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invia una notifica quando il ritardo raggiunge questa soglia o supera un altro multiplo, incluso il rientro a un valore inferiore. Vale per i treni monitorati in futuro."
+          }
+        }
+      }
+    },
+    "se.invalidThreshold": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a positive number of minutes."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inserisci un numero di minuti positivo."
+          }
+        }
+      }
+    },
+    "se.save": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salva"
+          }
+        }
+      }
+    },
+    "se.saving": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saving…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvataggio…"
+          }
+        }
+      }
+    },
+    "se.saveError": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings could not be saved."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non è stato possibile salvare le impostazioni."
+          }
+        }
+      }
+    },
+    "se.retry": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retry"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprova"
+          }
+        }
+      }
+    },
+    "se.eventsSection": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monitored events"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eventi monitorati"
+          }
+        }
+      }
+    },
+    "se.eventsDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose which monitored-train events send a notification to this device."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli quali eventi dei treni monitorati inviano una notifica a questo dispositivo."
+          }
+        }
+      }
+    },
+    "se.eventDelay": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delays"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ritardi"
+          }
+        }
+      }
+    },
+    "se.eventPlatform": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Platform changes"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambi di binario"
+          }
+        }
+      }
+    },
+    "se.eventCancellation": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancellations"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soppressioni"
+          }
+        }
+      }
+    },
+    "se.eventDeparture": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Departures"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partenze"
+          }
+        }
+      }
+    },
+    "se.eventArrival": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrivals"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrivi"
+          }
+        }
+      }
+    },
+    "se.strikeSection": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strike notifications"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifiche scioperi"
+          }
+        }
+      }
+    },
+    "se.strike": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strike notifications"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifiche scioperi"
+          }
+        }
+      }
+    },
+    "se.strikeDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get notified about strikes that may affect monitored trains. Uses the same preference as Alerts."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ricevi notifiche sugli scioperi che potrebbero influire sui treni monitorati. Usa la stessa preferenza degli Avvisi."
+          }
+        }
+      }
+    },
+    "se.strikePermissionDenied": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications are disabled. Monitoring remains active while Trenify can refresh."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le notifiche sono disattivate. Il monitoraggio resta attivo finché Trenify può aggiornarsi."
+          }
+        }
+      }
+    },
+    "se.dataSection": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personal data"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dati personali"
+          }
+        }
+      }
+    },
+    "se.deleteHistoryTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete search history"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elimina cronologia ricerche"
+          }
+        }
+      }
+    },
+    "se.deleteHistoryDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removes all journey searches, train searches and recent-station suggestions from this device. Favorites, monitored trains, settings and saved stations are kept."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimuove da questo dispositivo tutte le ricerche di viaggi, le ricerche di treni e le stazioni recenti suggerite. Preferiti, treni monitorati, impostazioni e stazioni salvate vengono conservati."
+          }
+        }
+      }
+    },
+    "se.deleteHistoryConfirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete all search history? Journey searches, train searches and recent stations will be removed. This cannot be undone."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminare tutta la cronologia? Ricerche di viaggi, ricerche di treni e stazioni recenti saranno rimosse. L’operazione non può essere annullata."
+          }
+        }
+      }
+    },
+    "se.deleteFavoritesTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete favorites"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elimina preferiti"
+          }
+        }
+      }
+    },
+    "se.deleteFavoritesDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removes all favorite stations, routes and trains from this device. Search history, monitored trains, settings and saved stations are kept."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimuove da questo dispositivo tutte le stazioni, gli itinerari e i treni preferiti. Cronologia ricerche, treni monitorati, impostazioni e stazioni salvate vengono conservati."
+          }
+        }
+      }
+    },
+    "se.deleteFavoritesConfirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete all favorites? Favorite stations, routes and trains will be removed. This cannot be undone."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminare tutti i preferiti? Stazioni, itinerari e treni preferiti saranno rimossi. L’operazione non può essere annullata."
+          }
+        }
+      }
+    },
+    "se.delete": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elimina"
+          }
+        }
+      }
+    },
+    "se.deleteConfirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yes, delete"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sì, elimina"
+          }
+        }
+      }
+    },
+    "se.deleteCancel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annulla"
+          }
+        }
+      }
+    },
+    "se.deleteSuccess": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deleted."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminato."
+          }
+        }
+      }
+    },
+    "se.deleteError": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deletion failed. Nothing was partially deleted; you can retry."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminazione non riuscita. Nulla è stato eliminato parzialmente; puoi riprovare."
+          }
+        }
+      }
+    }
+  }
+}

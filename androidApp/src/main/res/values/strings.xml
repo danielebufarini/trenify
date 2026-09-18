@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Trenify</string>
+    <string name="notification_channel_updates">Trenify updates</string>
+</resources>

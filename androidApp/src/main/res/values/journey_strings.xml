@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="journey_results_title">Results</string>
+    <string name="journey_detail_title">Journey details</string>
+    <string name="journey_back">Back</string>
+    <string name="journey_sort_label">Sort by</string>
+    <string name="journey_sort_departure">Departure</string>
+    <string name="journey_sort_arrival">Arrival</string>
+    <string name="journey_sort_duration">Duration</string>
+    <string name="journey_sort_changes">Changes</string>
+    <string name="journey_direct">Direct</string>
+    <plurals name="journey_changes">
+        <item quantity="one">%1$d change</item>
+        <item quantity="other">%1$d changes</item>
+    </plurals>
+    <string name="journey_via">via %1$s</string>
+    <string name="journey_window">Departures %1$s – %2$s</string>
+    <string name="journey_loading">Loading journeys…</string>
+    <string name="journey_refreshing">Updating…</string>
+    <string name="journey_empty">No journeys found for this search.</string>
+    <string name="journey_retry">Try again</string>
+    <string name="journey_refresh">Refresh</string>
+    <string name="journey_error_offline">No connection. Check your connection and try again.</string>
+    <string name="journey_error_offline_cached">No connection. Showing the latest available data.</string>
+    <string name="journey_error_temporary">Railway information is temporarily unavailable.</string>
+    <string name="journey_error_not_found">No journeys match this search.</string>
+    <string name="journey_error_invalid_request">The request is not valid. Check the entered information and try again.</string>
+    <string name="journey_error_unsupported">This information is not available from the configured sources.</string>
+    <string name="journey_error_invalid_response">The railway service returned unexpected data.</string>
+    <plurals name="journey_warnings">
+        <item quantity="one">%1$d strike warning</item>
+        <item quantity="other">%1$d strike warnings</item>
+    </plurals>
+    <string name="journey_status_on_time">On time</string>
+    <string name="journey_status_delayed">Delayed + %1$d min</string>
+    <string name="journey_status_running">Running</string>
+    <string name="journey_status_not_departed">Not yet departed</string>
+    <string name="journey_status_arrived">Arrived</string>
+    <string name="journey_status_cancelled">Cancelled</string>
+    <string name="journey_status_partially_cancelled">Partly cancelled</string>
+    <string name="journey_status_diverted">Diverted</string>
+    <string name="journey_status_rescheduled">Rescheduled</string>
+    <string name="journey_status_no_realtime">No realtime data</string>
+    <string name="journey_status_checking">Checking realtime…</string>
+    <string name="journey_realtime_unavailable">Realtime data is unavailable for this leg.</string>
+    <string name="journey_platform_expected">Expected platform: %1$s</string>
+    <string name="journey_platform_actual">Actual platform: %1$s</string>
+    <string name="journey_train_unknown">Train details unavailable</string>
+    <string name="journey_train_action">Train status</string>
+    <string name="journey_leg_title">Leg %1$d of %2$d</string>
+    <string name="journey_change_at">Change at %1$s</string>
+    <string name="journey_wait">%1$d min wait</string>
+    <string name="journey_buy">Continue to %1$s</string>
+    <string name="journey_buy_failed">Could not open the booking page.</string>
+    <string name="journey_not_found">This journey is no longer available.</string>
+    <string name="journey_resolving">Loading journey…</string>
+    <string name="journey_sort_current">Sort: %1$s</string>
+    <string name="journey_sources">Sources: %1$s</string>
+    <string name="journey_source_unknown">Source unknown</string>
+    <string name="journey_favorite_error">The favorite could not be updated.</string>
+</resources>

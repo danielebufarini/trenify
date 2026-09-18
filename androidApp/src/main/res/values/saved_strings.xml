@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="saved_favorites">Favorites</string>
+    <string name="saved_favoriteStations">Saved stations</string>
+    <string name="saved_favoriteRoutes">Saved routes</string>
+    <string name="saved_favoriteTrains">Saved trains</string>
+    <string name="saved_journeyHistory">Journey history</string>
+    <string name="saved_trainHistory">Train history</string>
+    <string name="saved_empty">Nothing saved yet</string>
+    <string name="saved_favoritesEmpty">No favorites yet</string>
+    <string name="saved_journeyHistoryEmpty">No journey searches yet</string>
+    <string name="saved_trainHistoryEmpty">No train searches yet</string>
+    <string name="saved_remove">Remove</string>
+    <string name="saved_repeat">Repeat</string>
+    <string name="saved_clearHistory">Clear history</string>
+    <string name="saved_loadError">Saved information could not be loaded</string>
+    <string name="saved_updateError">The change could not be saved</string>
+    <string name="saved_trainNumber">Train %1$s</string>
+    <string name="saved_unknownDate">Date unknown</string>
+    <string name="saved_searchedAt">Searched %1$s</string>
+    <string name="saved_departAfter">Depart after</string>
+    <string name="saved_arriveBy">Arrive by</string>
+    <string name="saved_open">Open</string>
+</resources>

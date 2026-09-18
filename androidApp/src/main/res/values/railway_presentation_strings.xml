@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="journey_warning_confirmed">Operator-confirmed strike disruption</string>
+    <string name="journey_warning_stale">Strike information may be outdated.</string>
+    <string name="journey_warning_unknown">Strike coverage is unavailable for this period.</string>
+    <string name="journey_strike_impact_none">Strike warning</string>
+    <string name="journey_strike_impact_potential">Possible strike disruption</string>
+    <string name="journey_strike_impact_likely">Likely strike disruption</string>
+    <string name="journey_strike_interval">Strike period: %1$s – %2$s</string>
+    <string name="journey_strike_source">Source: %1$s</string>
+    <string name="journey_strike_partial">Based on timetable overlap only: the operator and strike area are not confirmed.</string>
+</resources>

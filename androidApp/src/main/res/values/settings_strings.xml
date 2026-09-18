@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="set_title">Settings</string>
+    <string name="set_best_effort">Updates in the background are best-effort and their timing is decided by the operating system.</string>
+    <string name="set_notifications_section">Notifications</string>
+    <string name="set_notifications">Notifications</string>
+    <string name="set_notifications_description">When off, Trenify delivers no notifications. Monitored trains keep refreshing on a best-effort basis.</string>
+    <string name="set_permission_denied">System notifications are disabled, so Trenify cannot deliver notifications. Monitoring stays active.</string>
+    <string name="set_defaults_section">Monitoring defaults</string>
+    <string name="set_delay_threshold">Delay threshold (minutes)</string>
+    <string name="set_threshold_hint">Notifies when the delay reaches this threshold or moves past another multiple of it, including recovery to a lower value. Applies to newly monitored trains.</string>
+    <string name="set_invalid_threshold">Enter a positive number of minutes.</string>
+    <string name="set_save">Save</string>
+    <string name="set_saving">Saving…</string>
+    <string name="set_save_error">Settings could not be saved.</string>
+    <string name="set_events_section">Monitored events</string>
+    <string name="set_events_description">Choose which monitored-train events send a notification to this device.</string>
+    <string name="set_event_delay">Delays</string>
+    <string name="set_event_platform">Platform changes</string>
+    <string name="set_event_cancellation">Cancellations</string>
+    <string name="set_event_departure">Departures</string>
+    <string name="set_event_arrival">Arrivals</string>
+    <string name="set_strike_section">Strike notifications</string>
+    <string name="set_strike">Strike notifications</string>
+    <string name="set_strike_description">Get notified about strikes that may affect monitored trains. Uses the same preference as Alerts.</string>
+    <string name="set_strike_permission_denied">Notifications are disabled. Monitoring remains active while Trenify can refresh.</string>
+    <string name="set_data_section">Personal data</string>
+    <string name="set_delete_history_title">Delete search history</string>
+    <string name="set_delete_history_description">Removes all journey searches, train searches and recent-station suggestions from this device. Favorites, monitored trains, settings and saved stations are kept.</string>
+    <string name="set_delete_history_confirm">Delete all search history? Journey searches, train searches and recent stations will be removed. This cannot be undone.</string>
+    <string name="set_delete_favorites_title">Delete favorites</string>
+    <string name="set_delete_favorites_description">Removes all favorite stations, routes and trains from this device. Search history, monitored trains, settings and saved stations are kept.</string>
+    <string name="set_delete_favorites_confirm">Delete all favorites? Favorite stations, routes and trains will be removed. This cannot be undone.</string>
+    <string name="set_delete">Delete</string>
+    <string name="set_delete_confirm">Yes, delete</string>
+    <string name="set_delete_cancel">Cancel</string>
+    <string name="set_delete_success">Deleted.</string>
+    <string name="set_delete_error">Deletion failed. Nothing was partially deleted; you can retry.</string>
+    <string name="set_switch_on">On</string>
+    <string name="set_switch_off">Off</string>
+</resources>

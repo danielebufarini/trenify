@@ -1,0 +1,19 @@
+-- T7.12-A strike cache coverage: freshness is per requested interval, not a
+-- global sync timestamp.
+--
+-- A recent fetch of interval A must never certify a disjoint interval B as
+-- fresh/empty. Coverage rows record exactly the intervals whose snapshots
+-- were successfully complete; cached() treats a requested interval as fresh
+-- only while a containing row is younger than the strike cache TTL, stale
+-- while a containing row exists but expired, and unknown when no row
+-- contains it. Pre-existing databases start with no rows (unknown), which
+-- triggers the appropriate targeted refresh on next use.
+CREATE TABLE strike_coverage (
+    from_epoch_ms INTEGER NOT NULL,
+    to_epoch_ms INTEGER NOT NULL,
+    fetched_at_epoch_ms INTEGER NOT NULL,
+    source_updated_at_epoch_ms INTEGER,
+    PRIMARY KEY (from_epoch_ms, to_epoch_ms),
+    CHECK (to_epoch_ms > from_epoch_ms)
+);
+CREATE INDEX strike_coverage_interval ON strike_coverage(from_epoch_ms, to_epoch_ms);

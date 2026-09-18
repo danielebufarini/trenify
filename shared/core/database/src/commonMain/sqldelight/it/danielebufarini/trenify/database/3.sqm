@@ -1,0 +1,51 @@
+CREATE TABLE strike (
+    id TEXT NOT NULL PRIMARY KEY,
+    provider_id TEXT NOT NULL,
+    external_id TEXT,
+    start_epoch_ms INTEGER NOT NULL,
+    end_epoch_ms INTEGER NOT NULL,
+    status TEXT NOT NULL,
+    sector TEXT NOT NULL,
+    relevance TEXT NOT NULL,
+    regions TEXT NOT NULL,
+    provinces TEXT NOT NULL,
+    unions TEXT NOT NULL,
+    operators TEXT NOT NULL,
+    workforce TEXT,
+    mode TEXT NOT NULL,
+    notes TEXT,
+    source_label TEXT NOT NULL,
+    source_url TEXT NOT NULL,
+    source_updated_at_epoch_ms INTEGER,
+    fetched_at_epoch_ms INTEGER NOT NULL,
+    content_fingerprint TEXT NOT NULL
+);
+CREATE INDEX strike_interval ON strike(start_epoch_ms, end_epoch_ms);
+
+CREATE TABLE strike_external_id (
+    provider_id TEXT NOT NULL,
+    external_id TEXT NOT NULL,
+    strike_id TEXT NOT NULL,
+    PRIMARY KEY (provider_id, external_id)
+);
+CREATE INDEX strike_external_internal ON strike_external_id(strike_id);
+
+CREATE TABLE strike_sync_state (
+    id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+    fetched_at_epoch_ms INTEGER NOT NULL,
+    source_updated_at_epoch_ms INTEGER
+);
+
+CREATE TABLE strike_notification_setting (
+    id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+    enabled INTEGER NOT NULL
+);
+
+CREATE TABLE strike_notification_event (
+    event_key TEXT NOT NULL PRIMARY KEY,
+    strike_id TEXT NOT NULL,
+    event_type TEXT NOT NULL,
+    emitted_at_epoch_ms INTEGER NOT NULL,
+    notified_at_epoch_ms INTEGER
+);
+CREATE INDEX strike_notification_pending ON strike_notification_event(notified_at_epoch_ms, emitted_at_epoch_ms);

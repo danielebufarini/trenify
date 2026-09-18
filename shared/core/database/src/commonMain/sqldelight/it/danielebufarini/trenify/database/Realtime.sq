@@ -1,0 +1,664 @@
+CREATE TABLE station (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    normalized_name TEXT NOT NULL,
+    fetched_at INTEGER NOT NULL
+);
+CREATE INDEX station_search ON station(normalized_name);
+
+CREATE TABLE station_external_id (
+    provider_id TEXT NOT NULL,
+    external_id TEXT NOT NULL,
+    station_id TEXT NOT NULL REFERENCES station(id),
+    PRIMARY KEY (provider_id, external_id)
+);
+CREATE INDEX station_external_internal ON station_external_id(station_id, provider_id);
+
+CREATE TABLE train_run (
+    id TEXT NOT NULL PRIMARY KEY,
+    provider_id TEXT NOT NULL,
+    train_number TEXT NOT NULL,
+    service_date TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    fetched_at INTEGER NOT NULL,
+    source_timestamp INTEGER
+);
+CREATE INDEX train_number_date ON train_run(train_number, service_date);
+
+CREATE TABLE train_stop (
+    train_run_id TEXT NOT NULL REFERENCES train_run(id) ON DELETE CASCADE,
+    stop_index INTEGER NOT NULL,
+    payload TEXT NOT NULL,
+    PRIMARY KEY (train_run_id, stop_index)
+);
+
+CREATE TABLE realtime_cache (
+    cache_key TEXT NOT NULL PRIMARY KEY,
+    payload TEXT NOT NULL,
+    fetched_at INTEGER NOT NULL,
+    source_timestamp INTEGER
+);
+
+CREATE TABLE recent_station (
+    station_id TEXT NOT NULL PRIMARY KEY REFERENCES station(id),
+    visited_at INTEGER NOT NULL
+);
+CREATE INDEX recent_station_time ON recent_station(visited_at);
+
+CREATE TABLE favorite_station (
+    station_id TEXT NOT NULL PRIMARY KEY REFERENCES station(id)
+);
+
+CREATE TABLE favorite_route (
+    id TEXT NOT NULL PRIMARY KEY,
+    origin_station_id TEXT NOT NULL REFERENCES station(id),
+    destination_station_id TEXT NOT NULL REFERENCES station(id),
+    UNIQUE (origin_station_id, destination_station_id),
+    CHECK (origin_station_id != destination_station_id)
+);
+
+CREATE TABLE favorite_train (
+    id TEXT NOT NULL PRIMARY KEY,
+    train_number TEXT NOT NULL,
+    origin_name TEXT,
+    operator_name TEXT,
+    destination_name TEXT,
+    origin_station_id TEXT
+);
+CREATE INDEX favorite_train_number ON favorite_train(train_number);
+
+CREATE TABLE active_monitor (
+    id TEXT NOT NULL PRIMARY KEY,
+    train_run_id TEXT NOT NULL UNIQUE,
+    provider_id TEXT NOT NULL,
+    train_number TEXT NOT NULL,
+    origin_ref TEXT NOT NULL,
+    service_date TEXT NOT NULL,
+    enabled INTEGER NOT NULL,
+    delay_threshold_minutes INTEGER,
+    notify_delay INTEGER NOT NULL,
+    notify_platform INTEGER NOT NULL,
+    notify_cancellation INTEGER NOT NULL,
+    notify_departure INTEGER NOT NULL,
+    notify_arrival INTEGER NOT NULL,
+    created_at_epoch_ms INTEGER NOT NULL,
+    expires_at_epoch_ms INTEGER,
+    notify_enabled INTEGER NOT NULL DEFAULT 1,
+    ended_at_epoch_ms INTEGER,
+    refresh_failure TEXT,
+    refresh_failed_at_epoch_ms INTEGER
+);
+CREATE INDEX active_monitor_enabled_expiry ON active_monitor(enabled, expires_at_epoch_ms);
+
+CREATE TABLE monitor_state (
+    monitor_id TEXT NOT NULL PRIMARY KEY REFERENCES active_monitor(id) ON DELETE CASCADE,
+    snapshot TEXT NOT NULL,
+    freshness_kind TEXT NOT NULL,
+    fetched_at_epoch_ms INTEGER,
+    source_timestamp_epoch_ms INTEGER,
+    freshness_age_ms INTEGER,
+    evaluated_at_epoch_ms INTEGER NOT NULL,
+    last_event_type TEXT,
+    last_event_payload TEXT,
+    snapshot_version INTEGER NOT NULL DEFAULT 0,
+    accepted_refresh_generation INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE monitor_event (
+    event_key TEXT NOT NULL PRIMARY KEY,
+    monitor_id TEXT NOT NULL REFERENCES active_monitor(id) ON DELETE CASCADE,
+    event_type TEXT NOT NULL,
+    payload TEXT NOT NULL,
+    emitted_at_epoch_ms INTEGER NOT NULL,
+    notified_at_epoch_ms INTEGER
+);
+CREATE INDEX monitor_event_notification ON monitor_event(monitor_id, event_type, notified_at_epoch_ms);
+
+CREATE TABLE train_refresh_order (
+    train_run_id TEXT NOT NULL PRIMARY KEY,
+    issued_generation INTEGER NOT NULL DEFAULT 0,
+    accepted_generation INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE strike (
+    id TEXT NOT NULL PRIMARY KEY,
+    provider_id TEXT NOT NULL,
+    external_id TEXT,
+    start_epoch_ms INTEGER NOT NULL,
+    end_epoch_ms INTEGER NOT NULL,
+    status TEXT NOT NULL,
+    sector TEXT NOT NULL,
+    relevance TEXT NOT NULL,
+    regions TEXT NOT NULL,
+    provinces TEXT NOT NULL,
+    unions TEXT NOT NULL,
+    operators TEXT NOT NULL,
+    workforce TEXT,
+    mode TEXT NOT NULL,
+    notes TEXT,
+    source_label TEXT NOT NULL,
+    source_url TEXT NOT NULL,
+    source_updated_at_epoch_ms INTEGER,
+    fetched_at_epoch_ms INTEGER NOT NULL,
+    content_fingerprint TEXT NOT NULL
+);
+CREATE INDEX strike_interval ON strike(start_epoch_ms, end_epoch_ms);
+
+CREATE TABLE strike_external_id (
+    provider_id TEXT NOT NULL,
+    external_id TEXT NOT NULL,
+    strike_id TEXT NOT NULL,
+    PRIMARY KEY (provider_id, external_id)
+);
+CREATE INDEX strike_external_internal ON strike_external_id(strike_id);
+
+CREATE TABLE strike_sync_state (
+    id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+    fetched_at_epoch_ms INTEGER NOT NULL,
+    source_updated_at_epoch_ms INTEGER
+);
+
+/**
+ * Successfully covered strike intervals (T7.12-A).
+ *
+ * One row per explicitly refreshed interval whose snapshot was successfully
+ * complete: freshness for that interval — and only that interval — while the
+ * row is younger than the strike cache TTL. A disjoint never-fetched interval
+ * has no containing row and stays unknown/stale however recently another
+ * interval refreshed. Partial snapshots and failures write no row.
+ */
+CREATE TABLE strike_coverage (
+    from_epoch_ms INTEGER NOT NULL,
+    to_epoch_ms INTEGER NOT NULL,
+    fetched_at_epoch_ms INTEGER NOT NULL,
+    source_updated_at_epoch_ms INTEGER,
+    PRIMARY KEY (from_epoch_ms, to_epoch_ms),
+    CHECK (to_epoch_ms > from_epoch_ms)
+);
+CREATE INDEX strike_coverage_interval ON strike_coverage(from_epoch_ms, to_epoch_ms);
+
+CREATE TABLE strike_notification_setting (
+    id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+    enabled INTEGER NOT NULL
+);
+
+CREATE TABLE strike_notification_event (
+    event_key TEXT NOT NULL PRIMARY KEY,
+    strike_id TEXT NOT NULL,
+    event_type TEXT NOT NULL,
+    emitted_at_epoch_ms INTEGER NOT NULL,
+    notified_at_epoch_ms INTEGER
+);
+CREATE INDEX strike_notification_pending ON strike_notification_event(notified_at_epoch_ms, emitted_at_epoch_ms);
+
+stationByExternal:
+SELECT station.* FROM station JOIN station_external_id ON station.id = station_external_id.station_id
+WHERE provider_id = ? AND external_id = ?;
+
+stationById:
+SELECT * FROM station WHERE id = ?;
+
+externalForStation:
+SELECT external_id FROM station_external_id WHERE station_id = ? AND provider_id = ?;
+
+putStation:
+INSERT OR REPLACE INTO station VALUES (?, ?, ?, ?);
+
+putExternal:
+INSERT OR REPLACE INTO station_external_id VALUES (?, ?, ?);
+
+searchStations:
+SELECT * FROM station WHERE instr(normalized_name, :query) > 0 ORDER BY normalized_name LIMIT 30;
+
+putTrain:
+INSERT OR REPLACE INTO train_run VALUES (?, ?, ?, ?, ?, ?, ?);
+
+trainById:
+SELECT * FROM train_run WHERE id = ?;
+
+putStop:
+INSERT INTO train_stop VALUES (?, ?, ?);
+
+deleteStops:
+DELETE FROM train_stop WHERE train_run_id = ?;
+
+stopsForTrain:
+SELECT * FROM train_stop WHERE train_run_id = ? ORDER BY stop_index;
+
+putCache:
+INSERT OR REPLACE INTO realtime_cache VALUES (?, ?, ?, ?);
+
+cacheByKey:
+SELECT * FROM realtime_cache WHERE cache_key = ?;
+
+deleteCache:
+DELETE FROM realtime_cache WHERE cache_key = ?;
+
+deleteTrain:
+DELETE FROM train_run WHERE id = ?;
+
+recordStation:
+INSERT OR REPLACE INTO recent_station VALUES (?, ?);
+
+pruneHistory:
+DELETE FROM recent_station WHERE station_id NOT IN (SELECT station_id FROM recent_station ORDER BY visited_at DESC LIMIT 20);
+
+recentStations:
+SELECT station.* FROM station JOIN recent_station ON station.id = recent_station.station_id ORDER BY visited_at DESC;
+
+clearHistory:
+DELETE FROM recent_station;
+
+favoriteStations:
+SELECT station.* FROM station JOIN favorite_station ON station.id = favorite_station.station_id ORDER BY normalized_name;
+
+favoriteStationById:
+SELECT station_id FROM favorite_station WHERE station_id = ?;
+
+addFavorite:
+INSERT OR IGNORE INTO favorite_station VALUES (?);
+
+removeFavorite:
+DELETE FROM favorite_station WHERE station_id = ?;
+
+favoriteRoutes:
+SELECT favorite_route.id,
+    origin.id AS origin_id,
+    origin.name AS origin_name,
+    destination.id AS destination_id,
+    destination.name AS destination_name
+FROM favorite_route
+JOIN station AS origin ON origin.id = favorite_route.origin_station_id
+JOIN station AS destination ON destination.id = favorite_route.destination_station_id
+ORDER BY origin.normalized_name, destination.normalized_name;
+
+favoriteRouteByEndpoints:
+SELECT id FROM favorite_route WHERE origin_station_id = ? AND destination_station_id = ?;
+
+addFavoriteRoute:
+INSERT OR IGNORE INTO favorite_route VALUES (?, ?, ?);
+
+removeFavoriteRoute:
+DELETE FROM favorite_route WHERE origin_station_id = ? AND destination_station_id = ?;
+
+favoriteTrains:
+SELECT id, train_number, origin_station_id, origin_name, operator_name, destination_name
+FROM favorite_train ORDER BY train_number, origin_name, operator_name;
+
+CREATE TABLE journey_search_history (
+    id TEXT NOT NULL PRIMARY KEY,
+    origin_station_id TEXT NOT NULL REFERENCES station(id),
+    destination_station_id TEXT NOT NULL REFERENCES station(id),
+    origin_name TEXT NOT NULL,
+    destination_name TEXT NOT NULL,
+    requested_at INTEGER NOT NULL,
+    search_mode TEXT NOT NULL,
+    submitted_at INTEGER NOT NULL,
+    CHECK (origin_station_id != destination_station_id)
+);
+CREATE INDEX journey_search_history_submitted ON journey_search_history(submitted_at DESC);
+
+journeySearchHistory:
+SELECT id, origin_station_id, destination_station_id, origin_name, destination_name,
+    requested_at, search_mode, submitted_at
+FROM journey_search_history ORDER BY submitted_at DESC, rowid DESC;
+
+journeySearchHistoryById:
+SELECT id, origin_station_id, destination_station_id, origin_name, destination_name,
+    requested_at, search_mode, submitted_at
+FROM journey_search_history WHERE id = ?;
+
+insertJourneySearchHistory:
+INSERT INTO journey_search_history VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteJourneySearchHistory:
+DELETE FROM journey_search_history WHERE id = ?;
+
+clearJourneySearchHistory:
+DELETE FROM journey_search_history;
+
+CREATE TABLE train_search_history (
+    id TEXT NOT NULL PRIMARY KEY,
+    train_number TEXT NOT NULL,
+    service_date TEXT,
+    origin_station_id TEXT,
+    origin_name TEXT,
+    operator_name TEXT,
+    destination_name TEXT,
+    submitted_at INTEGER NOT NULL
+);
+CREATE INDEX train_search_history_submitted ON train_search_history(submitted_at DESC);
+
+trainSearchHistory:
+SELECT id, train_number, service_date, origin_station_id, origin_name,
+    operator_name, destination_name, submitted_at
+FROM train_search_history ORDER BY submitted_at DESC, rowid DESC;
+
+trainSearchHistoryById:
+SELECT id, train_number, service_date, origin_station_id, origin_name,
+    operator_name, destination_name, submitted_at
+FROM train_search_history WHERE id = ?;
+
+insertTrainSearchHistory:
+INSERT INTO train_search_history VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteTrainSearchHistory:
+DELETE FROM train_search_history WHERE id = ?;
+
+clearTrainSearchHistory:
+DELETE FROM train_search_history;
+
+removeRecentStation:
+DELETE FROM recent_station WHERE station_id = ?;
+
+favoriteTrainById:
+SELECT id FROM favorite_train WHERE id = ?;
+
+addFavoriteTrain:
+INSERT OR IGNORE INTO favorite_train
+    (id, train_number, origin_station_id, origin_name, operator_name, destination_name)
+VALUES (?, ?, ?, ?, ?, ?);
+
+removeFavoriteTrain:
+DELETE FROM favorite_train WHERE id = ?;
+
+clearFavoriteStations:
+DELETE FROM favorite_station;
+
+clearFavoriteRoutes:
+DELETE FROM favorite_route;
+
+clearFavoriteTrains:
+DELETE FROM favorite_train;
+
+insertActiveMonitor:
+INSERT OR IGNORE INTO active_monitor(
+    id, train_run_id, provider_id, train_number, origin_ref, service_date, enabled,
+    delay_threshold_minutes, notify_delay, notify_platform, notify_cancellation,
+    notify_departure, notify_arrival, notify_enabled, created_at_epoch_ms, expires_at_epoch_ms
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?);
+
+updateActiveMonitor:
+UPDATE active_monitor SET
+    enabled = ?,
+    delay_threshold_minutes = ?,
+    notify_delay = ?,
+    notify_platform = ?,
+    notify_cancellation = ?,
+    notify_departure = ?,
+    notify_arrival = ?,
+    expires_at_epoch_ms = ?
+WHERE id = ?;
+
+monitorLifecycleByTrain:
+SELECT id, enabled, ended_at_epoch_ms FROM active_monitor WHERE train_run_id = ?;
+
+activeMonitors:
+SELECT active_monitor.*, monitor_state.snapshot, monitor_state.freshness_kind,
+    monitor_state.fetched_at_epoch_ms, monitor_state.source_timestamp_epoch_ms,
+    monitor_state.freshness_age_ms, monitor_state.evaluated_at_epoch_ms,
+    monitor_state.last_event_type, monitor_state.last_event_payload,
+    monitor_state.snapshot_version
+FROM active_monitor LEFT JOIN monitor_state ON active_monitor.id = monitor_state.monitor_id
+WHERE enabled = 1 AND ended_at_epoch_ms IS NULL AND (expires_at_epoch_ms IS NULL OR expires_at_epoch_ms > :now)
+ORDER BY created_at_epoch_ms DESC;
+
+allEndedMonitors:
+SELECT active_monitor.*, monitor_state.snapshot, monitor_state.freshness_kind,
+    monitor_state.fetched_at_epoch_ms, monitor_state.source_timestamp_epoch_ms,
+    monitor_state.freshness_age_ms, monitor_state.evaluated_at_epoch_ms,
+    monitor_state.last_event_type, monitor_state.last_event_payload,
+    monitor_state.snapshot_version
+FROM active_monitor LEFT JOIN monitor_state ON active_monitor.id = monitor_state.monitor_id
+WHERE enabled = 1 AND ended_at_epoch_ms IS NOT NULL
+ORDER BY ended_at_epoch_ms DESC;
+
+monitorByTrain:
+SELECT active_monitor.*, monitor_state.snapshot, monitor_state.freshness_kind,
+    monitor_state.fetched_at_epoch_ms, monitor_state.source_timestamp_epoch_ms,
+    monitor_state.freshness_age_ms, monitor_state.evaluated_at_epoch_ms,
+    monitor_state.last_event_type, monitor_state.last_event_payload,
+    monitor_state.snapshot_version
+FROM active_monitor LEFT JOIN monitor_state ON active_monitor.id = monitor_state.monitor_id
+WHERE train_run_id = ? AND enabled = 1
+LIMIT 1;
+
+deleteMonitorByTrain:
+DELETE FROM active_monitor WHERE train_run_id = ?;
+
+deleteMonitorStateByTrain:
+DELETE FROM monitor_state WHERE monitor_id IN (SELECT id FROM active_monitor WHERE train_run_id = ?);
+
+deleteMonitorEventsByTrain:
+DELETE FROM monitor_event WHERE monitor_id IN (SELECT id FROM active_monitor WHERE train_run_id = ?);
+
+disableMonitor:
+UPDATE active_monitor SET enabled = 0 WHERE id = ?;
+
+disableExpiredMonitors:
+UPDATE active_monitor SET enabled = 0
+WHERE enabled = 1 AND ended_at_epoch_ms IS NULL AND expires_at_epoch_ms IS NOT NULL AND expires_at_epoch_ms <= ?;
+
+monitorLifecycleById:
+SELECT id, enabled, ended_at_epoch_ms FROM active_monitor WHERE id = ?;
+
+completeTerminalMonitor:
+UPDATE active_monitor SET ended_at_epoch_ms = :endedAt WHERE id = :id AND ended_at_epoch_ms IS NULL;
+
+deleteEndedMonitorStateByTrain:
+DELETE FROM monitor_state WHERE monitor_id IN (
+    SELECT id FROM active_monitor WHERE train_run_id = ? AND ended_at_epoch_ms IS NOT NULL
+);
+
+deleteEndedMonitorEventsByTrain:
+DELETE FROM monitor_event WHERE monitor_id IN (
+    SELECT id FROM active_monitor WHERE train_run_id = ? AND ended_at_epoch_ms IS NOT NULL
+);
+
+deleteEndedMonitorByTrain:
+DELETE FROM active_monitor WHERE train_run_id = ? AND ended_at_epoch_ms IS NOT NULL;
+
+deleteExpiredEndedMonitorState:
+DELETE FROM monitor_state WHERE monitor_id IN (
+    SELECT id FROM active_monitor WHERE ended_at_epoch_ms IS NOT NULL AND ended_at_epoch_ms <= :expiredBefore
+);
+
+deleteExpiredEndedMonitorEvents:
+DELETE FROM monitor_event WHERE monitor_id IN (
+    SELECT id FROM active_monitor WHERE ended_at_epoch_ms IS NOT NULL AND ended_at_epoch_ms <= :expiredBefore
+);
+
+cleanupExpiredEndedMonitors:
+DELETE FROM active_monitor WHERE ended_at_epoch_ms IS NOT NULL AND ended_at_epoch_ms <= :expiredBefore;
+
+updateMonitorPreferences:
+UPDATE active_monitor SET
+    delay_threshold_minutes = ?,
+    notify_delay = ?,
+    notify_platform = ?,
+    notify_cancellation = ?,
+    notify_departure = ?,
+    notify_arrival = ?
+WHERE train_run_id = ?;
+
+setMonitorNotifications:
+UPDATE active_monitor SET notify_enabled = ? WHERE train_run_id = ?;
+
+recordMonitorRefreshFailure:
+UPDATE active_monitor SET refresh_failure = :failure, refresh_failed_at_epoch_ms = :failedAt
+WHERE id = :id AND enabled = 1 AND ended_at_epoch_ms IS NULL;
+
+clearMonitorRefreshFailure:
+UPDATE active_monitor SET refresh_failure = NULL, refresh_failed_at_epoch_ms = NULL WHERE id = :id;
+
+putMonitorState:
+INSERT OR REPLACE INTO monitor_state VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+insertMonitorState:
+INSERT OR IGNORE INTO monitor_state VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, :version, :order);
+
+updateMonitorStateVersioned:
+UPDATE monitor_state SET
+    snapshot = :snapshot,
+    freshness_kind = :freshnessKind,
+    fetched_at_epoch_ms = :fetchedAt,
+    source_timestamp_epoch_ms = :sourceTimestamp,
+    freshness_age_ms = :freshnessAge,
+    evaluated_at_epoch_ms = :evaluatedAt,
+    last_event_type = :lastEventType,
+    last_event_payload = :lastEventPayload,
+    snapshot_version = :newVersion
+WHERE monitor_id = :id AND snapshot_version = :expectedVersion;
+
+updateMonitorStateOrdered:
+UPDATE monitor_state SET
+    snapshot = :snapshot,
+    freshness_kind = :freshnessKind,
+    fetched_at_epoch_ms = :fetchedAt,
+    source_timestamp_epoch_ms = :sourceTimestamp,
+    freshness_age_ms = :freshnessAge,
+    evaluated_at_epoch_ms = :evaluatedAt,
+    last_event_type = :lastEventType,
+    last_event_payload = :lastEventPayload,
+    snapshot_version = :newVersion,
+    accepted_refresh_generation = :observationOrder
+WHERE monitor_id = :id AND snapshot_version = :expectedVersion AND accepted_refresh_generation <= :observationOrder;
+
+updateMonitorStateTerminalInitial:
+UPDATE monitor_state SET
+    snapshot = :snapshot,
+    freshness_kind = :freshnessKind,
+    fetched_at_epoch_ms = :fetchedAt,
+    source_timestamp_epoch_ms = :sourceTimestamp,
+    freshness_age_ms = :freshnessAge,
+    evaluated_at_epoch_ms = :evaluatedAt,
+    last_event_type = :lastEventType,
+    last_event_payload = :lastEventPayload,
+    snapshot_version = snapshot_version + 1,
+    accepted_refresh_generation = :observationOrder
+WHERE monitor_id = :id AND accepted_refresh_generation <= :observationOrder;
+
+updateMonitorStateTerminalCorrection:
+UPDATE monitor_state SET
+    snapshot = :snapshot,
+    freshness_kind = :freshnessKind,
+    fetched_at_epoch_ms = :fetchedAt,
+    source_timestamp_epoch_ms = :sourceTimestamp,
+    freshness_age_ms = :freshnessAge,
+    evaluated_at_epoch_ms = :evaluatedAt,
+    last_event_type = :lastEventType,
+    last_event_payload = :lastEventPayload,
+    snapshot_version = snapshot_version + 1,
+    accepted_refresh_generation = :observationOrder
+WHERE monitor_id = :id AND accepted_refresh_generation < :observationOrder;
+
+ensureRefreshOrder:
+INSERT OR IGNORE INTO train_refresh_order(train_run_id, issued_generation, accepted_generation) VALUES (?, 0, 0);
+
+bumpRefreshOrder:
+UPDATE train_refresh_order SET issued_generation = issued_generation + 1 WHERE train_run_id = ?;
+
+refreshOrderIssued:
+SELECT issued_generation FROM train_refresh_order WHERE train_run_id = ?;
+
+refreshOrderAccepted:
+SELECT accepted_generation FROM train_refresh_order WHERE train_run_id = ?;
+
+acceptRefreshOrder:
+UPDATE train_refresh_order SET accepted_generation = :generation WHERE train_run_id = :id AND accepted_generation < :generation;
+
+refreshOrderWriteCount:
+SELECT changes();
+
+monitorStateWriteCount:
+SELECT changes();
+
+monitorStateById:
+SELECT * FROM monitor_state WHERE monitor_id = ?;
+
+eventByKey:
+SELECT * FROM monitor_event WHERE event_key = ?;
+
+putMonitorEvent:
+INSERT OR IGNORE INTO monitor_event VALUES (?, ?, ?, ?, ?, NULL);
+
+lastNotifiedEvent:
+SELECT * FROM monitor_event
+WHERE monitor_id = ? AND event_type = ? AND notified_at_epoch_ms IS NOT NULL
+ORDER BY notified_at_epoch_ms DESC LIMIT 1;
+
+markEventNotified:
+UPDATE monitor_event SET notified_at_epoch_ms = ? WHERE event_key = ? AND notified_at_epoch_ms IS NULL;
+
+putStrike:
+INSERT OR REPLACE INTO strike VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+putStrikeExternalId:
+INSERT OR REPLACE INTO strike_external_id VALUES (?, ?, ?);
+
+strikeById:
+SELECT * FROM strike WHERE id = ?;
+
+allStrikes:
+SELECT * FROM strike ORDER BY start_epoch_ms, id;
+
+-- Exact SQL mirror of the shared T7.12 strikeIntervalsOverlap definition in
+-- core:model (touching boundaries count as overlap). Keep the two in sync;
+-- see its KDoc for the single-definition rule.
+strikesOverlapping:
+SELECT * FROM strike
+WHERE start_epoch_ms <= :to_epoch_ms AND end_epoch_ms >= :from_epoch_ms
+ORDER BY start_epoch_ms, id;
+
+-- Expiry-transition lookup for the local reactive-expiry ticker (T7.12
+-- corrective pass): ends of still-applicable strikes touching the observed
+-- window. Same inclusive mirror as strikesOverlapping.
+strikeEndsOverlapping:
+SELECT end_epoch_ms FROM strike
+WHERE start_epoch_ms <= :to_epoch_ms AND end_epoch_ms >= :from_epoch_ms
+AND status NOT IN ('REVOKED', 'COMPLETED');
+
+putStrikeSyncState:
+INSERT OR REPLACE INTO strike_sync_state VALUES (1, ?, ?);
+
+strikeSyncState:
+SELECT * FROM strike_sync_state WHERE id = 1;
+
+putStrikeCoverage:
+INSERT OR REPLACE INTO strike_coverage VALUES (?, ?, ?, ?);
+
+coveringStrikeCoverage:
+SELECT * FROM strike_coverage
+WHERE from_epoch_ms <= :from_epoch_ms AND to_epoch_ms >= :to_epoch_ms
+ORDER BY fetched_at_epoch_ms DESC LIMIT 1;
+
+allStrikeCoverages:
+SELECT * FROM strike_coverage ORDER BY from_epoch_ms, to_epoch_ms;
+
+pruneStrikeCoverages:
+DELETE FROM strike_coverage WHERE to_epoch_ms < :expired_before_epoch_ms;
+
+setStrikeNotificationsEnabled:
+INSERT OR REPLACE INTO strike_notification_setting VALUES (1, ?);
+
+strikeNotificationsEnabled:
+SELECT enabled FROM strike_notification_setting WHERE id = 1;
+
+putStrikeNotificationEvent:
+INSERT OR IGNORE INTO strike_notification_event VALUES (?, ?, ?, ?, NULL);
+
+pendingStrikeNotificationEvents:
+SELECT * FROM strike_notification_event
+WHERE notified_at_epoch_ms IS NULL
+ORDER BY emitted_at_epoch_ms, rowid;
+
+strikeNotificationEventByKey:
+SELECT * FROM strike_notification_event WHERE event_key = ?;
+
+markStrikeNotificationsDelivered:
+UPDATE strike_notification_event SET notified_at_epoch_ms = :notified_at
+WHERE strike_id = :strike_id AND notified_at_epoch_ms IS NULL;
+
+dismissPendingStrikeNotifications:
+UPDATE strike_notification_event SET notified_at_epoch_ms = :dismissed_at
+WHERE notified_at_epoch_ms IS NULL;

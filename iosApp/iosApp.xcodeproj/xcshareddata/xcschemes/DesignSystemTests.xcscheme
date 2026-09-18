@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme LastUpgradeVersion="2650" version="1.7">
+  <BuildAction parallelizeBuildables="NO" buildImplicitDependencies="YES">
+    <BuildActionEntries>
+      <BuildActionEntry buildForTesting="YES" buildForRunning="NO" buildForProfiling="NO" buildForArchiving="NO" buildForAnalyzing="YES">
+        <BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="A83000000000000000000005" BuildableName="DesignSystemTests.xctest" BlueprintName="DesignSystemTests" ReferencedContainer="container:iosApp.xcodeproj"/>
+      </BuildActionEntry>
+    </BuildActionEntries>
+  </BuildAction>
+  <TestAction buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.IDEFoundation.Launcher.LLDB" shouldUseLaunchSchemeArgsEnv="YES">
+    <Testables>
+      <TestableReference skipped="NO" parallelizable="NO">
+        <BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="A83000000000000000000005" BuildableName="DesignSystemTests.xctest" BlueprintName="DesignSystemTests" ReferencedContainer="container:iosApp.xcodeproj"/>
+      </TestableReference>
+    </Testables>
+  </TestAction>
+  <AnalyzeAction buildConfiguration="Debug"/>
+</Scheme>

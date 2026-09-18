@@ -1,0 +1,975 @@
+{
+ "sourceLanguage": "en",
+ "strings": {
+  "journey.route": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Route"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Percorso"
+     }
+    }
+   }
+  },
+  "journey.back": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Back"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Indietro"
+     }
+    }
+   }
+  },
+  "journey.sort": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Sort by"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Ordina per"
+     }
+    }
+   }
+  },
+  "journey.sortDeparture": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Departure"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Partenza"
+     }
+    }
+   }
+  },
+  "journey.sortArrival": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Arrival"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Arrivo"
+     }
+    }
+   }
+  },
+  "journey.sortDuration": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Duration"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Durata"
+     }
+    }
+   }
+  },
+  "journey.sortChanges": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Changes"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Cambi"
+     }
+    }
+   }
+  },
+  "journey.direct": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Direct"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Diretto"
+     }
+    }
+   }
+  },
+  "journey.change.one": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "%d change"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "%d cambio"
+     }
+    }
+   }
+  },
+  "journey.change.other": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "%d changes"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "%d cambi"
+     }
+    }
+   }
+  },
+  "journey.via": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "via %@"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "via %@"
+     }
+    }
+   }
+  },
+  "journey.loading": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Loading journeys…"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Caricamento soluzioni…"
+     }
+    }
+   }
+  },
+  "journey.refreshing": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Updating…"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Aggiornamento…"
+     }
+    }
+   }
+  },
+  "journey.empty": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "No journeys found for this search."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Nessuna soluzione trovata per questa ricerca."
+     }
+    }
+   }
+  },
+  "journey.retry": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Try again"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Riprova"
+     }
+    }
+   }
+  },
+  "journey.refresh": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Refresh"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Aggiorna"
+     }
+    }
+   }
+  },
+  "journey.errorOffline": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "No connection. Check your connection and try again."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Nessuna connessione. Controlla la connessione e riprova."
+     }
+    }
+   }
+  },
+  "journey.errorOfflineCached": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "No connection. Showing the latest available data."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Nessuna connessione. Mostro gli ultimi dati disponibili."
+     }
+    }
+   }
+  },
+  "journey.errorTemporary": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Railway information is temporarily unavailable."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Le informazioni ferroviarie sono temporaneamente non disponibili."
+     }
+    }
+   }
+  },
+  "journey.errorNotFound": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "No journeys match this search."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Nessuna soluzione corrisponde a questa ricerca."
+     }
+    }
+   }
+  },
+  "journey.errorInvalid": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "The request is not valid. Check the entered information and try again."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "La richiesta non è valida. Controlla i dati inseriti e riprova."
+     }
+    }
+   }
+  },
+  "journey.errorUnsupported": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "This information is not available from the configured sources."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Queste informazioni non sono disponibili dalle fonti configurate."
+     }
+    }
+   }
+  },
+  "journey.errorInvalidResponse": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "The railway service returned unexpected data."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Il servizio ferroviario ha restituito dati imprevisti."
+     }
+    }
+   }
+  },
+  "journey.warning.one": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "%d strike warning"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "%d avviso sciopero"
+     }
+    }
+   }
+  },
+  "journey.warning.other": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "%d strike warnings"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "%d avvisi sciopero"
+     }
+    }
+   }
+  },
+  "journey.details": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Details"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Dettagli"
+     }
+    }
+   }
+  },
+  "journey.departure": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Departure"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Partenza"
+     }
+    }
+   }
+  },
+  "journey.arrival": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Arrival"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Arrivo"
+     }
+    }
+   }
+  },
+  "journey.onTime": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "On time"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "In orario"
+     }
+    }
+   }
+  },
+  "journey.delayed": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Delayed + %d min"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Ritardo + %d min"
+     }
+    }
+   }
+  },
+  "journey.running": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Running"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "In viaggio"
+     }
+    }
+   }
+  },
+  "journey.notDeparted": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Not yet departed"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Non ancora partito"
+     }
+    }
+   }
+  },
+  "journey.arrived": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Arrived"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Arrivato"
+     }
+    }
+   }
+  },
+  "journey.cancelled": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Cancelled"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Cancellato"
+     }
+    }
+   }
+  },
+  "journey.partiallyCancelled": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Partly cancelled"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Parzialmente cancellato"
+     }
+    }
+   }
+  },
+  "journey.diverted": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Diverted"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Deviato"
+     }
+    }
+   }
+  },
+  "journey.rescheduled": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Rescheduled"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Riprogrammato"
+     }
+    }
+   }
+  },
+  "journey.noRealtime": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "No realtime data"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Nessun dato in tempo reale"
+     }
+    }
+   }
+  },
+  "journey.checking": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Checking realtime…"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Verifica realtime…"
+     }
+    }
+   }
+  },
+  "journey.realtimeUnavailable": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Realtime data is unavailable for this leg."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Dati realtime non disponibili per questa tratta."
+     }
+    }
+   }
+  },
+  "journey.platformExpected": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Expected platform %@"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Binario previsto %@"
+     }
+    }
+   }
+  },
+  "journey.platformActual": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Actual platform %@"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Binario effettivo %@"
+     }
+    }
+   }
+  },
+  "journey.trainUnknown": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Train details unavailable"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Dettagli treno non disponibili"
+     }
+    }
+   }
+  },
+  "journey.trainStatus": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Train status"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Stato treno"
+     }
+    }
+   }
+  },
+  "journey.leg": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Leg %d of %d"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Tratta %d di %d"
+     }
+    }
+   }
+  },
+  "journey.changeAt": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Change at %@"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Cambio a %@"
+     }
+    }
+   }
+  },
+  "journey.wait": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "%d min wait"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "attesa %d min"
+     }
+    }
+   }
+  },
+  "journey.buy": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Continue to %@"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Continua su %@"
+     }
+    }
+   }
+  },
+  "journey.buyFailed": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Could not open the booking page."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Impossibile aprire la pagina di prenotazione."
+     }
+    }
+   }
+  },
+  "journey.notFound": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "This journey is no longer available."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Questo viaggio non è più disponibile."
+     }
+    }
+   }
+  },
+  "journey.resolving": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Loading journey…"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Caricamento viaggio…"
+     }
+    }
+   }
+  },
+  "journey.saveRoute": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Save route"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Salva percorso"
+     }
+    }
+   }
+  },
+  "journey.removeRoute": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Remove route"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Rimuovi percorso"
+     }
+    }
+   }
+  },
+  "journey.sortCurrent": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Sort: %@"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Ordina: %@"
+     }
+    }
+   }
+  },
+  "journey.sources": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Sources: %@"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Fonti: %@"
+     }
+    }
+   }
+  },
+  "journey.sourceUnknown": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Source unknown"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Fonte sconosciuta"
+     }
+    }
+   }
+  },
+  "journey.favoriteError": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "The favorite could not be updated."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Non è stato possibile aggiornare il preferito."
+     }
+    }
+   }
+  }
+ },
+ "version": "1.0"
+}

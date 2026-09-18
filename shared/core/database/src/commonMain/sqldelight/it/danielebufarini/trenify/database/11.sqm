@@ -1,0 +1,5 @@
+-- T7.11 corrective: optimistic-concurrency version for monitor snapshots.
+-- Every accepted monitor_state commit bumps the version, so a stale refresh
+-- evaluating from an older accepted snapshot is rejected instead of
+-- duplicating a logical event or regressing newer accepted state.
+ALTER TABLE monitor_state ADD COLUMN snapshot_version INTEGER NOT NULL DEFAULT 0;

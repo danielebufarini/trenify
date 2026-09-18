@@ -1,0 +1,10 @@
+<resources>
+    <string name="ds_loading">Caricamento</string>
+    <string name="ds_selected">Selezionata</string>
+    <string name="ds_unselected">Nessuna stazione selezionata</string>
+    <string name="ds_clear_station">Rimuovi stazione</string>
+    <string name="ds_status_unknown">Stato non disponibile</string>
+    <string name="ds_details">Dettagli</string>
+    <string name="ds_departure">Partenza</string>
+    <string name="ds_arrival">Arrivo</string>
+</resources>

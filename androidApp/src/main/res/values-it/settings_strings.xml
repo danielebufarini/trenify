@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="set_title">Impostazioni</string>
+    <string name="set_best_effort">Gli aggiornamenti in background vengono effettuati quando possibile e le tempistiche sono decise dal sistema operativo.</string>
+    <string name="set_notifications_section">Notifiche</string>
+    <string name="set_notifications">Notifiche</string>
+    <string name="set_notifications_description">Se disattivate, Trenify non invia notifiche. I treni monitorati continuano ad aggiornarsi quando possibile.</string>
+    <string name="set_permission_denied">Le notifiche di sistema sono disattivate: Trenify non può inviare notifiche. Il monitoraggio resta attivo.</string>
+    <string name="set_defaults_section">Valori predefiniti monitoraggio</string>
+    <string name="set_delay_threshold">Soglia di ritardo (minuti)</string>
+    <string name="set_threshold_hint">Invia una notifica quando il ritardo raggiunge questa soglia o supera un altro multiplo, incluso il rientro a un valore inferiore. Vale per i treni monitorati in futuro.</string>
+    <string name="set_invalid_threshold">Inserisci un numero di minuti positivo.</string>
+    <string name="set_save">Salva</string>
+    <string name="set_saving">Salvataggio…</string>
+    <string name="set_save_error">Non è stato possibile salvare le impostazioni.</string>
+    <string name="set_events_section">Eventi monitorati</string>
+    <string name="set_events_description">Scegli quali eventi dei treni monitorati inviano una notifica a questo dispositivo.</string>
+    <string name="set_event_delay">Ritardi</string>
+    <string name="set_event_platform">Cambi di binario</string>
+    <string name="set_event_cancellation">Soppressioni</string>
+    <string name="set_event_departure">Partenze</string>
+    <string name="set_event_arrival">Arrivi</string>
+    <string name="set_strike_section">Notifiche scioperi</string>
+    <string name="set_strike">Notifiche scioperi</string>
+    <string name="set_strike_description">Ricevi notifiche sugli scioperi che potrebbero influire sui treni monitorati. Usa la stessa preferenza degli Avvisi.</string>
+    <string name="set_strike_permission_denied">Le notifiche sono disattivate. Il monitoraggio resta attivo finché Trenify può aggiornarsi.</string>
+    <string name="set_data_section">Dati personali</string>
+    <string name="set_delete_history_title">Elimina cronologia ricerche</string>
+    <string name="set_delete_history_description">Rimuove da questo dispositivo tutte le ricerche di viaggi, le ricerche di treni e le stazioni recenti suggerite. Preferiti, treni monitorati, impostazioni e stazioni salvate vengono conservati.</string>
+    <string name="set_delete_history_confirm">Eliminare tutta la cronologia? Ricerche di viaggi, ricerche di treni e stazioni recenti saranno rimosse. L’operazione non può essere annullata.</string>
+    <string name="set_delete_favorites_title">Elimina preferiti</string>
+    <string name="set_delete_favorites_description">Rimuove da questo dispositivo tutte le stazioni, gli itinerari e i treni preferiti. Cronologia ricerche, treni monitorati, impostazioni e stazioni salvate vengono conservati.</string>
+    <string name="set_delete_favorites_confirm">Eliminare tutti i preferiti? Stazioni, itinerari e treni preferiti saranno rimossi. L’operazione non può essere annullata.</string>
+    <string name="set_delete">Elimina</string>
+    <string name="set_delete_confirm">Sì, elimina</string>
+    <string name="set_delete_cancel">Annulla</string>
+    <string name="set_delete_success">Eliminato.</string>
+    <string name="set_delete_error">Eliminazione non riuscita. Nulla è stato eliminato parzialmente; puoi riprovare.</string>
+    <string name="set_switch_on">Attivato</string>
+    <string name="set_switch_off">Disattivato</string>
+</resources>
