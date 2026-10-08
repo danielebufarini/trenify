@@ -28,9 +28,9 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 /**
- * Failed-refresh presentation on Home (T7.14 corrective): a monitor whose
+ * Failed-refresh presentation on Home: a monitor whose
  * latest refresh attempt failed stays visible, is immediately stale, and
- * carries the typed OFFLINE/TEMPORARY failure for the FS §23 wording.
+ * carries the typed OFFLINE/TEMPORARY failure for the wording.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeRefreshFailureTest {

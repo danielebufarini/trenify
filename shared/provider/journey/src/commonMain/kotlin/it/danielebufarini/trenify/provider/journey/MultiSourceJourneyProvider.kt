@@ -28,7 +28,9 @@ class MultiSourceJourneyProvider(
         } }.awaitAll()
         val successes = results.filterIsInstance<ProviderResult.Success<List<Station>>>()
         if (successes.isEmpty()) failure(results) else ProviderResult.Success(
-            successes.flatMap { it.value }.distinctBy { it.normalizedName }.sortedBy { it.normalizedName },
+            successes.flatMap { it.value }.distinctBy { it.normalizedName }.sortedWith(
+                compareBy<Station> { it.normalizedName != normalizeStationQuery(query) }.thenBy { it.normalizedName },
+            ),
             ProviderMetadata(id, clock.now()),
         )
     }
@@ -136,7 +138,12 @@ internal fun mergeJourneys(journeys: List<Journey>): List<Journey> = journeys.gr
         leg.operator?.name?.let(::normalizeStationQuery).orEmpty(),
         leg.category?.let(::normalizeStationQuery).orEmpty(),
     ) }
-}.values.map { equivalents -> equivalents.first().copy(sources = equivalents.flatMap { it.sources }.toSet()) }
+}.values.map { equivalents -> equivalents.first().copy(
+    legs = equivalents.first().legs.mapIndexed { index, leg ->
+        leg.copy(scheduledPlatform = equivalents.firstNotNullOfOrNull { it.legs[index].scheduledPlatform })
+    },
+    sources = equivalents.flatMap { it.sources }.toSet(),
+) }
     .sortedBy(JourneySort.DEPARTURE)
 
 private fun failure(results: List<ProviderResult<*>>): ProviderResult<Nothing> =

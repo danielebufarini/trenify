@@ -13,7 +13,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * Foreground presentation eligibility (T7.13-G): shared business policy,
+ * Foreground presentation eligibility: shared business policy,
  * never unconditional, following the saved effective preferences.
  */
 class ForegroundNotificationPolicyTest {

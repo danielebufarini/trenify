@@ -24,8 +24,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
- * Contextual NOT_FOUND for an already-identified train (T7.14 final
- * pass): the repository taxonomy stays `NOT_FOUND`, while the detail
+ * Contextual NOT_FOUND for an already-identified train: the repository taxonomy stays `NOT_FOUND`, while the detail
  * keeps that failure typed for the realtime-unavailable presentation —
  * never the train-number search wording. Cached data is retained and
  * marked Stale; bare failures stay unstale with no invented content.

@@ -34,7 +34,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
 
 /**
- * T7.12-A strike cache coverage, completeness and revocation correctness on
+ * Strike cache coverage, completeness and revocation correctness on
  * the real SQLDelight driver: freshness is per requested interval, partial
  * snapshots never revoke by absence, and failures retain truthful state.
  */
@@ -377,7 +377,7 @@ class StrikeCoverageRevocationTest {
     }
 }
 
-/** T7.12 corrective pass, Blocker 1: inclusive boundary overlap end-to-end. */
+/** Inclusive boundary overlap end-to-end. */
 @OptIn(ExperimentalCoroutinesApi::class)
 class StrikeBoundaryOverlapTest {
     private val touchStart = Instant.parse("2026-09-10T00:00:00Z")

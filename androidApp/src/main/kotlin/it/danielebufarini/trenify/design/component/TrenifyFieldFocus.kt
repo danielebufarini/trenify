@@ -11,7 +11,7 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalFocusManager
 
 /**
- * T8.12: lets directional-controller users leave a single-line entry field.
+ * Lets directional-controller users leave a single-line entry field.
  *
  * A single-line field has no vertical cursor movement, so without this the
  * cursor swallows DPAD up/down with no way out (proven by TalkBack runtime

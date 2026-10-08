@@ -56,7 +56,7 @@ enum class StopStatus { SCHEDULED, COMPLETED, CANCELLED, UNKNOWN }
 enum class BoardKind { DEPARTURES, ARRIVALS }
 
 /**
- * Provider-neutral train category (T7.10).
+ * Provider-neutral train category.
  *
  * Entries are the public railway service designations shared across operators
  * (also printed on tickets as e.g. `REG 2328` or `FR 9624`), not wire codes:
@@ -109,7 +109,7 @@ data class TrainRunSummary(
     val scheduledPlatform: String? = null,
     val actualPlatform: String? = null,
     val operator: Operator? = null,
-    /** Source-backed category; null when the provider supplies none (T7.10). */
+    /** Source-backed category; null when the provider supplies none. */
     val category: TrainCategory? = null,
 )
 
@@ -128,12 +128,12 @@ data class TrainStop(
 data class TrainRun(
     val summary: TrainRunSummary,
     val stops: List<TrainStop> = emptyList(),
-    /** Source-backed operational position; null when the provider supplies none (T7.10). */
+    /** Source-backed operational position; null when the provider supplies none. */
     val position: OperationalPosition? = null,
 )
 
 /**
- * A source-backed operational position observation (T7.10, FR-POSITION-001/002).
+ * A source-backed operational position observation.
  *
  * This is a qualified route-progress observation, never GPS: [stationName] is
  * the last-detection station name exactly as reported by the source (null when
@@ -148,7 +148,7 @@ data class OperationalPosition(
 )
 
 /**
- * Presentation readiness of an operational position (T7.10, FR-POSITION-002).
+ * Presentation readiness of an operational position.
  *
  * [Known] only when the source supplies both the reported station and its own
  * observation timestamp: a position indication without its timestamp is not a
@@ -168,7 +168,7 @@ fun operationalPositionDisplay(position: OperationalPosition?): OperationalPosit
 }
 
 /**
- * Evidence-aware route-stop progress marker (T7.10, FR-ROUTE-002).
+ * Evidence-aware route-stop progress marker.
  *
  * Unlike [StopStatus], which records the per-stop source observation, this
  * describes the stop's position in the journey: [NEXT] is the first scheduled
@@ -228,7 +228,7 @@ sealed interface DataFreshness {
 }
 
 /**
- * Display-age recomputation for elapsed local time (T7.14-B).
+ * Display-age recomputation for elapsed local time.
  *
  * A [DataFreshness.Fresh] value carries the instants that prove its age; any
  * observer holding those instants plus an injected clock can re-derive the

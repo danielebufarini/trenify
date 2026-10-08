@@ -40,10 +40,11 @@ import it.danielebufarini.trenify.design.theme.TrenifyTheme
 import it.danielebufarini.trenify.presentation.RailwayStrikeBlock
 import it.danielebufarini.trenify.presentation.railwayDateTime
 import it.danielebufarini.trenify.presentation.railwayDurationLabel
+import it.danielebufarini.trenify.presentation.railwayStrikeLabel
 import it.danielebufarini.trenify.presentation.railwayTime
 
 /**
- * Android-owned native Journey Results (T8.6). Renders the shared Results
+ * Android-owned native Journey Results. Renders the shared Results
  * component through the narrow native facade: loading/refreshing with
  * content, results, empty, stale/cached and failure states; direct and
  * transfer cards with strike warnings. No prices, fares, classes or purchase
@@ -54,7 +55,7 @@ fun TrenifyJourneyResultsScreen(
     facade: NativeJourneyResultsPresentation,
     modifier: Modifier = Modifier,
 ) {
-    // T8.14-C3: lifecycle-aware collection like every other native screen, so
+    // Lifecycle-aware collection like every other native screen, so
     // stopped destinations stop observing instead of collecting in background.
     val state by facade.state.collectAsStateWithLifecycle()
     TrenifyJourneyResultsContent(
@@ -227,11 +228,8 @@ private fun JourneyResultCard(
     state: NativeJourneyResultsState,
     onDetails: () -> Unit,
 ) {
-    val warningLabel = when {
-        journey.warningCount == 0 -> null
-        journey.confirmedWarning -> stringResource(R.string.journey_warning_confirmed)
-        else -> pluralStringResource(R.plurals.journey_warnings, journey.warningCount, journey.warningCount)
-    }
+    val warningLabel = journey.warnings.map { railwayStrikeLabel(it) }
+        .takeIf { it.isNotEmpty() }?.joinToString("\n")
     Column(verticalArrangement = Arrangement.spacedBy(TrenifySpacing.s)) {
         TrenifyJourneyCard(
             trainIdentity = journey.trainIdentities.firstOrNull()
@@ -244,22 +242,17 @@ private fun JourneyResultCard(
             durationLabel = railwayDurationLabel(journey.durationMinutes),
             changesLabel = journeyChangesLabel(journey),
             onDetails = onDetails,
-            statusTone = if (journey.warningCount > 0) TrenifyStatusTone.Warning else TrenifyStatusTone.Unknown,
+            statusTone = if (warningLabel != null) TrenifyStatusTone.Warning else TrenifyStatusTone.Unknown,
             // Neutral/default scheduled results carry no badge; only genuine
             // strike warnings render a status pill.
             statusLabel = warningLabel,
             modifier = Modifier.testTag("journey-result-${journey.index}"),
         )
-        // FR-DATA-001 provider attribution remains in shared state for
-        // diagnostics and detail presentation, but is not repeated on every
-        // traveler-facing result card.
-        // Full T7.12 warning semantics (Blocker 1/1B): every warning with
-        // impact/sector/interval/source/partial wording, plus coverage
-        // state that stays truthful even with zero warnings. A warning
-        // never implies cancellation.
-        if (journey.warnings.isNotEmpty() || state.strikesStale || state.strikesFailed || state.strikesUnknown) {
+        // Strike intervals render in the card's status pill. Without a
+        // warning, retain the existing coverage status below the card.
+        if (journey.warnings.isEmpty() && (state.strikesStale || state.strikesFailed || state.strikesUnknown)) {
             RailwayStrikeBlock(
-                warnings = journey.warnings,
+                warnings = emptyList(),
                 stale = state.strikesStale,
                 failed = state.strikesFailed,
                 unknown = state.strikesUnknown,

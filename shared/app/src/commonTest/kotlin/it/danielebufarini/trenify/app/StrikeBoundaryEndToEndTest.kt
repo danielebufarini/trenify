@@ -22,7 +22,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 
 /**
- * T7.12 corrective pass, Blocker 1: exact-boundary strikes travel the real
+ * Exact-boundary strikes travel the real
  * path — provider fake filtering, persisted-cache lookup, reconciliation —
  * into the production Journey Detail warning. Fails while any layer still
  * uses strict membership.

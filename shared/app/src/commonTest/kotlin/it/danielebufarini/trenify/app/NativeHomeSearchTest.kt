@@ -57,7 +57,7 @@ class NativeHomeSearchTest {
             assertEquals(sharedSearch.state.value.destination, input.state.value.destination)
             assertTrue(beforeOrigin != input.state.value.origin || beforeOrigin == null)
 
-            // T8.5 visual projection: Search form lives in the native Home base,
+            // Visual projection: Search form lives in the native Home base,
             // never as a separate shell path entry.
             val shell = createShellPresentation(root)
             try {

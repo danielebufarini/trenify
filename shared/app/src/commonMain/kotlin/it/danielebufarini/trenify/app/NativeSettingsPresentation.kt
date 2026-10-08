@@ -6,7 +6,7 @@ import it.danielebufarini.trenify.feature.settings.SettingsState
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * T8.11: typed Settings projection over the existing [SettingsComponent].
+ * Typed Settings projection over the existing [SettingsComponent].
  * No rendering, persistence, validation, permission-policy, delivery or
  * deletion logic is owned here. Loading, the saved notification preference,
  * the effective OS permission, the editable threshold draft, validation,

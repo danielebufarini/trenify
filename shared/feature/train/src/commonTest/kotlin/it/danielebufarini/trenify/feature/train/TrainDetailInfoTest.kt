@@ -11,7 +11,7 @@ import kotlinx.coroutines.test.*
 import kotlin.test.*
 import kotlin.time.Instant
 
-// T7.10 component layer: the detail component carries the new provider-neutral
+// Component layer: the detail component carries the new provider-neutral
 // fields through unchanged, preserving absence end to end. Presentation
 // derivation (route progress) lives in the shared pure routeProgress helper.
 @OptIn(ExperimentalCoroutinesApi::class)

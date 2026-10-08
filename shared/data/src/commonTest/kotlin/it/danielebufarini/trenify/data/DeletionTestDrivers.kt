@@ -11,7 +11,7 @@ import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Transparent [SqlDriver] wrapper for T7.8 deletion tests. Production code is
+ * Transparent [SqlDriver] wrapper for deletion tests. Production code is
  * never modified for testability: all fault injection and synchronization
  * gates live here, in test code, matching on the generated SQL text.
  */

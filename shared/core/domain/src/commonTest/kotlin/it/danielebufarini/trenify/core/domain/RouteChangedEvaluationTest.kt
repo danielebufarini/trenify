@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 /**
- * T7.11 route-change evaluation: structural added/removed/reordered stops
+ * Route-change evaluation: structural added/removed/reordered stops
  * emit RouteChanged from stable station IDs; presentation-only differences
  * never do; cancellation evidence stays with cancellation events.
  */

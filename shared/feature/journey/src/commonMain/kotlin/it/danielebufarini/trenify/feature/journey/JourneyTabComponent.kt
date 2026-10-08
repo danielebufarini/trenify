@@ -49,7 +49,7 @@ class DefaultJourneyTabComponent(
 ) : JourneyTabComponent, ComponentContext by componentContext {
     private val navigation = StackNavigation<Route>()
     /**
-     * Monotonic duplicate-push discriminator (T7.13-A), restored safely
+     * Monotonic duplicate-push discriminator, restored safely
      * (corrective pass): the next allocation must exceed every generation
      * already present in the restored stack, otherwise reopening History
      * after a restore would recreate `History(1)` and `pushNew` would
@@ -162,7 +162,7 @@ class DefaultJourneyTabComponent(
     }
 
     /**
-     * Durable journey-tab route contract (T7.13-A): serializable minimal
+     * Durable journey-tab route contract: serializable minimal
      * IDs/criteria only. [Detail] carries the normalized [JourneyLookupKey]
      * for repository re-resolution, never a full [Journey] snapshot.
      */
@@ -209,6 +209,6 @@ fun JourneySearchIntent.serialized(): SerializableJourneyIntent =
 
 private const val KEY_NAVIGATION_GENERATION = "journey-navigation-generation"
 
-/** Persisted duplicate-push discriminator for journey search/history routes (T7.13-A corrective pass). */
+/** Persisted duplicate-push discriminator for journey search/history routes. */
 @Serializable
 private data class SavedNavigationGeneration(val next: Long = 0L)

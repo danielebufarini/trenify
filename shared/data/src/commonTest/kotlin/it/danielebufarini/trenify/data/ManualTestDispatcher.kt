@@ -5,7 +5,7 @@ import kotlinx.coroutines.Runnable
 import kotlin.coroutines.CoroutineContext
 
 /**
- * T7.8 corrective-pass test dispatcher: every dispatched block is parked in
+ * -pass test dispatcher: every dispatched block is parked in
  * a FIFO queue that only the test drains. Unlike sleeps or thread timing,
  * this deterministically separates "repository invocation started" from
  * "dispatched persistence work ran", which is exactly the boundary the

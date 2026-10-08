@@ -4,7 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-// T7.10: evidence-aware route progress. NEXT is a qualified "next stop"
+// Evidence-aware route progress. NEXT is a qualified "next stop"
 // marker derived from stop order and observations — never a current-station
 // observation and never wall-clock timetable comparison.
 class RouteProgressTest {

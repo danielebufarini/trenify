@@ -22,7 +22,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * T7.11 final pass: the latest accepted provider observation order governs
+ * The latest accepted provider observation order governs
  * the retained terminal snapshot too — not first-terminal-completion-wins.
  *
  * First accepted terminal observation establishes `endedAt` (ACTIVE → ENDED);

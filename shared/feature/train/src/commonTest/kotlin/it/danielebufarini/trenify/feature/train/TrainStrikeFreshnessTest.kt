@@ -31,8 +31,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * Union-deadline aging for train-detail strike coverage (T7.14
- * corrective): the warning freshness ages through elapsed local time with
+ * Union-deadline aging for train-detail strike coverage: the warning freshness ages through elapsed local time with
  * zero provider calls while warning identity/impact is otherwise preserved,
  * and pause/resume recomputes the secondary value.
  */

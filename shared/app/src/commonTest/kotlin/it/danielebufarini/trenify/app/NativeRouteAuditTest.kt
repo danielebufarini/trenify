@@ -32,7 +32,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 /**
- * T8.15 native route audit: every production destination resolves through
+ * Native route audit: every production destination resolves through
  * its native presentation facade with no legacy renderer fallback. The
  * legacy lease/host API is removed, so this audit is positive — each entry
  * carries the facade its native shell host consumes.

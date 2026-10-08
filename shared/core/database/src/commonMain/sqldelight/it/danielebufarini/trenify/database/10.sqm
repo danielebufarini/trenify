@@ -1,4 +1,4 @@
--- T7.11 terminal lifecycle: stable terminal-transition instant for naturally
+-- Terminal lifecycle: stable terminal-transition instant for naturally
 -- ended monitors (ARRIVED / final CANCELLED). NULL while ACTIVE; set once at
 -- the first committed terminal transition and never moved. This is the
 -- lifecycle state: it is separate from the two-day active-monitor safety

@@ -32,7 +32,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Time-driven freshness for monitor cards (T7.14-B): active and
+ * Time-driven freshness for monitor cards: active and
  * recently-ended persisted snapshots age through elapsed local time with
  * zero provider calls, one component-level deadline serves every visible
  * card, resume recomputes after suspension, and destroy cancels scheduling.

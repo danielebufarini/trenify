@@ -7,7 +7,7 @@ import it.danielebufarini.trenify.core.platform.NotificationDestinationCodec
 import it.danielebufarini.trenify.core.platform.NotificationTap
 
 /**
- * Thin Android intent bridge for notification taps (T7.13-F).
+ * Thin Android intent bridge for notification taps.
  *
  * The Activity is a bridge only: it extracts the transport extras and
  * validates them through the shared [NotificationTap] contract, then

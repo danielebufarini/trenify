@@ -1,4 +1,4 @@
--- T7.12-A strike cache coverage: freshness is per requested interval, not a
+-- Strike cache coverage: freshness is per requested interval, not a
 -- global sync timestamp.
 --
 -- A recent fetch of interval A must never certify a disjoint interval B as

@@ -19,7 +19,7 @@ import it.danielebufarini.trenify.design.theme.TrenifyTheme
 fun TrenifyAndroidShell(root: RootComponent) {
     val shell = remember(root) { createShellPresentation(root) }
     DisposableEffect(shell) { onDispose { shell.close() } }
-    // T8.14-C3: lifecycle-aware collection; the shell snapshot pauses with
+    // Lifecycle-aware collection; the shell snapshot pauses with
     // the activity instead of collecting while stopped.
     val state by shell.state.collectAsStateWithLifecycle()
     BackHandler(state.canGoBack, shell::back)
@@ -28,10 +28,7 @@ fun TrenifyAndroidShell(root: RootComponent) {
             val active = state.active
             key(active.identity) {
                 // Every production destination renders through Android-owned
-                // native UI (T8.5 Home/Search, T8.6 Journey Results/Detail,
-                // T8.7 Station Search/Board + Train Search/Detail, T8.8
-                // Monitoring, T8.9 Saved/Favorites/History, T8.10 Alerts
-                // overview + Strike Detail, T8.11 Settings). T8.15 removed
+                // native UI (Home/Search, Journey Results/Detail, Station Search/Board + Train Search/Detail, Monitoring, Saved/Favorites/History, Alerts overview + Strike Detail, Settings). Removed
                 // the shared legacy renderer; no production fallback remains.
                 if (active.destination == NativeDestination.Home) {
                     NativeHomeEntry(shell, state)

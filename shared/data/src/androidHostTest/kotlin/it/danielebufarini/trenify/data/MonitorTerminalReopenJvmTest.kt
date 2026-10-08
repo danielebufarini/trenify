@@ -26,7 +26,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
 
 /**
- * T7.11 corrective: true persisted-driver reopen evidence. A file-backed
+ * True persisted-driver reopen evidence. A file-backed
  * database is closed and reopened with a fresh driver/repository, proving
  * ended-monitor state and event claims survive a real restart — not merely
  * repository recreation over a still-open in-memory database.

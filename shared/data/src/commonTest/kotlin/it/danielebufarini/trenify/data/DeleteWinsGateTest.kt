@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 /**
- * T7.8 delete-wins ordering of [DeleteWinsGate], proven deterministically
+ * Delete-wins ordering of [DeleteWinsGate], proven deterministically
  * with coroutine gates instead of timing: no sleeps, no scheduler luck.
  */
 @OptIn(ExperimentalCoroutinesApi::class)

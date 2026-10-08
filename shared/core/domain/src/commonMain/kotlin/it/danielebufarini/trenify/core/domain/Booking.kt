@@ -5,7 +5,7 @@ import it.danielebufarini.trenify.core.model.normalizeStationQuery
 import kotlinx.coroutines.CancellationException
 
 /**
- * Pricing-independent booking handoff (T5.5: FR-BOOKING-001, FR-BOOKING-002).
+ * Pricing-independent booking handoff.
  *
  * Booking opens an authorized official railway-operator channel using journey/operator
  * information only. It requires no pricing data and introduces no third-party booking
@@ -100,7 +100,7 @@ enum class BookingUnavailableReason { UNKNOWN_OPERATOR, REJECTED_TARGET }
  *
  * The URL-opening port is a plain suspending function so this use case — and
  * `core:domain` as a whole — stays independent of `core:platform`. The composition
- * root adapts the T0.9 `ExternalUrlLauncher` to it.
+ * root adapts the `ExternalUrlLauncher` to it.
  */
 class OpenBookingLink(
     private val policy: BookingLinkPolicy = BookingLinkPolicy(),

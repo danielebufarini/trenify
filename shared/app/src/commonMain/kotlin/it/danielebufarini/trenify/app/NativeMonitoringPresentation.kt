@@ -10,7 +10,7 @@ import it.danielebufarini.trenify.feature.monitoring.MonitoringTabComponent
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * T8.8: semantic Monitoring snapshots over the existing [MonitoringTabComponent].
+ * Semantic Monitoring snapshots over the existing [MonitoringTabComponent].
  * No rendering, polling, persistence, retention or lifecycle logic is owned here.
  * Terminal/retention/stale-response behavior stays in the shared component and
  * repository layers; platforms only project [MonitorCardState] truth.

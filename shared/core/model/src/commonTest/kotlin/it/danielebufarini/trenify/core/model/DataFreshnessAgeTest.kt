@@ -9,7 +9,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
 
 /**
- * Display-age recomputation for elapsed local time (T7.14-B): Fresh carries
+ * Display-age recomputation for elapsed local time: Fresh carries
  * the instants that prove its age, so observers re-derive Stale from the
  * clock without a fetch. Stale and Unknown never become Fresh through time.
  */

@@ -28,7 +28,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * T7.7 strike delivery precedence: installation switch x strike opt-in x
+ * Strike delivery precedence: installation switch x strike opt-in x
  * effective OS permission, read fresh at dispatch time.
  */
 @OptIn(ExperimentalCoroutinesApi::class)

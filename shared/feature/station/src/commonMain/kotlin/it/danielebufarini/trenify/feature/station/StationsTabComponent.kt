@@ -98,7 +98,7 @@ class DefaultStationsTabComponent(
     override fun searchTrains() = onTrainSearch()
 
     /**
-     * Durable stations route contract (T7.13-A): serializable station
+     * Durable stations route contract: serializable station
      * identity only.
      */
     @Serializable

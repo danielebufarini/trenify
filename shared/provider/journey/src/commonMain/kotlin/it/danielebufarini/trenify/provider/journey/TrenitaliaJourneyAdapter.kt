@@ -30,7 +30,7 @@ class TrenitaliaJourneyAdapter(
     override val operators = listOf(Operator("Trenitalia"))
     override val services = listOf("Frecce", "Intercity", "Regional railway services returned by LeFrecce")
     /**
-     * Provider-local station-resolution cache (T8 latency work): LeFrecce
+     * Provider-local station-resolution cache: LeFrecce
      * location ids and names are stable, and a miss fails safe to
      * unsupported (never to wrong journeys), so both autocomplete and
      * journey origin/destination resolution share one bounded in-memory

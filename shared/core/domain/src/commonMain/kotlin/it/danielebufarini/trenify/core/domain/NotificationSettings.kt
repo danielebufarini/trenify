@@ -3,7 +3,7 @@ package it.danielebufarini.trenify.core.domain
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Installation-wide local notification and monitoring preferences (T7.7).
+ * Installation-wide local notification and monitoring preferences.
  *
  * These are defaults for newly created monitors and delivery gates for every
  * local notification kind. Changing them never rewrites existing monitors:
@@ -62,7 +62,7 @@ class UpdateMonitorThresholds(private val repository: MonitoringRepository) {
 }
 
 /**
- * Shared delivery policy for local notifications (T7.7).
+ * Shared delivery policy for local notifications.
  *
  * A train event may be delivered only when the installation-wide switch, that
  * train's notification switch, the applicable event flag and the effective OS
@@ -85,7 +85,7 @@ object NotificationDelivery {
         MonitorEventKind.SCHEDULE -> true
         MonitorEventKind.STATUS -> true
         // Route changes have no dedicated installation flag in the supported
-        // delay/platform/cancellation/departure/arrival fields (T7.7): like
+        // delay/platform/cancellation/departure/arrival fields: like
         // schedule/status events they are governed by the installation switch,
         // the per-train switch and OS permission only.
         MonitorEventKind.ROUTE_CHANGED -> true

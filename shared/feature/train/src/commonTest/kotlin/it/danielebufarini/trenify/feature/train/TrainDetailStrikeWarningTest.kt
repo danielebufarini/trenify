@@ -34,7 +34,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
 
 /**
- * T7.12-C train detail warnings from the observed local snapshot, including
+ * Train detail warnings from the observed local snapshot, including
  * the retained-ended read-only path: no polling restart, no lifecycle
  * changes, no train provider access from strike evaluation.
  */

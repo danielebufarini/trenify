@@ -12,14 +12,14 @@ import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Typed FS §23 failure presentation for station search and board (T7.14-A):
+ * Typed failure presentation for station search and board:
  * repositories' [DomainFailure] values must reach component state
  * undifferentiated-boolean-free, stale content must survive refresh
  * failures, and retry must recover.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class StationTypedFailureTest {
-    // Corrective T8.9-B1: the station favorites observer degrades like
+    // The station favorites observer degrades like
     // every sibling (Home, route/train controllers, Saved) — an observation
     // failure never kills the collector, and retained ids stay usable.
     @Test fun favoritesObservationFailureRetainsIdsWithoutKillingCollector() = runTest {

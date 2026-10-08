@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.time.Instant
 
-// T7.10 FR-POSITION-002: only a station together with its own source
+// Only a station together with its own source
 // observation timestamp is a complete position indication. Every incomplete
 // combination renders as a neutral unavailable state; timestamps are never
 // fabricated from fetch, cache, scheduled or current time.

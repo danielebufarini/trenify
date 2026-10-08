@@ -1,7 +1,7 @@
 import XCTest
 @preconcurrency import SharedApp
 
-/// T8.6 Journey Results/Detail SKIE verification through the accepted
+/// Journey Results/Detail SKIE verification through the accepted
 /// facades and shell entries. No Combine, no model wrapper, no repository
 /// construction in Swift. One session/root throughout.
 @MainActor
@@ -144,7 +144,7 @@ final class NativeJourneyInteropTests: XCTestCase {
             try? await Task.sleep(nanoseconds: 50_000_000)
         }
         let detail = shell.state.value.path.first(where: { $0.destination == .journeyDetail })!.journeyDetail!
-        // The correlated fixture run resolves the train action (T8.7 owns Train Detail).
+        // The correlated fixture run resolves the train action.
         for _ in 0..<100 {
             if detail.state.value.legs.first?.hasTrainAction == true { break }
             try? await Task.sleep(nanoseconds: 50_000_000)

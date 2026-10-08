@@ -22,7 +22,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * T7.8 corrective pass: a station save that committed before a completed
+ * A station save that committed before a completed
  * delete-all must not visually reappear merely because its controller
  * continuation resumes late. The save parks after its commit but before the
  * controller resumes; the deletion completes and its empty state is observed

@@ -36,7 +36,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 
 /**
- * T7.12-B journey strike warnings from scheduled intervals: results and
+ * Journey strike warnings from scheduled intervals: results and
  * detail expose warnings without any realtime correlation, through one
  * targeted strike refresh — never one lookup per journey/result/card.
  */

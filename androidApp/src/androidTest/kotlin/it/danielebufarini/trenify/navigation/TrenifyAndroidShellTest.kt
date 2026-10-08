@@ -56,7 +56,7 @@ class TrenifyAndroidShellTest {
                 compose.onNodeWithTag("shell-tab-${area.name}").performClick()
             }
             compose.onNodeWithTag("shell-tab-Search").performClick()
-            // T8.5: production Search is Android-owned native Home, not legacy shared Home.
+            // Production Search is Android-owned native Home, not legacy shared Home.
             compose.onNodeWithTag("home-composer").assertExists()
             compose.onNodeWithTag("home-search").assertExists()
             compose.onNodeWithTag("home-origin").assertExists()

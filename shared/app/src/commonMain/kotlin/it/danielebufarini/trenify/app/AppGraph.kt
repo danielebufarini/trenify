@@ -69,12 +69,12 @@ class AppGraph(
         online = { platformServices.connectivity.status().value != ConnectivityStatus.Unavailable },
     )
     // One booking handoff instance drives both availability and execution, so the UI
-    // can never advertise a channel the opener would reject. The T0.9 platform launcher
+    // can never advertise a channel the opener would reject. The platform launcher
     // is adapted to the domain URL-opening port; booking still knows no platform type.
     private val bookingHandoff = OpenBookingLink(openUrl = platformServices.externalUrlLauncher::open)
-    // Official strike/operator-information handoff (T7.12-D): dedicated
+    // Official strike/operator-information handoff: dedicated
     // information policy, never the booking allowlist, through the same
-    // injected T0.9 launcher abstraction.
+    // injected launcher abstraction.
     private val strikeReference = OpenStrikeReference(openUrl = platformServices.externalUrlLauncher::open)
     private val monitoringCoordinator = MonitoringCoordinator(
         monitoringRepository,
@@ -112,7 +112,7 @@ class AppGraph(
     )
 
     /**
-     * Cold-entry handoff buffer (T7.13-H), owned by this graph — never a
+     * Cold-entry handoff buffer, owned by this graph — never a
      * global. Native notification callbacks offer validated destinations
      * here when no root exists yet; the next created root consumes the
      * pending destination exactly once. Destroy/recreate never leaks the
@@ -126,7 +126,7 @@ class AppGraph(
         pendingDestination: NotificationDestination? = null,
     ): RootComponent {
         pendingDestination?.let(notificationHandoff::offer)
-        // Precedence (T7.13-H): ordinary saved navigation restores first
+        // Precedence: ordinary saved navigation restores first
         // inside the new tree; the consumed pending destination is then
         // routed on top of the restored tree, so Back returns into it.
         val root = DefaultRootComponent(
@@ -144,7 +144,7 @@ class AppGraph(
     }
 
     /**
-     * Native notification entry for warm roots (T7.13-E/H): forwards the
+     * Native notification entry for warm roots: forwards the
      * validated destination to the same shared routing entry Android cold
      * starts and iOS callbacks use. When no root is attached yet (cold
      * entry) the destination is buffered in [notificationHandoff] for the
@@ -158,7 +158,7 @@ class AppGraph(
     }
 
     /**
-     * Foreground local-notification presentation eligibility (T7.13-G):
+     * Foreground local-notification presentation eligibility:
      * the host decides platform presentation mechanics, but event/business
      * eligibility stays shared and follows the saved effective preferences
      * — never unconditional. The installation switch gates everything;
@@ -211,8 +211,7 @@ class AppGraph(
 }
 
 /**
- * JobService outcome mapping for one background-refresh attempt (T7.11 final
- * pass). Coroutine cancellation is never swallowed into a success/failure
+ * JobService outcome mapping for one background-refresh attempt. Coroutine cancellation is never swallowed into a success/failure
  * result: it propagates so a stopped job reports no finished outcome and
  * leaks no scope. Operational failures map to false (ask for a retry);
  * success maps to true. Used by the Android JobService; unit-tested here

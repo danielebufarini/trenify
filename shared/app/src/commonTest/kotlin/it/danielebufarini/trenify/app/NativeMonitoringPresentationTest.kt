@@ -41,7 +41,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * T8.8 native Monitoring projection: semantic snapshots and capability gating
+ * Native Monitoring projection: semantic snapshots and capability gating
  * over the existing [MonitoringTabComponent]. All lifecycle, terminal,
  * retention and concurrency behavior stays shared; this suite proves the
  * projection never invents state and ended items can never appear as active.
@@ -405,7 +405,7 @@ class NativeMonitoringPresentationTest {
     }
 
     @Test fun expiredEndedExcludedEvenWhenPhysicalCleanupFails() = runTest {
-        // Authoritative T7.11 contract: retention visibility is a logical time
+        // Authoritative contract: retention visibility is a logical time
         // policy on the observation, not a function of successful physical
         // cleanup. A failed best-effort deletion leaves the stale row
         // persisted but must NOT keep it visible in Recently ended.

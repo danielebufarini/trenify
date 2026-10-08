@@ -44,7 +44,7 @@ enum TrenifyMotionRole: CaseIterable {
         case .quick: return 0.10
         case .standard: return 0.20
         case .emphasized: return 0.30
-        case .routeProgress: return 0.45 // Guidance only; no train-position animation in T8.3.
+        case .routeProgress: return 0.45 // Guidance only; no train-position animation.
         case .selection: return 0.16
         case .statusChange: return 0.22
         }

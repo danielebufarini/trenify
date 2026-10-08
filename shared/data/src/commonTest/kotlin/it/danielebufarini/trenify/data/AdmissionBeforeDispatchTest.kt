@@ -22,7 +22,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 /**
- * T7.8 corrective pass: the write's delete-order identity must be captured
+ * The write's delete-order identity must be captured
  * at public repository-invocation time, before the first dispatcher hop.
  *
  * Each test deliberately separates the two moments the buggy implementation

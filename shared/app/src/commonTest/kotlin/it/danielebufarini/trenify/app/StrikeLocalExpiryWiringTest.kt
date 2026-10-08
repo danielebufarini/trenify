@@ -36,7 +36,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 
 /**
- * T7.12 corrective pass, Blocker 4, production wiring: Journey Detail and
+ * Production wiring: Journey Detail and
  * Monitoring cards react to local strike expiry while the screen stays
  * open — zero provider calls, no monitor lifecycle effects.
  */

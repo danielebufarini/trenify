@@ -1,4 +1,4 @@
--- T7.14 corrective: presentation-only monitor refresh health.
+-- Presentation-only monitor refresh health.
 --
 -- A failed refresh (offline fallback or warning-backed stale replay) must
 -- stay visible as stale-with-warning on the retained snapshot, including

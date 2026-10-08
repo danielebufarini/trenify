@@ -4,8 +4,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
 /**
- * Locale-aware journey-search date/time presentation and parsing (T7.14
- * corrective).
+ * Locale-aware journey-search date/time presentation and parsing.
  *
  * Railway interpretation is always Europe/Rome; only the field text follows
  * the platform locale. The durable/search truth stays typed ([LocalDate]

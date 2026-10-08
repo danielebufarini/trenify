@@ -18,7 +18,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * T7.8: the confirmed Settings search-history deletion propagates to the
+ * The confirmed Settings search-history deletion propagates to the
  * History screen automatically through the repository flow; the component
  * never writes deleted entries back and new submissions work normally
  * afterwards. Per-item removal keeps working on the remaining entries.

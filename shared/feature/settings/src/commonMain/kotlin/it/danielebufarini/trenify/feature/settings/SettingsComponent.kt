@@ -44,7 +44,7 @@ sealed interface FailedSettingsSave {
 }
 
 /**
- * Lifecycle of one Settings delete-all action (T7.8).
+ * Lifecycle of one Settings delete-all action.
  *
  * - [Idle]: nothing requested;
  * - [Confirming]: the user was shown what will be removed and must confirm or cancel;
@@ -102,7 +102,7 @@ interface SettingsComponent {
 }
 
 /**
- * Decompose-owned local notification and monitoring settings (T7.7).
+ * Decompose-owned local notification and monitoring settings.
  *
  * Owns loading, typed threshold validation, mutation-in-progress, retryable
  * mutation errors and the effective OS permission state. The screen stays
@@ -180,7 +180,7 @@ class DefaultSettingsComponent(
     override fun setEventFlag(kind: MonitorEventKind, enabled: Boolean) {
         val set = setDefaultThresholds ?: return
         // Schedule, status and route-change events have no dedicated
-        // installation flag (T7.7/T7.11): nothing to persist.
+        // installation flag: nothing to persist.
         if (kind == MonitorEventKind.SCHEDULE || kind == MonitorEventKind.STATUS || kind == MonitorEventKind.ROUTE_CHANGED) return
         // The base is resolved at execution time from persisted state only:
         // the unsaved threshold draft must never leak into an unrelated flag

@@ -36,7 +36,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Clock
 
 /**
- * T7.8 Settings delete-all actions: confirmation, cancellation, pending
+ * Settings delete-all actions: confirmation, cancellation, pending
  * coalescing, success, failure and retry for both destructive actions.
  */
 @OptIn(ExperimentalCoroutinesApi::class)

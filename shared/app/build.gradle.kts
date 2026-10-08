@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidMultiplatformLibrary)
-    // T8.15: the Compose plugins stay ONLY as resource plumbing. No @Composable
+    // The Compose plugins stay ONLY as resource plumbing. No @Composable
     // remains in this module; the plugins aggregate the shared core:ui Res
     // catalog next to iOS test binaries (ResourceNotificationLocalizerTest
     // resolves real resources on simulator). No Compose UI artifact beyond
@@ -57,7 +57,7 @@ kotlin {
             implementation(project(":shared:core:network"))
             // api: androidApp/iOS hosts receive NotificationDestination
             // values from the tap bridges and pass them back into the
-            // shared root entry point (T7.13-F/G).
+            // shared root entry point.
             api(project(":shared:core:platform"))
             implementation(project(":shared:core:ui"))
             implementation(project(":shared:data"))

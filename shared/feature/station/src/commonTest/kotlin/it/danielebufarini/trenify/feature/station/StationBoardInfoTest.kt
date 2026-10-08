@@ -11,7 +11,7 @@ import kotlinx.coroutines.test.*
 import kotlin.test.*
 import kotlin.time.Instant
 
-// T7.10 station boards: rows expose the source-backed category and the
+// Station boards: rows expose the source-backed category and the
 // station-event time while terminal times stay absent without per-row
 // detail lookups.
 @OptIn(ExperimentalCoroutinesApi::class)

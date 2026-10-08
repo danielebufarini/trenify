@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 @preconcurrency import SharedApp
 
-/// T8.11 native Settings: the Swift model projects the shared Settings
+/// Native Settings: the Swift model projects the shared Settings
 /// component and forwards its actions; the shell routes Settings to the
 /// native SwiftUI view. Persistence,
 /// validation, permission policy and deletion stay shared.

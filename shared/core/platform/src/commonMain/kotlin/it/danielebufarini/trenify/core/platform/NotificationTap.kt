@@ -2,7 +2,7 @@ package it.danielebufarini.trenify.core.platform
 
 /**
  * Pure notification-tap transport contract shared by the Android content
- * intent and the iOS response callback (T7.13-F/G).
+ * intent and the iOS response callback.
  *
  * Everything here is platform-type free so the encoding, stability and
  * validation rules are unit-tested on JVM/iOS without a device:

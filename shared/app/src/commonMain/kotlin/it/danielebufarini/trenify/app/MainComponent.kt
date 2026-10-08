@@ -65,7 +65,7 @@ interface MainComponent {
     fun openHistory()
 
     /**
-     * Shared strike routing (T7.13-E): selects the Alerts destination and
+     * Shared strike routing: selects the Alerts destination and
      * opens its strike detail through the shared tree. Returns true when a
      * navigation was performed; returns false (no duplicate stack entry)
      * when the requested strike detail is already the visible destination.

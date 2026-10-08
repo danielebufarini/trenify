@@ -3,7 +3,7 @@ package it.danielebufarini.trenify.core.domain
 import kotlinx.coroutines.CancellationException
 
 /**
- * Dedicated strike/operator-information reference policy (T7.12-D).
+ * Dedicated strike/operator-information reference policy.
  *
  * This is deliberately separate from the booking-link allowlist
  * ([BookingLinkPolicy]): proving that a host may sell tickets says nothing
@@ -75,8 +75,7 @@ enum class StrikeReferenceUnavailableReason { NO_REFERENCE, REJECTED_TARGET }
 /**
  * Application-layer handoff for official strike/operator-information links:
  * validates the dedicated policy target before opening it through the
- * injected URL-opening port (adapted from the T0.9 `ExternalUrlLauncher` at
- * the composition root), so `core:domain` stays independent of
+ * injected URL-opening port (adapted from the `ExternalUrlLauncher` at the composition root), so `core:domain` stays independent of
  * `core:platform`.
  */
 class OpenStrikeReference(

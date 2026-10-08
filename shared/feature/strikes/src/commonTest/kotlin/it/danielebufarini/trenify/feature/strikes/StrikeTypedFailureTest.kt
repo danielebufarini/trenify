@@ -23,7 +23,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Typed FS §23 failure presentation for the strike list (T7.14-A): cached
+ * Typed failure presentation for the strike list: cached
  * strikes survive refresh failures with a typed warning, no-cache failures
  * are typed with retry intact, a bare NOT_FOUND renders empty (never a
  * train message), and refresh recovers.

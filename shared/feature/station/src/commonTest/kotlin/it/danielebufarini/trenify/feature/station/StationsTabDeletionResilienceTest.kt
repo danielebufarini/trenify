@@ -19,7 +19,7 @@ import kotlin.test.Test
 import kotlin.test.assertIs
 
 /**
- * T7.8: station recency is best-effort personal data. A recency write
+ * Station recency is best-effort personal data. A recency write
  * dropped by a completed delete-all (or any persistence failure) must never
  * break opening the board: navigation proceeds and no failure escapes.
  */

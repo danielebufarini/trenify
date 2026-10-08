@@ -1,7 +1,7 @@
 import XCTest
 import Foundation
 
-/// Deterministic Europe/Rome wall-time tests (T8.5 corrective). The oracle is
+/// Deterministic Europe/Rome wall-time tests. The oracle is
 /// an independent ISO-8601 parse with an explicit offset — never the same
 /// calendar construction under test — plus round-trips across CET, CEST, a
 /// month boundary and both DST transition days.
@@ -66,7 +66,7 @@ final class RomeDateConversionTests: XCTestCase {
     }
 
     func testConversionIgnoresDeviceTimezone() {
-        // T8.12: the helpers never read the device timezone, so rendering
+        // The helpers never read the device timezone, so rendering
         // and editing are identical on any simulator or device worldwide.
         let prior = NSTimeZone.default
         NSTimeZone.default = TimeZone(identifier: "America/New_York")!

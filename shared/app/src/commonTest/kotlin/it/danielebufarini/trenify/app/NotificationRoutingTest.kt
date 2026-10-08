@@ -36,7 +36,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 /**
- * Shared notification-routing behavior (T7.13-E): every platform invokes
+ * Shared notification-routing behavior: every platform invokes
  * the same [RootComponent.onNotificationDestination] entry point. Covers
  * train/strike routing, duplicates, malformed and unknown targets,
  * precedence over restored trees, cross-tab delivery and Back behavior.

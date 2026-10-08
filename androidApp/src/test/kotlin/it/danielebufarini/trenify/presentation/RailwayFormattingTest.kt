@@ -7,7 +7,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * T8.12: railway date/time interpretation stays Europe/Rome even when the
+ * Railway date/time interpretation stays Europe/Rome even when the
  * host timezone differs, while day/month words follow the device locale
  * (mirroring iOS `.autoupdatingCurrent`). Oracles are explicit-offset ISO
  * instants, never the formatter under test.

@@ -40,7 +40,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 /**
- * T7.11 corrective pass 2: the train detail exposes no Start/Stop, manual
+ * The train detail exposes no Start/Stop, manual
  * Refresh, active preferences or ended Remove before the first persisted
  * lifecycle observation resolves — an ended route must never briefly render
  * active controls. Direct actions are no-ops while unresolved.

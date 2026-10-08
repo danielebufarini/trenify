@@ -7,7 +7,7 @@ import kotlinx.coroutines.test.*
 import kotlin.test.*
 
 /**
- * Exactly one diagnostic URL path (T8 corrective): query strings and
+ * Exactly one diagnostic URL path: query strings and
  * provider operation ids must reach no instrumentation event in any phase.
  */
 class RequestInstrumentationSanitizationTest {

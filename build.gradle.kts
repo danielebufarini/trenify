@@ -165,7 +165,7 @@ abstract class ResourceParityCheck : DefaultTask() {
 }
 
 /**
- * T8.12: EN/IT parity for the Android-owned presentation resources
+ * EN/IT parity for the Android-owned presentation resources
  * (`androidApp/src/main/res`), which split strings across one file per
  * feature instead of a single strings.xml. Covers <string> keysets,
  * empties and printf-placeholder parity plus <plurals> name/quantity
@@ -259,7 +259,7 @@ tasks.register<AndroidResourceParityCheck>("verifyAndroidResourceParity") {
 }
 
 /**
- * T8.12: EN/IT parity for the iOS-owned String Catalogs plus a
+ * EN/IT parity for the iOS-owned String Catalogs plus a
  * statically-checked reference guard: every production SwiftUI-visible
  * localization key referenced through the established patterns must
  * resolve in both locales. Covered patterns (documented limitation: a
@@ -420,7 +420,7 @@ tasks.register<ArchitectureCheck>("architectureCheck") {
 }
 
 /**
- * No-legacy-rendering guard (T8.15). Executes the path-aware
+ * No-legacy-rendering guard. Executes the path-aware
  * `iosApp/verify-no-legacy-rendering.py` audit, which rejects shared
  * production Compose rendering and iOS Compose hosting while permitting
  * legitimate Android-owned Compose UI. Python logic lives only in the
@@ -440,7 +440,7 @@ tasks.register("staticAnalysis") {
 }
 
 /**
- * Final client-MVP aggregate coverage (T7.15). Module -> aggregate mapping:
+ * Final client-MVP aggregate coverage. Module -> aggregate mapping:
  *
  * - verifyRealtimeAndroid/verifyRealtimeIos ([realtimeTestModules]): model,
  *   domain, platform, viaggiatreno provider, mit-strikes provider, data,
@@ -460,8 +460,8 @@ tasks.register("staticAnalysis") {
  * - Intentionally uncovered: core:provider-api, core:ui, core:testing
  *   (no test sources), provider:pricing (deferred, no tests).
  *
- * T7 deterministic verification is local. Remote CI/CD is not part of the
- * current Trenify project workflow and is outside T7 client-MVP scope.
+ * Deterministic verification is local. Remote CI/CD is not part of the
+ * current Trenify project workflow and is outside client-MVP scope.
  */
 tasks.register("verifyAll") {
     group = "verification"
@@ -537,7 +537,7 @@ tasks.register("verifyRealtimeIos") {
 }
 
 /**
- * Final aggregate-coverage guard (T7.15, corrected pass). Module identity
+ * Final aggregate-coverage guard. Module identity
  * comes from Gradle project metadata (`subprojects`), never from
  * filesystem-depth parsing, so nested (`:shared:feature:train`) and direct
  * (`:shared:data`, `:shared:app`) shapes are all recognized. Test detection

@@ -26,7 +26,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
- * Serialized route/state contract pins (T7.13-A evidence): every durable
+ * Serialized route/state contract pins: every durable
  * configuration round-trips through JSON carrying minimal IDs/criteria
  * only, and malformed persisted forms decode to controlled recovery
  * (null) rather than invented identities.

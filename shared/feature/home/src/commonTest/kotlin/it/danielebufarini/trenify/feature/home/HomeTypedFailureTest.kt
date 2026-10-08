@@ -26,7 +26,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Typed FS §23 failure presentation for Home strikes (T7.14-A): the strike
+ * Typed failure presentation for Home strikes: the strike
  * section keeps cached content with a typed warning, reports no-cache
  * failures with retry intact, and recovers on refresh.
  */

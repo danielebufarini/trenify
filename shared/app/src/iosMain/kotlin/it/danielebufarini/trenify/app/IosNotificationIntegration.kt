@@ -21,7 +21,7 @@ import platform.UserNotifications.UNUserNotificationCenter
 import platform.UserNotifications.UNUserNotificationCenterDelegateProtocol
 
 /**
- * Thin iOS notification boundary (T7.13-G), implemented in shared Kotlin so
+ * Thin iOS notification boundary, implemented in shared Kotlin so
  * Swift stays a bridge with no repository/provider/domain decisions.
  *
  * - [onResponse] extracts only the minimal payload from a notification
@@ -98,8 +98,7 @@ class IosNotificationTapRouter internal constructor(
 }
 
 /**
- * Minimal seam over the notification-center weak delegate slot (T7.13-G
- * corrective pass). Production uses the real `UNUserNotificationCenter`;
+ * Minimal seam over the notification-center weak delegate slot. Production uses the real `UNUserNotificationCenter`;
  * tests substitute a weak-holding fake, because the real center requires a
  * bundled application process and crashes in the bundle-less test binary.
  * The seam carries no business decisions — only the delegate reference.
@@ -168,8 +167,7 @@ internal class IosNotificationCenterDelegate(
 }
 
 /**
- * Process-lifetime owner of the iOS notification-center delegate (T7.13-G
- * corrective pass).
+ * Process-lifetime owner of the iOS notification-center delegate.
  *
  * `UNUserNotificationCenter.delegate` is a weak property: the center never
  * owns the delegate, so somebody durable must. This object is that explicit

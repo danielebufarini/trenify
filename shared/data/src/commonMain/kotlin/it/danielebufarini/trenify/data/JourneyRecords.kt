@@ -7,9 +7,10 @@ import kotlin.time.Instant
 @Serializable internal data class JourneyLegRecord(
     val origin: StationRecord, val destination: StationRecord, val departure: String, val arrival: String,
     val number: String?, val category: String?, val operator: String?,
+    val scheduledPlatform: String? = null,
 ) {
     fun model() = JourneyLeg(origin.model(), destination.model(), Instant.parse(departure), Instant.parse(arrival),
-        number?.let(::TrainNumber), category, operator?.let(::Operator))
+        number?.let(::TrainNumber), category, operator?.let(::Operator), scheduledPlatform)
 }
 @Serializable internal data class JourneyRecord(val legs: List<JourneyLegRecord>, val sources: List<String>) {
     fun model() = Journey(legs.map { it.model() }, sources.map(::ProviderId).toSet())
@@ -29,6 +30,7 @@ internal fun JourneySearchResult.record() = JourneyResultRecord(
     journeys.map { journey -> JourneyRecord(journey.legs.map { leg -> JourneyLegRecord(
         StationRecord(leg.origin.id.value, leg.origin.name), StationRecord(leg.destination.id.value, leg.destination.name),
         leg.departure.toString(), leg.arrival.toString(), leg.number?.value, leg.category, leg.operator?.name,
+        leg.scheduledPlatform,
     ) }, journey.sources.map { it.value }) },
     coverage.map { CoverageRecord(it.source.value, it.operators.map(Operator::name), it.services, it.status.name, it.complete) },
     departureFrom.toString(), departureUntil.toString(),

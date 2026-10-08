@@ -29,7 +29,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * T7.11 corrective pass 2: post-terminal visibility is a logical time
+ * Post-terminal visibility is a logical time
  * policy. The same continuous [SqlDelightMonitoringRepository.observeEndedMonitors]
  * subscription hides an item once `now >= endedAt + 24h` even when physical
  * cleanup permanently fails and no unrelated DB write ever arrives.

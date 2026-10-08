@@ -35,7 +35,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 /**
- * Notification localization wiring and identity stability (T7.14-C):
+ * Notification localization wiring and identity stability:
  * coordinators resolve every template through [NotificationLocalizer] (the
  * fake tag proves the text origin), unknown previous delay never renders as
  * zero, and notification ids stay identical when only the locale/wording

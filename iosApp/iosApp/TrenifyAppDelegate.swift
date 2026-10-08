@@ -1,7 +1,7 @@
 import UIKit
 import SharedApp
 
-/// Platform launch boundary for notification delivery (T7.13-G).
+/// Platform launch boundary for notification delivery.
 ///
 /// Platform mechanics only: installs the shared Kotlin notification-center
 /// delegate before the application finishes launching, as Apple requires.

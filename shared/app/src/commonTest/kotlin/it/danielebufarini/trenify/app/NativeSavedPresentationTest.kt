@@ -33,7 +33,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
- * T8.9 native Saved projection: semantic snapshots over [FavoritesComponent].
+ * Native Saved projection: semantic snapshots over [FavoritesComponent].
  * Favorite identity, history ordering/recording, repeat routing and
  * corrupt/bad-date handling stay shared; this suite proves the projection
  * never invents identity, never reorders, and forwards actions intact.

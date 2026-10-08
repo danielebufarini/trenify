@@ -55,7 +55,7 @@ data class FavoritesState(
     val failedTrainMutation: FavoriteTrainMutation? = null,
     val observationFailed: Boolean = false,
     /**
-     * T8.9 Saved aggregation: merged newest-first search history observed
+     * Saved aggregation: merged newest-first search history observed
      * from the shared [HistoryRepository]. Ordering, corrupt-row skipping
      * and bad-date degradation are inherited from the repository; this
      * component never reorders, parses or fabricates history state.

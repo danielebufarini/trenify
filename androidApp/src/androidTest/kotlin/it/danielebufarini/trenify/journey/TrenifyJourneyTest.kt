@@ -7,10 +7,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertHasClickAction
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.captureToImage
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
@@ -293,16 +299,40 @@ class TrenifyJourneyTest {
                 ),
             ),
         )
+        var rendered by mutableStateOf(warned)
         compose.setContent {
             TrenifyTheme(darkTheme = false, reduceMotion = true) {
-                TrenifyJourneyResultsContent(warned, {}, {}, {})
+                TrenifyJourneyResultsContent(rendered, {}, {}, {})
             }
         }
         try {
             compose.onNodeWithTag("journey-result-0").assertIsDisplayed()
-            // The warning pill exposes its label as content description.
-            val warning = compose.activity.resources.getQuantityString(R.plurals.journey_warnings, 1, 1)
-            compose.onNodeWithContentDescription(warning, substring = true).assertIsDisplayed()
+            val label = string(R.string.journey_strike_impact_none) + " · " + compose.activity.getString(
+                R.string.journey_strike_interval, railwayDateTime(at), railwayDateTime(at + 3 * 3600),
+            )
+            compose.onAllNodesWithContentDescription(label).assertCountEquals(1)
+            compose.onNode(
+                hasContentDescription(label) and hasAnyAncestor(hasTestTag("journey-result-0")),
+            ).assertIsDisplayed()
+            val oldLabel = compose.activity.resources.getQuantityString(R.plurals.journey_warnings, 1, 1)
+            compose.onNodeWithContentDescription(oldLabel, substring = true).assertDoesNotExist()
+
+            // Multiple strikes retain every interval in the same card pill.
+            val card = warned.journeys.single()
+            val second = card.warnings.single().copy(
+                strikeId = "mit-strikes:8480", startEpochSeconds = at + 3600, endEpochSeconds = at + 4 * 3600,
+            )
+            compose.runOnIdle {
+                rendered = warned.copy(journeys = listOf(card.copy(warningCount = 2, warnings = card.warnings + second)))
+            }
+            val secondLabel = string(R.string.journey_strike_impact_none) + " · " + compose.activity.getString(
+                R.string.journey_strike_interval, railwayDateTime(at + 3600), railwayDateTime(at + 4 * 3600),
+            )
+            val combined = "$label\n$secondLabel"
+            compose.onAllNodesWithContentDescription(combined).assertCountEquals(1)
+            compose.onNode(
+                hasContentDescription(combined) and hasAnyAncestor(hasTestTag("journey-result-0")),
+            ).assertIsDisplayed()
         } finally {
         }
     }
@@ -372,6 +402,27 @@ class TrenifyJourneyTest {
             compose.onNodeWithTag("journey-operator-0").assertDoesNotExist()
         } finally {
         }
+    }
+
+    @Test fun scheduledPlatformRemainsVisibleWithoutRealtimeAndAfterRealtimeFailure() {
+        var failed by mutableStateOf(false)
+        compose.setContent {
+            TrenifyTheme(darkTheme = false, reduceMotion = true) {
+                val base = detailState(scheduledPlatform = "7", actualPlatform = null)
+                TrenifyJourneyDetailContent(
+                    base.copy(legs = base.legs.map { it.copy(
+                        hasTrainAction = false, realtimeStatus = TrainStatus.UNKNOWN,
+                        realtimeFailed = failed,
+                    ) }), null, {}, {}, {},
+                )
+            }
+        }
+        compose.onNodeWithTag("journey-platform-expected-0").assertIsDisplayed()
+        compose.onNodeWithText(compose.activity.getString(R.string.journey_platform_expected, "7")).assertIsDisplayed()
+        compose.onNodeWithTag("journey-platform-actual-0").assertDoesNotExist()
+        compose.runOnIdle { failed = true }
+        compose.onNodeWithTag("journey-platform-expected-0").assertIsDisplayed()
+        compose.onNodeWithTag("journey-platform-actual-0").assertDoesNotExist()
     }
 
     @Test fun detailPlatformRowsFollowAvailability() {
@@ -471,11 +522,13 @@ class TrenifyJourneyTest {
             }
             compose.onNodeWithTag("journey-detail-route").assertIsDisplayed()
             // Technical metadata and booking unavailable copy never
-            // render; the leg without realtime keeps its unavailable
-            // marker and the flow can still go back.
+            // render; the leg without realtime keeps a single status pill
+            // and the flow can still go back.
             compose.onNodeWithTag("journey-detail-sources").assertDoesNotExist()
             compose.onNodeWithTag("journey-buy-unavailable").assertDoesNotExist()
-            compose.onNodeWithTag("journey-realtime-unavailable-0").assertIsDisplayed()
+            compose.onNodeWithTag("journey-service-0").assertIsDisplayed()
+                .assertContentDescriptionEquals(string(R.string.journey_status_no_realtime))
+            compose.onNodeWithTag("journey-realtime-unavailable-0").assertDoesNotExist()
             // Native shell Back drives the shared stack: Detail -> Results.
             compose.onNodeWithTag("shell-back").performClick()
             compose.onNodeWithTag("journey-result-0").assertIsDisplayed()
@@ -550,10 +603,10 @@ class TrenifyJourneyTest {
                     false
                 }
             }
-            // Correlated enrichment: status pill plus the T8.7 train entry.
+            // Correlated enrichment: status pill plus the train entry.
             compose.onNodeWithTag("journey-service-0").assertIsDisplayed()
             compose.onNodeWithTag("journey-realtime-0").performClick()
-            // T8.7: Journey action enters the native Train Detail in the same shared root.
+            // Journey action enters the native Train Detail in the same shared root.
             compose.waitUntil(timeoutMillis = 5_000) {
                 try {
                     compose.onNodeWithTag("train-refresh").assertExists()
@@ -617,16 +670,23 @@ class TrenifyJourneyTest {
         compose.setContent { TrenifyAndroidShell(root) }
         try {
             submitSearch(root)
-            // Full warning semantics render per strike id (Blocker 1/1B).
+            val results = (journeyTab(root).stack.value.active.instance as JourneyTabComponent.Child.Results).component
             compose.waitUntil(timeoutMillis = 5_000) {
-                try {
-                    compose.onNodeWithTag("journey-0-strike-mit-strikes:8479").assertExists()
-                    true
-                } catch (_: AssertionError) {
-                    false
-                }
+                results.state.value.strikeWarnings.values.flatten().isNotEmpty()
             }
-            compose.onNodeWithTag("journey-0-strike-impact-mit-strikes:8479").assertIsDisplayed()
+            compose.runOnIdle {
+                assertEquals("mit-strikes:8479", results.state.value.strikeWarnings.values.flatten().single().strike.id.value)
+            }
+            val label = string(R.string.journey_strike_impact_none) + " · " + compose.activity.getString(
+                R.string.journey_strike_interval,
+                railwayDateTime((leg.departure - 2.hours).epochSeconds),
+                railwayDateTime((leg.arrival + 2.hours).epochSeconds),
+            )
+            compose.onAllNodesWithContentDescription(label).assertCountEquals(1)
+            compose.onNode(
+                hasContentDescription(label) and hasAnyAncestor(hasTestTag("journey-result-0")),
+            ).assertIsDisplayed()
+            compose.onNodeWithTag("journey-0-strike-mit-strikes:8479").assertDoesNotExist()
             compose.onNodeWithTag("journey-result-0").assertIsDisplayed()
         } finally {
             compose.runOnUiThread { lifecycle.destroy() }
@@ -880,7 +940,14 @@ class TrenifyJourneyTest {
         compose.onNodeWithTag("journey-result-0").assertIsDisplayed()
         capture("android-journey-results-transfer")
         compose.runOnIdle { mode = 1 }
-        compose.onNodeWithTag("journey-0-strike-mit-strikes:8479").assertIsDisplayed()
+        val warningLabel = string(R.string.journey_strike_impact_none) + " · " + compose.activity.getString(
+            R.string.journey_strike_interval, railwayDateTime(at), railwayDateTime(at + 3 * 3600),
+        )
+        compose.onAllNodesWithContentDescription(warningLabel).assertCountEquals(1)
+        compose.onNode(
+            hasContentDescription(warningLabel) and hasAnyAncestor(hasTestTag("journey-result-0")),
+        ).assertIsDisplayed()
+        compose.onNodeWithTag("journey-0-strike-mit-strikes:8479").assertDoesNotExist()
         capture("android-journey-results-warning")
         compose.runOnIdle { mode = 2 }
         compose.onNodeWithTag("journey-service-0").assertIsDisplayed()

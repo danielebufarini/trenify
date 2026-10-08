@@ -16,7 +16,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
- * Android notification-tap boundary on a real device/emulator (T7.13-F).
+ * Android notification-tap boundary on a real device/emulator.
  *
  * Exercises the real Android Intent/Bundle/Uri/PendingIntent behavior that
  * JVM unit tests cannot: the shared-codec payload survives a round trip

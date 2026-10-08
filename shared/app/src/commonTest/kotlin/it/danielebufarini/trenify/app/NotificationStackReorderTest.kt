@@ -28,8 +28,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 /**
- * Notification routing when the target already exists in the back stack
- * (T7.13 corrective pass, blocker 2).
+ * Notification routing when the target already exists in the back stack.
  *
  * Decompose `pushNew` throws when an equal configuration already sits in
  * the back stack, so notification routing must use explicit pushToFront

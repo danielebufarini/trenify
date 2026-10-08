@@ -22,7 +22,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 
 /**
- * T7.12 corrective pass, Blocker 4: expiry is derived locally from the
+ * Expiry is derived locally from the
  * injected clock. One open observer reacts when `strike.end` passes with
  * zero provider calls, zero writes and zero notification events.
  */

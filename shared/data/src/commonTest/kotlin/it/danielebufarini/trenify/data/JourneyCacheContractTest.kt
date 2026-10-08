@@ -12,7 +12,7 @@ import kotlinx.serialization.json.Json
 import kotlin.test.*
 
 /**
- * Persisted journey cache contract (T8 corrective): the v2 key isolates the
+ * Persisted journey cache contract: the v2 key isolates the
  * 8-hour horizon from pre-8h v1 rows, and the read path additionally rejects
  * any persisted window that does not equal the live request window.
  */

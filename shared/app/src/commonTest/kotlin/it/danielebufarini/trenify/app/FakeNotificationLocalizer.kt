@@ -7,7 +7,7 @@ import kotlin.time.Instant
 
 /**
  * Fake-controlled [NotificationLocalizer] for deterministic coordinator
- * tests (T7.14-C). Records every call so tests can prove which template was
+ * tests. Records every call so tests can prove which template was
  * chosen (notably the unknown-previous-delay branch) while notification ids
  * and fingerprints stay locale-independent.
  */

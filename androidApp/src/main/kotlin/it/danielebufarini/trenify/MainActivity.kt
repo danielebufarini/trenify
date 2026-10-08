@@ -31,12 +31,12 @@ class MainActivity : ComponentActivity() {
         appGraph = createAndroidAppGraph(
             applicationContext,
             ::requestNotificationPermission,
-            // Platform-locale channel name from Android resources (T7.14-C);
+            // Platform-locale channel name from Android resources;
             // train/strike wording stays in the shared catalog.
             getString(R.string.notification_channel_updates),
             instrumentation = debugLatencyInstrumentation(applicationContext),
         )
-        // Cold launch (T7.13-F/H): a tap destination in the launching intent
+        // Cold launch: a tap destination in the launching intent
         // is offered to the graph handoff and consumed by the new shared
         // root on top of restored navigation. Malformed/missing extras
         // decode to null and are safely ignored. The Activity never creates
@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * Warm launch (T7.13-F): with singleTop, tap intents for an already
+     * Warm launch: with singleTop, tap intents for an already
      * running Activity arrive here and are forwarded into the existing
      * shared root. Duplicate OS deliveries are idempotent in the shared
      * routing entry point.

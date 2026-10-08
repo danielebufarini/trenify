@@ -52,7 +52,7 @@ private class StationFavoriteController(
     init {
         scope.launch {
             repository.observeFavoriteStations()
-                // Corrective T8.9-B1: every sibling favorites observer
+                // Every sibling favorites observer
                 // degrades through catch (Home, route/train controllers,
                 // Saved) so an observation failure can never kill the
                 // collector mid-tree. Retained ids stay usable; no new
@@ -109,7 +109,7 @@ private class StationFavoriteController(
 }
 
 /**
- * Repository-resolved board identity (T7.13 corrective pass): the live
+ * Repository-resolved board identity: the live
  * canonical station plus the controlled unavailable flag. Decompose values
  * cannot hold nullable types, so both travel in this holder.
  */
@@ -118,7 +118,7 @@ data class StationResolution(
     val unavailable: Boolean = false,
 )
 
-/** Durable station-search query (T7.13-B); results re-derive from a fresh search. */
+/** Durable station-search query; results re-derive from a fresh search. */
 @Serializable
 private data class SavedStationQuery(val query: String = "")
 
@@ -149,7 +149,7 @@ class StationSearchComponent(
     }
 
     init {
-        // Elapsed-time aging (T7.14-B): suggestion freshness becomes Stale
+        // Elapsed-time aging: suggestion freshness becomes Stale
         // at the policy boundary with zero provider calls.
         freshnessWatcher.observe(
             nextDeadline = { mutable.value.results.freshness?.staleTransitionAt(policy.stationTtl) },
@@ -233,7 +233,7 @@ class StationSearchComponent(
 private const val KEY_STATION_QUERY = "station-search-query"
 private const val KEY_BOARD_KIND = "station-board-kind"
 
-/** Durable board kind (T7.13-B); board content re-observes the repository. */
+/** Durable board kind; board content re-observes the repository. */
 @Serializable
 private data class SavedBoardKind(val kind: String = "DEPARTURES") {
     fun kindValue(): BoardKind? = runCatching { BoardKind.valueOf(kind) }.getOrNull()
@@ -242,7 +242,7 @@ private data class SavedBoardKind(val kind: String = "DEPARTURES") {
 class StationBoardComponent(
     componentContext: ComponentContext,
     /**
-     * Stable station identity (T7.13 corrective pass): the durable route
+     * Stable station identity: the durable route
      * carries only this id, never a serialized display-name snapshot. The
      * live [Station] for display, favorites and board refreshes is resolved
      * from the repository through [observeStation] below.
@@ -267,7 +267,7 @@ class StationBoardComponent(
     private val mutable = MutableValue(RealtimeState<StationBoard>())
     val state: Value<RealtimeState<StationBoard>> = mutable
     /**
-     * Canonical live station resolved by id (T7.13 corrective pass):
+     * Canonical live station resolved by id:
      * [StationResolution.station] is null while the local resolution is
      * pending. Display, favorites and board refreshes always use this
      * value — never route text — so a rename after state was saved shows
@@ -284,7 +284,7 @@ class StationBoardComponent(
     val favoriteState: Value<StationFavoriteState> = favorites.state
     /**
      * Visibility polling, created lazily on the first successful identity
-     * resolution (T7.13 corrective pass). Starting the loop only once the
+     * resolution. Starting the loop only once the
      * station is known gives a single freshness-gated initial load: a
      * separate resolve-triggered refresh would race the loop's first check
      * and double-load (observed as two board refreshes on open). Hidden,
@@ -294,7 +294,7 @@ class StationBoardComponent(
     private var poller: VisibleRefresh? = null
 
     init {
-        // Elapsed-time aging (T7.14-B): the held board becomes Stale at the
+        // Elapsed-time aging: the held board becomes Stale at the
         // policy boundary with zero provider calls; resume recomputes from
         // the clock. Repository emissions overwrite the display copy.
         freshnessWatcher.observe(

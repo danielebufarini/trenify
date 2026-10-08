@@ -35,7 +35,7 @@ class SqlDelightMonitoringRepository(
     ): TrainMonitor {
         val id = MonitorId(trainRunId.key)
         val now = clock.now()
-        // Monotonic lifecycle (T7.11 corrective): a retained ended monitor is
+        // Monotonic lifecycle: a retained ended monitor is
         // returned unchanged, never reactivated. A genuinely new ACTIVE row is
         // possible only after durable removal/expiry of the old one.
         val retained = database.transactionWithResult {
@@ -114,8 +114,7 @@ class SqlDelightMonitoringRepository(
             .mapToList(dispatcher)
             .transformLatest { all ->
                 // Retention visibility is a logical time policy, not a
-                // function of successful physical cleanup (T7.11 corrective
-                // pass 2): the same continuous subscription hides an item
+                // function of successful physical cleanup: the same continuous subscription hides an item
                 // once now >= endedAt + 24h even when cleanupExpiredEnded
                 // throws and no unrelated DB write ever arrives. The raw
                 // query carries no time bound (a bound captured at subscribe
@@ -162,7 +161,7 @@ class SqlDelightMonitoringRepository(
         val lastEventPayload = last?.let { json.encodeToString(EventRecord.from(it)) }
             ?: previousState?.last_event_payload
         val acceptedOrder = previousState?.accepted_refresh_generation ?: 0L
-        // Evidence-aware ordering (T7.11 corrective pass 2): a superseded
+        // Evidence-aware ordering: a superseded
         // observation is dropped even when the snapshot version still
         // matches, so a CAS retry can never rebrand older provider data as
         // current. A genuinely newer observation that lost only the version
@@ -240,7 +239,7 @@ class SqlDelightMonitoringRepository(
         endedAt: Instant,
         observationOrder: Long?,
     ): List<TrainMonitorEvent> = database.transactionWithResult {
-        // Observation-ordered terminal commit (T7.11 final pass): the first
+        // Observation-ordered terminal commit: the first
         // accepted terminal observation establishes endedAt (ACTIVE → ENDED);
         // strictly newer accepted terminal observations correct the retained
         // final snapshot while endedAt and the ENDED lifecycle stay monotonic.
@@ -577,7 +576,7 @@ class SqlDelightMonitoringRepository(
     }
 
     override suspend fun recordRefreshFailure(monitorId: MonitorId, failure: DomainFailure, failedAt: Instant) {
-        // Presentation-only metadata (T7.14 corrective): the guarded UPDATE
+        // Presentation-only metadata: the guarded UPDATE
         // is a no-op for missing, disabled or ended monitors, and it never
         // touches the snapshot, events, version or ordering generation.
         queries.recordMonitorRefreshFailure(failure.name, failedAt.toEpochMilliseconds(), monitorId.value)

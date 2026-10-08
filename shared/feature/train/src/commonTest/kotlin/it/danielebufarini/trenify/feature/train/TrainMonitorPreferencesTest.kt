@@ -36,7 +36,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 /**
- * T7.7 monitor preference editing from train detail: new monitors inherit
+ * Monitor preference editing from train detail: new monitors inherit
  * installation defaults, and mute/threshold/flag edits preserve the monitor
  * with typed validation and retryable errors.
  */

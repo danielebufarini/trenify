@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * T7.11 corrective: non-terminal event commits are versioned at the
+ * Non-terminal event commits are versioned at the
  * persistence boundary. Two independent repository instances evaluating from
  * the same accepted snapshot cannot create duplicate logical events merely
  * because their evaluatedAt differs; an older refresh cannot regress a newer

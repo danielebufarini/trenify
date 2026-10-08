@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 /**
- * Locale-aware journey-search date/time (T7.14 corrective): EN/IT
+ * Locale-aware journey-search date/time: EN/IT
  * presentation of the same Rome instant, typed durable truth, history
  * repeat and save/recreate preserving the semantic date/time, Rome DST
  * gap rejection with deterministic fold behavior, and locale switches

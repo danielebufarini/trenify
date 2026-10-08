@@ -11,7 +11,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * iOS notification boundary (T7.13-G): the Kotlin response adapter extracts
+ * iOS notification boundary: the Kotlin response adapter extracts
  * only the minimal payload and forwards validated destinations to the same
  * shared routing entry Android uses. Warm responses route immediately;
  * cold responses buffer in the graph handoff until the root exists.

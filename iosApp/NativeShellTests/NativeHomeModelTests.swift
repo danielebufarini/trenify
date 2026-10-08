@@ -2,7 +2,7 @@ import XCTest
 import SwiftUI
 @preconcurrency import SharedApp
 
-/// Actual NativeHomeModel tests (T8.5 corrective): the production model
+/// Actual NativeHomeModel tests: the production model
 /// object, not the bare facades. All observation runs on the main actor
 /// through the accepted SKIE boundary; one session/root throughout.
 @MainActor

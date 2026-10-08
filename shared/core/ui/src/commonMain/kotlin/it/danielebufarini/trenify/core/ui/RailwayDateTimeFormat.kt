@@ -4,7 +4,7 @@ import kotlinx.datetime.LocalDate
 import kotlin.time.Instant
 
 /**
- * Locale-aware railway date/time presentation (T7.14-C).
+ * Locale-aware railway date/time presentation.
  *
  * Railway interpretation is always `Europe/Rome` ([RailwayTime.zone]
  * semantics live in the platform actuals); only ordering, month/day names

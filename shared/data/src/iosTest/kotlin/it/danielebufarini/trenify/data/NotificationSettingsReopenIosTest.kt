@@ -11,7 +11,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * Pre-T8.13 iOS Settings corrective: persisted installation values survive a
+ * Pre- iOS Settings corrective: persisted installation values survive a
  * real file-backed NativeSqliteDriver close/reopen cycle. The unique database
  * name keeps runs independent without relying on an in-memory fixture.
  */

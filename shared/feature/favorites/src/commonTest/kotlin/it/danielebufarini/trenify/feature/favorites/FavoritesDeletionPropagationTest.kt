@@ -21,7 +21,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
- * T7.8: the confirmed Settings favorites deletion propagates to Favorites
+ * The confirmed Settings favorites deletion propagates to Favorites
  * automatically through the repository flows; the component never writes
  * deleted entries back and new saves work normally afterwards.
  */

@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 /**
- * T7.12-A through the existing production Alerts flow on a real database:
+ * Through the existing production Alerts flow on a real database:
  * revocation/expiry propagate reactively to Alerts, and disjoint intervals
  * never reuse current-window freshness as evidence of no strikes.
  */

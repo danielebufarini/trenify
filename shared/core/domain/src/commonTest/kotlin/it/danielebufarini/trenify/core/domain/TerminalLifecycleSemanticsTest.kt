@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 
 /**
- * T7.11 terminal versus non-terminal states and 24-hour retention semantics.
+ * Terminal versus non-terminal states and 24-hour retention semantics.
  */
 class TerminalLifecycleSemanticsTest {
 

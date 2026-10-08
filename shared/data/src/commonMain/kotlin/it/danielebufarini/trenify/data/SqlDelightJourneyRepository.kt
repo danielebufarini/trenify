@@ -112,7 +112,11 @@ class SqlDelightJourneyRepository(
         if (normalized.length < 2) return@withContext DataResult.Data(emptyList(), DataFreshness.Unknown)
         val key = "journey-stations-v1:$normalized"
         val row = queries.cacheByKey(key).executeAsOneOrNull()
-        val stored = row?.let { runCatching { json.decodeFromString<List<StationRecord>>(it.payload).map(StationRecord::model) }.getOrNull() }
+        val stored = row?.let { runCatching {
+            json.decodeFromString<List<StationRecord>>(it.payload).map(StationRecord::model).sortedWith(
+                compareBy<Station> { it.normalizedName != normalized }.thenBy { it.normalizedName },
+            )
+        }.getOrNull() }
         val fetched = row?.let { Instant.fromEpochMilliseconds(it.fetched_at) }
         if (stored != null && fetched != null && online() && clock.now() - fetched < policy.stationTtl)
             return@withContext DataResult.Data(stored, DataFreshness.Fresh(fetched, null))
@@ -137,7 +141,7 @@ class SqlDelightJourneyRepository(
     private fun cached(request: JourneySearchRequest, failure: DomainFailure?): DataResult.Data<JourneySearchResult>? {
         val row = queries.cacheByKey(request.cacheKey).executeAsOneOrNull() ?: return null
         val result = runCatching { json.decodeFromString<JourneyResultRecord>(row.payload).model() }.getOrNull() ?: return null
-        // Contract guard (T8 corrective): the persisted window must equal the
+        // Contract guard: the persisted window must equal the
         // current request window. Rows written under a different horizon (for
         // example the pre-8h v1 contract) are unreachable by key already, and
         // this check additionally rejects any bounds mismatch that ever
@@ -153,7 +157,7 @@ class SqlDelightJourneyRepository(
 }
 
 /**
- * Persisted journey cache contract (T8 corrective): v2 isolates the 8-hour
+ * Persisted journey cache contract: v2 isolates the 8-hour
  * horizon from pre-8h v1 rows. Old v1 rows stay physically stored but are
  * unreachable — no migration is required to delete them. [cached] further
  * validates the persisted window against the live request, so a horizon

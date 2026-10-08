@@ -8,7 +8,7 @@ import it.danielebufarini.trenify.feature.station.*
 import it.danielebufarini.trenify.feature.train.*
 import kotlinx.coroutines.flow.StateFlow
 
-/** T8.7: semantic screen snapshots and actions over the existing Decompose components.
+/** Semantic screen snapshots and actions over the existing Decompose components.
  * No rendering, provider selection, lookup algorithm, persistence or polling is owned here.
  * All instants are nullable epoch seconds; platforms format in Europe/Rome.
  */

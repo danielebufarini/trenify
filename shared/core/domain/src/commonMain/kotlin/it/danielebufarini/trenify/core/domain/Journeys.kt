@@ -28,7 +28,7 @@ class SearchJourneys(private val repository: JourneyRepository) {
 
 /** Correlate using verified stop schedules. A boarding station is not necessarily the run origin. */
 class CorrelateJourneyLeg(private val trains: TrainRepository) {
-    suspend operator fun invoke(leg: JourneyLeg): TrainRunId? {
+    suspend operator fun invoke(leg: JourneyLeg, onScheduledPlatform: (String) -> Unit = {}): TrainRunId? {
         val number = leg.number ?: return null
         val expectedOperator = leg.operator
         val day = RailwayTime.serviceDate(leg.departure)
@@ -38,25 +38,37 @@ class CorrelateJourneyLeg(private val trains: TrainRepository) {
         val candidates = searches.filterIsInstance<DataResult.Data<List<TrainRunSummary>>>()
             .flatMap { it.value }.filter { it.id.number == number }.distinctBy { it.id }
         val matches = mutableListOf<TrainRunId>()
+        val scheduledBoardings = mutableListOf<String?>()
         for (candidate in candidates) {
             val result = trains.refreshTrain(candidate.id)
+            if (result !is DataResult.Data) return null
+            val run = result.value
+            val boarding = run.takeIf { it.summary.id == candidate.id &&
+                (expectedOperator == null || it.summary.operator?.name?.let(::normalizeStationQuery) ==
+                    normalizeStationQuery(expectedOperator.name))
+            }?.stops?.withIndex()?.filter { (_, stop) ->
+                stop.station.normalizedName == leg.origin.normalizedName && stop.scheduledDeparture == leg.departure
+            }?.singleOrNull()
             // A warning-free provider refresh can carry an older source observation:
             // staleness affects presentation, not the authoritative planned route
             // used for identity. Warning-backed fallback and unknown provenance are
             // still insufficient evidence for uniqueness.
-            if (result !is DataResult.Data || result.warning != null || result.freshness is DataFreshness.Unknown) return null
-            val run = result.value
-            if (run.summary.id != candidate.id) continue
-            if (expectedOperator != null && run.summary.operator?.name?.let(::normalizeStationQuery) !=
-                normalizeStationQuery(expectedOperator.name)) continue
-            val departures = run.stops.withIndex().filter { (_, stop) ->
-                stop.station.normalizedName == leg.origin.normalizedName && stop.scheduledDeparture == leg.departure
+            if (result.warning != null || result.freshness is DataFreshness.Unknown) {
+                // A cached planned platform survives a failed realtime refresh.
+                // With incomplete snapshot coverage, only a single candidate
+                // and its exact verified boarding schedule can supply it.
+                if (candidates.size == 1) boarding?.value?.scheduledPlatform?.let(onScheduledPlatform)
+                return null
             }
-            if (departures.size != 1) continue
-            if (run.stops.drop(departures.single().index + 1).any {
+            if (boarding == null) continue
+            scheduledBoardings += boarding.value.scheduledPlatform
+            if (run.stops.drop(boarding.index + 1).any {
                 it.station.normalizedName == leg.destination.normalizedName && it.scheduledArrival == leg.arrival
             }) matches += candidate.id
         }
+        // Planned departure data belongs to the uniquely verified boarding
+        // stop. Destination correlation governs realtime navigation separately.
+        scheduledBoardings.singleOrNull()?.let(onScheduledPlatform)
         return matches.singleOrNull()
     }
 }

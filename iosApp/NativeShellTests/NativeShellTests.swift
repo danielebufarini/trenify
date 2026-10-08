@@ -101,7 +101,7 @@ final class NativeShellTests: XCTestCase {
         fixture.openHistory()
         model.start()
         await update(model, matching: { $0.active.destination == .history }) {}
-        // T8.5: the journey composer lives in the native Home base, so the
+        // The journey composer lives in the native Home base, so the
         // Search form is not a separate visual path entry. History appears
         // directly above Home; the shared Journey stack still retains Search.
         XCTAssertEqual(model.path(for: .search).map(\.destination), [.history])
@@ -128,7 +128,7 @@ final class NativeShellTests: XCTestCase {
     }
 
     func testHistoryAndSettingsRoutesStayNativeOnPopAndSessionClose() async {
-        // T8.15: the legacy Compose host/lease API is removed. History and
+        // The legacy Compose host/lease API is removed. History and
         // Settings resolve through their native facades; pop and close keep
         // shared navigation authoritative with no renderer fallback.
         let fixture = NativeInteropFixture()
@@ -184,11 +184,11 @@ final class NativeShellTests: XCTestCase {
             model.select(area)
             model.start()
             let window = await show(model, dark: dark)
-            // T8.5: Search-tab Home is native SwiftUI; T8.8: Monitoring is
-            // native SwiftUI; T8.9: Saved is native SwiftUI; Alerts is
-            // native. T8.15 removed the legacy host/render path entirely.
+            // Search-tab Home is native SwiftUI; Monitoring is
+            // native SwiftUI; Saved is native SwiftUI; Alerts is
+            // native. Removed the legacy host/render path entirely.
             // Let SKIE subscriptions establish before snapshotting: the
-            // pre-T8.15 settle-await provided this quiescence implicitly.
+            // Settle-await provided this quiescence implicitly.
             await poll("home collectors started") { fixture.collectorCount >= 1 }
             let observations = fixture.homeObservations
             let collectors = fixture.collectorCount
@@ -200,7 +200,7 @@ final class NativeShellTests: XCTestCase {
             await poll("recomposition collectors settled") { fixture.collectorCount == collectors }
             XCTAssertEqual(fixture.homeObservations, observations)
             XCTAssertEqual(fixture.collectorCount, collectors)
-            // T8.5: native Home observes Main/Home/Journey facades, so Search
+            // Native Home observes Main/Home/Journey facades, so Search
             // carries its borrowed SKIE collectors; recomposition must not leak.
             XCTAssertGreaterThanOrEqual(fixture.collectorCount, 1)
             let tabs = descendants(window.rootViewController!).compactMap { $0 as? UITabBarController }
@@ -226,7 +226,7 @@ final class NativeShellTests: XCTestCase {
             for _ in 0..<2 {
                 let other: NativePrimaryArea = area == .search ? .monitoring : .search
                 await update(model, matching: { $0.primaryArea == other }) { model.select(other) }
-                // T8.8: Search and Monitoring are both native.
+                // Search and Monitoring are both native.
                 XCTAssertTrue(fixture.sameRoot)
                 await update(model, matching: { $0.primaryArea == area }) { model.select(area) }
             }
@@ -373,8 +373,7 @@ final class NativeShellTests: XCTestCase {
             await noCollectors(fixture)
             XCTAssertEqual(fixture.networkRequests, 0)
         }
-        // Secondary Train Search entry destination (T8.7 owns the screen; Home
-        // owns only this entry/navigation, proven here with Back to Home).
+        // Secondary Train Search entry destination.
         do {
             let fixture = NativeInteropFixture()
             let model = NativeShellModel { fixture.session }

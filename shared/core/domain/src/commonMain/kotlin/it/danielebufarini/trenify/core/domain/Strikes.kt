@@ -72,8 +72,7 @@ enum class StrikeImpact {
 }
 
 /**
- * Verified official operator evidence applicable to one train/strike pair
- * (T7.12 impact semantics).
+ * Verified official operator evidence applicable to one train/strike pair.
  *
  * HTTPS alone is never evidence: [verified] must be set only from actual
  * verified official evidence (for example a checked operator confirmation
@@ -143,7 +142,7 @@ fun Strike.isRailwayRelevant(): Boolean {
 }
 
 /**
- * Interval successfully covered by a complete strike refresh (T7.12-A).
+ * Interval successfully covered by a complete strike refresh.
  *
  * Only a successfully complete applicable snapshot establishes coverage:
  * freshness for [from]..[to] is freshness for that requested interval, never

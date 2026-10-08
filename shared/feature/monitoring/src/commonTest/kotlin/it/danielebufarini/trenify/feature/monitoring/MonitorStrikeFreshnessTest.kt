@@ -33,7 +33,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * Union-deadline aging for monitoring strike coverage (T7.14 corrective):
+ * Union-deadline aging for monitoring strike coverage:
  * card warnings age through elapsed local time with zero provider calls
  * while warning identity/impact is otherwise preserved, and
  * pause/resume/destroy behave like the card watcher.

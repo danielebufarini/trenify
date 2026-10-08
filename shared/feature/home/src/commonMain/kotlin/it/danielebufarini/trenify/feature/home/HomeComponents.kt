@@ -66,7 +66,7 @@ data class HomeState(
     val referenceTime: Instant = Clock.System.now(),
     val observationFailed: Boolean = false,
     /**
-     * Monitor ids whose persisted snapshot display-aged to Stale (T7.14-B).
+     * Monitor ids whose persisted snapshot display-aged to Stale.
      * Home summaries stay visibly distinguishable without per-card polling.
      */
     val staleMonitorIds: Set<String> = emptySet(),
@@ -130,7 +130,7 @@ class HomeComponent(
     val state: Value<HomeState> = mutable
 
     init {
-        // Elapsed-time aging (T7.14-B): held strikes and monitor summaries
+        // Elapsed-time aging: held strikes and monitor summaries
         // become Stale at their policy boundaries with zero provider calls;
         // resume recomputes from the clock. One component-level deadline for
         // strikes plus one union deadline for monitor snapshots.
@@ -273,7 +273,7 @@ class HomeComponent(
     )
 
     /**
-     * Union aging deadline (T7.14-B): the strike-list boundary plus the
+     * Union aging deadline: the strike-list boundary plus the
      * earliest monitor-snapshot boundary. Ended snapshots use the
      * completed-train TTL, active ones the monitor TTL by status.
      */
@@ -290,7 +290,7 @@ class HomeComponent(
         else realtimePolicy.ttlForTrain(monitor.lastSnapshot?.train?.summary?.status)
 
     /**
-     * Monitor ids whose snapshot must render stale (T7.14 corrective): a
+     * Monitor ids whose snapshot must render stale: a
      * recorded refresh failure forces immediate staleness even before the
      * TTL, alongside the usual elapsed-time aging.
      */

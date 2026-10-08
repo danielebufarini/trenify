@@ -65,7 +65,7 @@ private class IosNotificationPresenter : NotificationPresenter {
                 setTitle(message.title)
                 setBody(message.body)
                 setSound(UNNotificationSound.defaultSound)
-                // Minimal typed destination payload (T7.13-D/G): routing
+                // Minimal typed destination payload: routing
                 // metadata only, decoded by the shared tap contract. Display
                 // text is never parsed for navigation.
                 message.destination?.let { destination ->
@@ -83,7 +83,7 @@ private class IosNotificationPresenter : NotificationPresenter {
 }
 
 /**
- * Effective iOS delivery mapping (T7.7), semantically aligned with Android:
+ * Effective iOS delivery mapping, semantically aligned with Android:
  * authorized, provisional and ephemeral grants allow delivery; denied,
  * not-determined or unknown statuses deny it. No notification business policy
  * lives here, only the authorization mapping.
@@ -100,7 +100,7 @@ private class IosNotificationPermission : NotificationPermission {
     override suspend fun isGranted(): Boolean = effective() == EffectiveNotificationPermission.GRANTED
 
     /**
-     * Effective delivery state (T7.7) from the system authorization state,
+     * Effective delivery state from the system authorization state,
      * semantically aligned with Android: authorized, provisional and
      * ephemeral grants allow delivery, denied or not-determined denies it.
      * Notification business policy stays shared; this is only a mapping.

@@ -34,7 +34,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
 
 /**
- * T7.12 final pass, Blocker 2: Alerts advances its observation window
+ * Alerts advances its observation window
  * together with every refresh, against a real [SqlDelightStrikeRepository]
  * on an advancing clock. Settles with [runCurrent]/bounded advancement so
  * the per-observer expiry ticker stays alive across clock jumps.

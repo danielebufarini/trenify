@@ -11,7 +11,7 @@ import kotlinx.datetime.toLocalDateTime
 import kotlin.test.*
 import kotlin.time.Instant
 
-// T7.10 deterministic source-evidence coverage: category, distinct terminal
+// Deterministic source-evidence coverage: category, distinct terminal
 // scheduled times, board-event separation, cancellation, stop progress,
 // operational position, rescheduled signals and service-date/DST handling.
 // Expected values assert provider-neutral semantics, never raw wire strings.
@@ -194,7 +194,7 @@ class ViaggiaTrenoT710ContractTest {
             .replace("\"stazioneUltimoRilevamento\":\"--\"", "\"stazioneUltimoRilevamento\":\"--\",\"oraUltimoRilevamento\":1788582780000"))
         assertNull(noStation.position?.stationName)
         assertEquals(Instant.fromEpochMilliseconds(1788582780000), noStation.position?.observedAt)
-        // Pre-T7.10 fixture shape: observation time without a station name.
+        // Pre- fixture shape: observation time without a station name.
         val legacy = detail(legacyRef, FixturesV1.detail)
         assertNull(legacy.position?.stationName)
         assertEquals(Instant.fromEpochMilliseconds(1788582780000), legacy.position?.observedAt)

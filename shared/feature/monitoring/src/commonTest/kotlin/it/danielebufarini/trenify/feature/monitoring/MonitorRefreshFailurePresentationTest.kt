@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 /**
- * Failed-refresh presentation on monitor cards (T7.14 corrective): the
+ * Failed-refresh presentation on monitor cards: the
  * retained snapshot stays visible, becomes immediately Stale with the
  * typed OFFLINE/TEMPORARY warning, and recreation preserves the degraded
  * truth without any new fetch.

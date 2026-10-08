@@ -62,7 +62,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * T7.11 corrective pass 2: persistence-shared refresh ordering end to end
+ * Persistence-shared refresh ordering end to end
  * through the production TrainRepository.refreshTrain →
  * MonitoringCoordinator → MonitoringRepository path. Two independent
  * graph-equivalent instance pairs share one real test database; their
@@ -188,7 +188,7 @@ class MonitoringRefreshOrderingTest {
         ).executeAsOneOrNull()?.accepted_refresh_generation
 
     /**
-     * T7.11 final pass blocker regression: the earlier terminal invocation
+     * Regression: the earlier terminal invocation
      * commits while the later terminal request is still pending, and the
      * later accepted observation must then correct the retained final
      * snapshot — cache and monitor governed by the same request/observation
@@ -314,7 +314,7 @@ class MonitoringRefreshOrderingTest {
     }
 
     /**
-     * T7.11 final-pass verification correction: A invoked first with a
+     * Final-pass verification correction: A invoked first with a
      * successful RESCHEDULED response, B invoked later with FAILURE remaining
      * pending; A completes and commits, B fails afterwards. The cache and the
      * monitor remain A's accepted result with no fallback transition and no

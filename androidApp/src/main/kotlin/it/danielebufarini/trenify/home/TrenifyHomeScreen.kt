@@ -61,7 +61,7 @@ import it.danielebufarini.trenify.feature.journey.formatSearchDate
 import it.danielebufarini.trenify.feature.journey.formatSearchTime
 
 /**
- * Android-owned native Home/Search (T8.5). One composed trip input with swap,
+ * Android-owned native Home/Search. One composed trip input with swap,
  * native date/time pickers, journey + train/station entries, recents and
  * favorites. Shared components stay authoritative for validation, search,
  * history and navigation; this file owns only visual composition.

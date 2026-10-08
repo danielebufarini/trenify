@@ -19,7 +19,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 /**
- * T7.11 corrective: the shared train cache is guarded at the persistence
+ * The shared train cache is guarded at the persistence
  * boundary, so a stale non-terminal refresh resuming after an accepted
  * terminal commit cannot regress it — even across two independent
  * repository/AppGraph instances whose instance-local flights cannot order

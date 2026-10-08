@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 /**
- * T7.7 delivery precedence: global switch x per-train switch x event flag x
+ * Delivery precedence: global switch x per-train switch x event flag x
  * effective OS permission, for every supported event kind.
  */
 class NotificationDeliveryTest {

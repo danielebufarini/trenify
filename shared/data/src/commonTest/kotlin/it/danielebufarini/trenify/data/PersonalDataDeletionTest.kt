@@ -45,7 +45,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 /**
- * T7.8 Settings deletion actions on the real persistence path.
+ * Settings deletion actions on the real persistence path.
  *
  * Proves, against a real SQLDelight driver on both test targets, that each
  * confirmed deletion is one atomic transaction with rollback, preserves every

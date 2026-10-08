@@ -38,10 +38,10 @@ import it.danielebufarini.trenify.presentation.railwayStatusTone
 import it.danielebufarini.trenify.presentation.railwayTime
 
 /**
- * Android-owned native Journey Detail (T8.6). Route summary, per-leg schedule
+ * Android-owned native Journey Detail. Route summary, per-leg schedule
  * with already-correlated realtime enrichment, strike warnings, platform info,
  * transfer guidance and the secondary official-operator booking handoff. Train
- * navigation forwards to the existing shared action (T8.7 owns Train Detail).
+ * navigation forwards to the existing shared action.
  * No prices, fares, classes or purchase UI.
  */
 @Composable
@@ -49,7 +49,7 @@ fun TrenifyJourneyDetailScreen(
     facade: NativeJourneyDetailPresentation,
     modifier: Modifier = Modifier,
 ) {
-    // T8.14-C3: lifecycle-aware collection like every other native screen, so
+    // Lifecycle-aware collection like every other native screen, so
     // stopped destinations stop observing instead of collecting in background.
     val state by facade.state.collectAsStateWithLifecycle()
     val routeFavorite by facade.favoriteRoute?.collectAsStateWithLifecycle()
@@ -78,7 +78,7 @@ fun TrenifyJourneyDetailContent(
     onTrain: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Back/title chrome belongs to the platform shell TopAppBar (Blocker 4):
+    // Back/title chrome belongs to the platform shell TopAppBar:
     // migrated destinations expose no in-content Back control.
     LazyColumn(
         modifier.fillMaxSize().padding(horizontal = TrenifySpacing.screenHorizontal).testTag("journey-detail"),
@@ -130,7 +130,7 @@ fun TrenifyJourneyDetailContent(
                                 enabled = !favorite.pending,
                                 modifier = Modifier.fillMaxWidth().testTag("journey-route-favorite"),
                             )
-                            // Restored T7-era behavior (Blocker 3): a failed
+                            // Restored behavior: a failed
                             // update keeps content visible, shows the
                             // localized failure, invents no optimistic state
                             // and disables no unrelated action.
@@ -220,7 +220,7 @@ private fun BookingBlock(
     onBuy: () -> Unit,
 ) {
     // Unavailable booking renders nothing: no explanatory or unavailable
-    // copy. Availability and handoff still follow the shared T5.5 policy.
+    // copy. Availability and handoff still follow the shared policy.
     if (!available) return
     Column(verticalArrangement = Arrangement.spacedBy(TrenifySpacing.s)) {
         TrenifySecondaryAction(
@@ -311,7 +311,7 @@ private fun LegSection(
                         color = TrenifyTheme.colors.textSecondary,
                     )
                 }
-                // Full T7.12 warning semantics per leg (Blocker 1/1B): every
+                // Full warning semantics per leg: every
                 // warning with impact/sector/interval/source/partial wording
                 // plus coverage state truthful even with zero warnings.
                 if (leg.warnings.isNotEmpty() || strikesStale || strikesFailed || strikesUnknown) {
@@ -333,13 +333,6 @@ private fun LegSection(
                     Text(
                         stringResource(R.string.journey_status_checking),
                         Modifier.testTag("journey-correlating-$index"),
-                        style = TrenifyTheme.typography.caption,
-                        color = TrenifyTheme.colors.textSecondary,
-                    )
-                } else {
-                    Text(
-                        stringResource(R.string.journey_realtime_unavailable),
-                        Modifier.testTag("journey-realtime-unavailable-$index"),
                         style = TrenifyTheme.typography.caption,
                         color = TrenifyTheme.colors.textSecondary,
                     )

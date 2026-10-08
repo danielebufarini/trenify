@@ -10,7 +10,7 @@ import it.danielebufarini.trenify.feature.favorites.FavoritesComponent
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * T8.9: semantic Saved snapshots over the existing [FavoritesComponent].
+ * Semantic Saved snapshots over the existing [FavoritesComponent].
  * No rendering, persistence, ordering, recording or navigation logic is
  * owned here. Favorite identity, history ordering, corrupt-row skipping,
  * bad-date degradation and repeat/prefill routing stay in the shared

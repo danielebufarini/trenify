@@ -41,7 +41,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 /**
- * T8.10 native Alerts projection: semantic snapshots over [AlertsTabComponent].
+ * Native Alerts projection: semantic snapshots over [AlertsTabComponent].
  * Overview filtering, status truth, railway relevance, scope, freshness,
  * notification and reference semantics stay shared; this suite proves the
  * projection never invents filtering, identity or actions.

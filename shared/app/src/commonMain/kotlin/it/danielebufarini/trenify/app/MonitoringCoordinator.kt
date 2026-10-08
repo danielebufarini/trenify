@@ -40,7 +40,7 @@ class MonitoringCoordinator(
         scope.launch {
             // Startup cleanup: a retention-expired ended monitor must be
             // eligible for removal even when no active monitor keeps the
-            // refresh loop alive. Best-effort (T7.11 corrective): a cleanup
+            // refresh loop alive. Best-effort: a cleanup
             // failure must not kill monitoring; it retries on later
             // opportunities below.
             containOperational { monitoringRepository.cleanupExpiredEnded(clock.now()) }
@@ -70,7 +70,7 @@ class MonitoringCoordinator(
                     }
                 }
         }
-        // Deadline-aware retention watcher (T7.11 corrective): a
+        // Deadline-aware retention watcher: a
         // continuously-subscribed observer must see an ended monitor disappear
         // at exactly endedAt + 24h without any unrelated DB write. The watcher
         // delays until the next relevant expiry (no busy loop, no backend,
@@ -90,7 +90,7 @@ class MonitoringCoordinator(
 
     /**
      * Refreshes every active monitor once. Returns the notification-delivery
-     * attempts created by this refresh (T7.11 corrective pass 2): the
+     * attempts created by this refresh: the
      * foreground loop ignores them (delivery stays decoupled from polling),
      * while the one-shot background path joins them before reporting the job
      * complete so closing the graph cannot destroy a pending terminal
@@ -125,8 +125,8 @@ class MonitoringCoordinator(
 
     private suspend fun refreshMonitor(monitor: TrainMonitor): Job? {
         val result = trainRepository.refreshTrain(monitor.trainRunId, force = true)
-        // T7.11 ordering rule (unchanged): failed refreshes are never
-        // evaluated as new train observations. T7.14 adds presentation
+        // Ordering rule (unchanged): failed refreshes are never
+        // evaluated as new train observations. Adds presentation
         // truth: the failure is recorded as refresh-health metadata on the
         // retained snapshot so it renders stale-with-warning instead of
         // silently staying Fresh. This changes no snapshot, event, version
@@ -137,7 +137,7 @@ class MonitoringCoordinator(
         }
         if (result !is DataResult.Data) return null
         // Failed-provider fallbacks are display truth, never monitoring
-        // observations (T7.11 final pass): a warning-backed result replays an
+        // observations: a warning-backed result replays an
         // old cache without ordering evidence, so evaluating it could replace
         // a newer accepted snapshot with stale content through the legacy
         // version-only path. Monitoring evaluation requires a clean result
@@ -149,7 +149,7 @@ class MonitoringCoordinator(
         }
         if (result.refreshGeneration == null) return null
         val evaluatedAt = clock.now()
-        // Persistence-shared refresh ordering (T7.11 corrective pass 2):
+        // Persistence-shared refresh ordering:
         // the returned observation is the currently accepted one with its
         // invocation generation — never an older provider response rebranded
         // as current merely because it completed later.
@@ -170,7 +170,7 @@ class MonitoringCoordinator(
         val snapshot = MonitoredTrainSnapshot(result.value, result.freshness, evaluatedAt)
         val status = result.value.summary.status
         if (isTerminalStatus(status)) {
-            // Terminal path (T7.11 final pass): the first accepted terminal
+            // Terminal path: the first accepted terminal
             // observation establishes endedAt (ACTIVE → ENDED); strictly
             // newer accepted terminal observations correct the retained final
             // snapshot while endedAt and ENDED stay monotonic. The repository
@@ -193,7 +193,7 @@ class MonitoringCoordinator(
     }
 
     /**
-     * Presentation-only refresh-health write (T7.14 corrective): records the
+     * Presentation-only refresh-health write: records the
      * typed failure of an attempted refresh that produced no new accepted
      * observation. Best-effort — a persistence failure here must not fail
      * the refresh loop; the next refresh retries truthfully. Ended monitors
@@ -220,7 +220,7 @@ class MonitoringCoordinator(
         )) {
             is EvaluationCommit.Committed -> return deliverAsync(monitor.trainRunId, commit.inserted, snapshot.evaluatedAt)
             EvaluationCommit.StaleBase -> {
-                // Bounded single retry (T7.11 corrective pass 2): the
+                // Bounded single retry: the
                 // retried observation is the accepted one carried from
                 // refreshTrain — never an older provider response — and the
                 // repository additionally drops it when a newer observation
@@ -244,7 +244,7 @@ class MonitoringCoordinator(
     }
 
     /**
-     * Decoupled delivery (T7.11 corrective): the terminal commit removes the
+     * Decoupled delivery: the terminal commit removes the
      * monitor from active observation, which cancels/replaces the polling
      * collector running this refresh. Launching the post-commit delivery
      * attempt in the coordinator scope keeps that collector's self-
@@ -254,7 +254,7 @@ class MonitoringCoordinator(
      * keeps the attempt exactly-once per event.
      *
      * Returns the delivery attempt so the one-shot background path can await
-     * the attempts its own refresh created (T7.11 corrective pass 2). The
+     * the attempts its own refresh created. The
      * foreground loop ignores the return and stays decoupled.
      */
     private fun deliverAsync(
@@ -269,7 +269,7 @@ class MonitoringCoordinator(
     }
 
     /**
-     * Narrow operational-error boundary (T7.11 corrective): best-effort
+     * Narrow operational-error boundary: best-effort
      * orchestration work (cleanup, delivery) must never terminate monitoring.
      * Cancellation always propagates; other failures are contained and
      * retried on later normal opportunities.
@@ -306,7 +306,7 @@ class MonitoringCoordinator(
     }
 
     /**
-     * One-shot background refresh (T7.11 corrective pass 2): the background
+     * One-shot background refresh: the background
      * graph closes right after this returns, so it awaits the delivery
      * attempts its own refresh created before reporting the job complete —
      * otherwise closing would cancel a pending terminal delivery it just
@@ -326,14 +326,14 @@ class MonitoringCoordinator(
     }
 
     /**
-     * Delivery precedence (T7.7): a train event is delivered only when the
+     * Delivery precedence: a train event is delivered only when the
      * installation switch, that train's switch, the applicable event flag and
      * the effective OS permission all allow it at claim time. Preferences are
      * resolved fresh here so a mute saved after the fetch still prevents
      * delivery. The installation switch gates delivery only: it never stops
      * polling, disables monitors, or deletes snapshots/history.
      *
-     * At-most-once claim policy (T7.11 corrective): [claimNotification] marks
+     * At-most-once claim policy: [claimNotification] marks
      * the persisted event before [NotificationPresenter.show], so a crash or
      * presenter failure after the claim can lose one best-effort delivery but
      * can never duplicate it. True exactly-once external delivery is not

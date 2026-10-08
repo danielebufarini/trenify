@@ -87,7 +87,7 @@ class SqlDelightStrikeRepository(
      * custom range is keyed by its exact bounds, so equal-duration or even
      * bound-identical custom ranges never join a current-window flight.
      *
-     * Truthful sharing under interval-specific coverage (T7.12 final pass):
+     * Truthful sharing under interval-specific coverage:
      * the shared operation never fetches only the first caller's bounds.
      * Every flight in the current-window namespace fetches the deterministic
      * canonical superset for its bucket ([currentFlightScope]), which
@@ -110,8 +110,7 @@ class SqlDelightStrikeRepository(
     )
     private val inFlightRefreshes = mutableMapOf<String, SharedStrikeFlight>()
     /**
-     * Interval/request-scoped failure state (T7.12 corrective pass,
-     * Blocker 2): a failure is recorded against the exact requested bounds
+     * Interval/request-scoped failure state: a failure is recorded against the exact requested bounds
      * that failed, observers of those exact bounds surface it, and only a
      * successful refresh of those exact bounds clears it. A failure on
      * disjoint interval B never contaminates interval A, and a later
@@ -119,7 +118,7 @@ class SqlDelightStrikeRepository(
      * containing (but non-identical) requests neither inherit nor clear
      * each other's failures; each uncovered/stale interval triggers its own
      * targeted fetch. The one exception is a shared current-window flight
-     * (T7.12 final pass): its canonical superset fetch actually covers
+     * its canonical superset fetch actually covers
      * every joined caller, so shared success clears exactly the joined
      * request keys and shared failure records against exactly those keys
      * (see [finishSharedFetch]). Transient failures stay in memory and are
@@ -164,7 +163,7 @@ class SqlDelightStrikeRepository(
             queries.allStrikeCoverages().asFlow(),
             failures,
         ) { _, _, _, _ -> }
-        // The local expiry ticker (Blocker 4) restarts on every upstream
+        // The local expiry ticker restarts on every upstream
         // change, so newly persisted strikes always reschedule the next
         // transition and no stale schedule can outlive its state.
         return upstream.flatMapLatest { expiryTicks(from, to) }.map {
@@ -175,7 +174,7 @@ class SqlDelightStrikeRepository(
     }
 
     /**
-     * Local reactive-expiry signal (T7.12 corrective pass, Blocker 4):
+     * Local reactive-expiry signal:
      * emits immediately, then once at each upcoming strike-end transition
      * touching the observed window, then completes until upstream state
      * changes. Local clock only: zero provider calls, no polling loop, no
@@ -347,7 +346,7 @@ class SqlDelightStrikeRepository(
         val cached = cached(from, to, includeRevoked = true)
         if (!online()) return failed(from, to, cached?.refresh(), DomainFailure.OFFLINE)
         return when (val result = provider.getStrikes(from, to, includeRevoked = true)) {
-            // Authoritative absence (Blocker 3): a coverage row that
+            // Authoritative absence: a coverage row that
             // certifies an interval as fresh/empty is established only when
             // the response is parse-complete AND the provider contract says
             // absence for the requested interval is authoritative. The same
@@ -517,7 +516,7 @@ class SqlDelightStrikeRepository(
         currentWarning: DomainFailure? = null,
     ): DataResult.Data<List<Strike>>? {
         val now = clock.now()
-        // Local effective applicability (Blocker 4): a persisted strike
+        // Local effective applicability: a persisted strike
         // whose end has passed is read as COMPLETED without any provider
         // contact and without writing anything — no notification rows, no
         // monitor events, no status mutation on trains. The expiry ticker
@@ -535,7 +534,7 @@ class SqlDelightStrikeRepository(
                     strike
                 }
             }
-        // Freshness is per requested interval (T7.12-A): only a containing
+        // Freshness is per requested interval: only a containing
         // complete coverage row younger than the cache TTL certifies this
         // interval as fresh. A disjoint never-fetched interval has no
         // containing row and stays unknown — however recently another

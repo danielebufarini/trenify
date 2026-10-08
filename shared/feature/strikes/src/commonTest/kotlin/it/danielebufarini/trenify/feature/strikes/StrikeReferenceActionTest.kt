@@ -23,7 +23,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * T7.12-D official strike/source reference actions: only actually available
+ * Official strike/source reference actions: only actually available
  * references validated by the dedicated policy launch through the injected
  * URL abstraction; absence is honest; a URL never promotes impact.
  */

@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Minimal typed local-notification destination (T7.13-D).
+ * Minimal typed local-notification destination.
  *
  * This is routing metadata only, kept strictly distinct from notification
  * display text (title/body) and from the anti-spam identifier/fingerprint:

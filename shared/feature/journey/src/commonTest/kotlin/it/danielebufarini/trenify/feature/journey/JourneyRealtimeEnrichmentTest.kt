@@ -32,7 +32,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 /**
- * T7.12-D available realtime enrichment: journey detail reuses already
+ * Available realtime enrichment: journey detail reuses already
  * correlated/cached snapshots read-only — scheduled data stays primary and
  * enrichment never issues realtime refreshes (no per-leg N+1).
  */

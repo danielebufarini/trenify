@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 /**
- * Locale-aware railway date/time formatting (T7.14-C): railway instants are
+ * Locale-aware railway date/time formatting: railway instants are
  * always interpreted in Europe/Rome while ordering, month names and
  * separators follow the locale tag. Explicit tags keep the test
  * deterministic on both legs without touching the platform locale.

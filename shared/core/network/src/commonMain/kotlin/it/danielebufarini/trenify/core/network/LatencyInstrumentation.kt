@@ -98,7 +98,7 @@ suspend inline fun <T> RequestInstrumentation.span(
 }
 
 /**
- * Canonical diagnostic URL sanitization (T8 corrective): exactly one path
+ * Canonical diagnostic URL sanitization: exactly one path
  * for every instrumentation event. Query strings never leave the client,
  * and provider operation identifiers (for example Italo booking status
  * ids) collapse to `{operation}`. No payload, token, session or raw

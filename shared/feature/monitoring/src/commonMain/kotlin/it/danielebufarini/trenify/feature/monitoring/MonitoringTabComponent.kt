@@ -45,28 +45,27 @@ data class MonitorCardState(
     val monitor: TrainMonitor,
     val nextStopName: String?,
     /**
-     * Display copy of the persisted snapshot freshness (T7.14-B): aged by
+     * Display copy of the persisted snapshot freshness: aged by
      * elapsed local time without provider calls. Null while the snapshot
      * carries no freshness. Immediately Stale while the monitor carries a
-     * recorded refresh failure (T7.14 corrective), even before the TTL.
+     * recorded refresh failure, even before the TTL.
      */
     val displayFreshness: DataFreshness? = null,
     /**
      * Typed failure of the latest refresh attempt that produced no new
-     * accepted observation (T7.14 corrective): renders the FS §23
+     * accepted observation: renders the
      * stale-with-warning wording beside the retained snapshot.
      */
     val refreshFailure: DomainFailure? = null,
     /**
      * Strike warnings from the monitor's already persisted/current local
-     * snapshot (T7.12-C): scheduled-first normalized context, no
+     * snapshot: scheduled-first normalized context, no
      * card-specific polling or provider access.
      */
     val strikeWarnings: List<ServiceStrikeWarning> = emptyList(),
     val strikesStale: Boolean = false,
     /**
-     * No authoritative coverage exists for the card window (T7.12
-     * corrective pass): never rendered as merely outdated.
+     * No authoritative coverage exists for the card window: never rendered as merely outdated.
      */
     val strikesUnknown: Boolean = false,
 )
@@ -74,7 +73,7 @@ data class MonitorCardState(
 data class MonitoringState(
     val active: List<MonitorCardState> = emptyList(),
     /**
-     * Recently ended monitors (T7.11): terminal ARRIVED/final CANCELLED rows
+     * Recently ended monitors: terminal ARRIVED/final CANCELLED rows
      * within the 24-hour retention window. Read-only: no polling, no
      * active-only controls, no Stop action; manual removal only.
      */
@@ -90,7 +89,7 @@ interface MonitoringTabComponent {
     fun open(trainRunId: TrainRunId)
 
     /**
-     * Removes a retained ended monitor before its 24-hour deadline (T7.11).
+     * Removes a retained ended monitor before its 24-hour deadline.
      * The item is already stopped: this performs no Stop semantics, generates
      * no events and never restarts polling. Idempotent.
      */
@@ -126,7 +125,7 @@ class DefaultMonitoringTabComponent(
     private var latestStrikes: List<Strike> = emptyList()
     private var latestStrikeFreshness: DataFreshness = DataFreshness.Unknown
     /**
-     * Single union observation window over every card snapshot (T7.12-C):
+     * Single union observation window over every card snapshot:
      * one component-level observation plus one targeted stale refresh, never
      * card-specific polling or provider access.
      */
@@ -134,7 +133,7 @@ class DefaultMonitoringTabComponent(
 
     init {
         // Elapsed-time aging over every visible card snapshot plus the
-        // strike coverage (T7.14-B, union deadline): one component-level
+        // strike coverage (union deadline): one component-level
         // next-transition deadline for all cards and strikes, zero provider
         // calls, resume recomputes from the clock. Destroying the component
         // cancels the scheduling through the component scope. The strike
@@ -196,7 +195,7 @@ class DefaultMonitoringTabComponent(
     }
 
     /**
-     * TTL for one card snapshot (T7.14-B): ended monitors keep the
+     * TTL for one card snapshot: ended monitors keep the
      * completed-train TTL, active cards mirror the repository train
      * classification by status.
      */
@@ -209,7 +208,7 @@ class DefaultMonitoringTabComponent(
 
     /**
      * Earliest freshness boundary across every card snapshot and the
-     * strike coverage (T7.14 corrective): one component-level deadline,
+     * strike coverage: one component-level deadline,
      * never one timer per card and never a provider poll.
      */
     private fun unionDeadline(): Instant? = listOfNotNull(
@@ -233,7 +232,7 @@ class DefaultMonitoringTabComponent(
     }
 
     /**
-     * Local tick (T7.14 corrective): re-derives every card snapshot and
+     * Local tick: re-derives every card snapshot and
      * the strike coverage from the injected clock with zero provider
      * calls, then re-evaluates card warnings against the aged strike
      * freshness. Repository truth is untouched.
@@ -274,11 +273,11 @@ class DefaultMonitoringTabComponent(
     }
 
     /**
-     * Display card for one persisted monitor (T7.14 corrective): the
+     * Display card for one persisted monitor: the
      * snapshot stays visible while a recorded refresh failure forces the
      * display freshness immediately Stale (zero-TTL aging preserves the
      * instants and leaves already-Stale/Unknown values untouched) and
-     * surfaces the typed failure for the FS §23 wording.
+     * surfaces the typed failure for the wording.
      */
     private fun cardState(monitor: TrainMonitor, withNextStop: Boolean = true): MonitorCardState {
         val nextStop = when {
@@ -340,7 +339,7 @@ class DefaultMonitoringTabComponent(
 }
 
 /**
- * Union observation window over card snapshots (T7.12-C): the smallest
+ * Union observation window over card snapshots: the smallest
  * interval covering every snapshot's scheduled-first service times. Null
  * when no snapshot positions its train in time. A point-only snapshot
  * widens symmetrically by one minute for observation only — evaluation

@@ -58,7 +58,7 @@ interface AlertsTabComponent {
     fun refresh()
     fun open(strikeId: StrikeId)
     /**
-     * Shared strike routing (T7.13-E): opens the strike detail through the
+     * Shared strike routing: opens the strike detail through the
      * shared tree even when the strike is not in the currently loaded list
      * (the detail then shows the controlled not-found path). Returns false
      * without stacking a duplicate when the requested detail is already
@@ -148,7 +148,7 @@ class DefaultAlertsTabComponent(
     )
 
     init {
-        // Elapsed-time aging (T7.14-B): the held strike list becomes Stale
+        // Elapsed-time aging: the held strike list becomes Stale
         // at the strike cache TTL with zero provider calls; resume
         // recomputes from the clock.
         freshnessWatcher.observe(
@@ -310,7 +310,7 @@ class DefaultAlertsTabComponent(
     }
 
     /**
-     * Durable alerts route contract (T7.13-A): the overview plus the
+     * Durable alerts route contract: the overview plus the
      * selected strike identity only.
      */
     @Serializable

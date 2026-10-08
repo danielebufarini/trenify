@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Bottom reachability above the native tab chrome (T8.5 post-acceptance).
+/// Bottom reachability above the native tab chrome.
 ///
 /// The system tab bar stays native, including floating Liquid Glass. A
 /// floating bar does not extend the safe area, so safe-area insets alone

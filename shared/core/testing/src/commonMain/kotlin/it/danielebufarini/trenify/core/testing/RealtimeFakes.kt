@@ -81,8 +81,7 @@ class FakeRealtimeRepositories : StationRepository, TrainRepository, HistoryRepo
         return stationResult
     }
     /**
-     * Canonical local stations for [observeStation] (T7.13 corrective
-     * pass): boards resolve their route id through this directory, so tests
+     * Canonical local stations for [observeStation]: boards resolve their route id through this directory, so tests
      * stage renames by replacing the entry and deletions by removing it.
      */
     val stationDirectory = MutableStateFlow(mapOf(testStation.id to testStation))
@@ -263,7 +262,7 @@ class FakeMonitoringRepository(
         expiresAt: Instant?,
     ): TrainMonitor {
         val existing = monitors.value.firstOrNull { it.trainRunId == trainRunId }
-        // Monotonic lifecycle (T7.11 corrective, mirrors production): a
+        // Monotonic lifecycle (mirrors production): a
         // retained ended monitor is returned unchanged, never reactivated. A
         // new ACTIVE row is possible only after durable removal/expiry.
         if (existing?.endedAt != null) return existing

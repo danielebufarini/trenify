@@ -15,7 +15,7 @@ sealed interface DataResult<out T> {
         val warning: DomainFailure? = null,
         /**
          * Persistence-shared refresh invocation generation backing this
-         * observation (T7.11 corrective pass 2). Request invocation order,
+         * observation. Request invocation order,
          * not response completion order, determines which concurrent refresh
          * may supersede another; a superseded refresh returns the currently
          * accepted observation with its generation instead of its own stale
@@ -64,7 +64,7 @@ interface TrainRepository {
  * - search history records explicit validated journey/train submissions with
  *   their own identities and keeps them independently of recency.
  * Clearing search history never clears recency and vice versa; user-facing
- * delete-all actions keep both operations distinct (T7.8).
+ * delete-all actions keep both operations distinct.
  */
 /**
  * Thrown by a personal-data write (history, recency or favorite save) that
@@ -120,7 +120,7 @@ interface HistoryRepository {
 
     /**
      * Atomically deletes all user-visible search data in one persistence
-     * operation (T7.8 Settings action):
+     * operation:
      * - journey search-history entries;
      * - train search-history entries;
      * - station recency / recent-station suggestions.
@@ -133,7 +133,7 @@ interface HistoryRepository {
      * state, settings/preferences, strike preferences or unrelated caches.
      * No remote or backend interaction is involved.
      *
-     * Ordering (T7.8): a personal-data write whose repository invocation
+     * Ordering: a personal-data write whose repository invocation
      * began before this deletion completed is ordered before it and must not
      * commit afterwards (implementations fail it with
      * [PersonalDataWriteSupersededException]); only a write invoked after the
@@ -150,8 +150,7 @@ interface FavoritesRepository {
     suspend fun setFavorite(train: FavoriteTrain, favorite: Boolean)
 
     /**
-     * Atomically deletes every favorite in one persistence operation (T7.8
-     * Settings action):
+     * Atomically deletes every favorite in one persistence operation:
      * - all station favorites;
      * - all favorite routes;
      * - all recurring-train favorites.
@@ -164,7 +163,7 @@ interface FavoritesRepository {
      * state, settings/preferences, strike preferences or unrelated caches.
      * No remote or backend interaction is involved.
      *
-     * Ordering (T7.8): a favorite save whose repository invocation began
+     * Ordering: a favorite save whose repository invocation began
      * before this deletion completed is ordered before it and must not commit
      * afterwards (implementations fail it with
      * [PersonalDataWriteSupersededException]); only a save invoked after the
@@ -193,7 +192,7 @@ class ObserveTrainRun(private val repository: TrainRepository) {
 }
 
 /**
- * Settings delete-all-search-history action (T7.8): one atomic local
+ * Settings delete-all-search-history action: one atomic local
  * operation over journey entries, train entries and station recency.
  */
 class ClearSearchHistoryAndRecency(private val repository: HistoryRepository) {
@@ -201,7 +200,7 @@ class ClearSearchHistoryAndRecency(private val repository: HistoryRepository) {
 }
 
 /**
- * Settings delete-all-favorites action (T7.8): one atomic local operation
+ * Settings delete-all-favorites action: one atomic local operation
  * over station, route and recurring-train favorites.
  */
 class ClearAllFavorites(private val repository: FavoritesRepository) {

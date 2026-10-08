@@ -24,7 +24,7 @@ import it.danielebufarini.trenify.feature.journey.RouteFavoriteState
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * Native Journey Results/Detail presentation (T8.6).
+ * Native Journey Results/Detail presentation.
  *
  * Semantic structured projections over the live [JourneyResultsComponent] /
  * [JourneyDetailComponent]. Platforms render these and forward the explicit
@@ -50,7 +50,7 @@ data class NativeJourneyLegPresentation(
 )
 
 /**
- * One service strike warning as shared semantic truth (T7.12, non-rendering).
+ * One service strike warning as shared semantic truth (non-rendering).
  * Carries the supporting strike identity, sector, scheduled interval,
  * semantic impact, source label
  * and URL when genuinely available, partial/unconfirmed context, and
@@ -78,7 +78,7 @@ data class NativeServiceStrikeWarningPresentation(
 )
 
 /**
- * FR-DATA-001 provenance for one correlated realtime leg (non-rendering).
+ * Provenance for one correlated realtime leg (non-rendering).
  * Genuine provider identity plus the observation's own fetch/source-update
  * timestamps; Unknown freshness carries no timestamps (never invented).
  */
@@ -103,7 +103,7 @@ data class NativeJourneyCardPresentation(
     /** Position in the currently sorted list; the selection key for [NativeJourneyResultsPresentation.selectJourney]. */
     val index: Int,
     /**
-     * Stable list identity derived from journey content (T8.14-C1).
+     * Stable list identity derived from journey content.
      * [index] moves when the user re-sorts; this key does not. Native lists
      * must use [key] as row identity and keep [index] for selection only.
      */
@@ -119,11 +119,11 @@ data class NativeJourneyCardPresentation(
     /** Distinct operator names in leg order; empty when none is supplied. */
     val operatorNames: List<String>,
     val legs: List<NativeJourneyLegPresentation>,
-    /** FR-DATA-001 journey sources (T7.14): genuinely contributing providers, never inferred. Null when none known. */
+    /** Journey sources: genuinely contributing providers, never inferred. Null when none known. */
     val sourceNames: String?,
     val warningCount: Int,
     val confirmedWarning: Boolean,
-    /** Full T7.12 warning semantics for this journey, in shared evaluation order. */
+    /** Full warning semantics for this journey, in shared evaluation order. */
     val warnings: List<NativeServiceStrikeWarningPresentation>,
 )
 
@@ -139,7 +139,7 @@ data class NativeJourneyResultsState(
     /** A payload is held but carries no journeys. */
     val empty: Boolean,
     /**
-     * Presentation policy (pre-T8.13 corrective): technical non-Fresh state
+     * Presentation policy: technical non-Fresh state
      * (progressive partial aggregation, cached content shown while a refresh
      * runs) is normal operation, never an "outdated" warning. The actionable
      * failed-refresh state keeps its own signal via [failure] with retry.
@@ -195,11 +195,11 @@ data class NativeLegDetailPresentation(
     val realtimeFailed: Boolean,
     /** The leg resolved to a known train run, so the train action is available. */
     val hasTrainAction: Boolean,
-    /** FR-DATA-001 correlated-run provenance; null when no realtime snapshot is held. */
+    /** Correlated-run provenance; null when no realtime snapshot is held. */
     val realtimeProvenance: NativeRealtimeProvenancePresentation?,
     val warningCount: Int,
     val confirmedWarning: Boolean,
-    /** Full T7.12 warning semantics for this leg, in shared evaluation order. */
+    /** Full warning semantics for this leg, in shared evaluation order. */
     val warnings: List<NativeServiceStrikeWarningPresentation>,
 )
 
@@ -215,7 +215,7 @@ data class NativeJourneyDetailState(
     val durationMinutes: Long?,
     val changes: Int?,
     /**
-     * Presentation policy (pre-T8.13 corrective): same rule as results
+     * Presentation policy: same rule as results
      * [NativeJourneyResultsState.stale] — a technically Stale journey
      * freshness (notably the intentional partial state) is not user-facing
      * "outdated". Leg-level realtime/failed/strike states remain the
@@ -224,14 +224,14 @@ data class NativeJourneyDetailState(
      */
     val journeyStale: Boolean,
     /**
-     * Restored-detail provenance timestamps (T7.14-B): the re-resolution
+     * Restored-detail provenance timestamps: the re-resolution
      * freshness instants where known. Unknown freshness yields nulls —
      * timestamps are never invented.
      */
     val journeyFetchedAtEpochSeconds: Long?,
     val journeySourceTimestampEpochSeconds: Long?,
     /**
-     * FR-DATA-001 journey sources (T7.14): genuinely contributing providers
+     * Journey sources: genuinely contributing providers
      * from the shared Journey source set, same label semantics as Results.
      * Null when none known; the train operator is never used as a source.
      */
@@ -297,7 +297,7 @@ private fun List<ServiceStrikeWarning>.confirmed(): Boolean = any { it.assessmen
 
 /**
  * Internal for direct projection tests (same module); never exported to
- * Swift. The field mapping is the T7.12 contract the platforms render.
+ * Swift. The field mapping is the contract the platforms render.
  */
 internal fun ServiceStrikeWarning.projected(): NativeServiceStrikeWarningPresentation =
     NativeServiceStrikeWarningPresentation(
@@ -328,7 +328,7 @@ private fun DataFreshness.sourceTimestampEpochSeconds(): Long? = when (this) {
 }
 
 /**
- * Content-derived list identity for one journey card (T8.14-C1).
+ * Content-derived list identity for one journey card.
  * Endpoints, scheduled times, change count and per-leg train identities in
  * leg order: invariant under result re-sorting, distinct for distinct
  * itineraries. Presentation identity only; domain identity is unchanged.
@@ -432,7 +432,7 @@ private fun JourneyDetailState.projected(): NativeJourneyDetailState {
                 else (leg.departure - journey.legs[index - 1].arrival).inWholeMinutes,
                 realtimeStatus = correlated?.summary?.status ?: TrainStatus.UNKNOWN,
                 delayMinutes = correlated?.summary?.delayMinutes,
-                scheduledPlatform = boardingStop?.scheduledPlatform,
+                scheduledPlatform = leg.scheduledPlatform ?: boardingStop?.scheduledPlatform,
                 actualPlatform = boardingStop?.actualPlatform,
                 realtimeStale = correlatedFreshness is DataFreshness.Stale,
                 realtimeFailed = failed || correlatedData?.warning != null,

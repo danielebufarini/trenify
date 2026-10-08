@@ -19,7 +19,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 /**
- * T7.7 installation preference persistence: defaults, reactive saves and
+ * Installation preference persistence: defaults, reactive saves and
  * restart survival. Strike opt-in is covered separately and never duplicated
  * here.
  */

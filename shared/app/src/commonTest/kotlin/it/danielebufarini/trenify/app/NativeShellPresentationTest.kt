@@ -55,7 +55,7 @@ class NativeShellPresentationTest {
         try {
             val main = assertIs<RootComponent.Child.Main>(root.stack.value.active.instance).component
             main.openHistory()
-            // T8.5: the journey composer lives in the native Home base, so the
+            // The journey composer lives in the native Home base, so the
             // Search form is not a separate visual path entry. History appears
             // directly above Home; the shared Journey stack still retains
             // Search below it.

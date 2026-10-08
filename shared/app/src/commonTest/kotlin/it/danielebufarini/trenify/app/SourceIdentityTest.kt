@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * FR-DATA-001 source-identity mapping (T7.14 corrective): known provider
+ * Source-identity mapping: known provider
  * identities resolve to stable human-readable names, unknown identities
  * stay unknown (never guessed from operator names), multi-source journeys
  * expose every genuinely contributing source, and fetch vs source-update

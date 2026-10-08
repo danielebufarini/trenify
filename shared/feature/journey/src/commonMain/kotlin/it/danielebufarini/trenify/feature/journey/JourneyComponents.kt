@@ -19,7 +19,7 @@ data class JourneySearchState(
     val origin: Station? = null, val destination: Station? = null,
     val suggestions: List<Station> = emptyList(), val editingOrigin: Boolean = true,
     /**
-     * Typed Rome-local search truth (T7.14 corrective): the requested
+     * Typed Rome-local search truth: the requested
      * service date and hour/minute. Presentation formats these per the
      * platform locale; a localized display string is never domain truth.
      */
@@ -38,7 +38,7 @@ data class JourneySearchState(
 }
 
 /**
- * Durable journey-search input (T7.13-B): the text, resolved endpoints,
+ * Durable journey-search input: the text, resolved endpoints,
  * requested Rome date/time and mode required to continue the flow after
  * save/destroy/recreate. Suggestions, loading flags and transient errors
  * are never persisted; they are re-derived.
@@ -204,7 +204,7 @@ class JourneySearchComponent(
     fun mode(value: JourneySearchMode) { mutable.value = mutable.value.copy(mode = value) }
 
     /**
-     * Atomic origin/destination swap for the T8.5 trip composer. Exchanges the
+     * Atomic origin/destination swap for the trip composer. Exchanges the
      * resolved endpoints and their display texts as one composed trip input,
      * preserving typed Rome date/time, mode and history recording rules.
      * It never triggers a search, never records history and never calls a
@@ -274,7 +274,7 @@ class JourneySearchComponent(
 
 private const val KEY_SAVED_SORT = "journey-results-sort"
 
-/** Durable results sort (T7.13-B); results themselves re-observe the repository. */
+/** Durable results sort; results themselves re-observe the repository. */
 @Serializable
 private data class SavedJourneySort(val sort: String = "DEPARTURE") {
     fun sortValue(): JourneySort? = runCatching { JourneySort.valueOf(sort) }.getOrNull()
@@ -284,7 +284,7 @@ data class JourneyResultsState(
     val results: RealtimeState<JourneySearchResult> = RealtimeState(),
     val sort: JourneySort = JourneySort.DEPARTURE,
     /**
-     * Strike warnings per journey from scheduled leg intervals (T7.12-B):
+     * Strike warnings per journey from scheduled leg intervals:
      * no realtime correlation is required. Only journeys with at least one
      * overlapping strike appear here.
      */
@@ -292,8 +292,7 @@ data class JourneyResultsState(
     /** Backing strike data is stale authoritative coverage. */
     val strikesStale: Boolean = false,
     /**
-     * No authoritative coverage exists for the requested interval (T7.12
-     * corrective pass): never rendered as merely outdated.
+     * No authoritative coverage exists for the requested interval: never rendered as merely outdated.
      */
     val strikesUnknown: Boolean = false,
     /** The targeted strike refresh failed; cached warnings are retained. */
@@ -326,7 +325,7 @@ class JourneyResultsComponent(
         stateKeeper.register(KEY_SAVED_SORT, SavedJourneySort.serializer()) {
             SavedJourneySort(sort = mutable.value.sort.name)
         }
-        // Elapsed-time aging (T7.14-B, union deadline): held results become
+        // Elapsed-time aging (union deadline): held results become
         // Stale at the journey TTL and strike coverage becomes Stale at the
         // strike cache TTL, both with zero provider calls; resume recomputes.
         // The strike repository's local expiry ticker tracks strike end
@@ -338,7 +337,7 @@ class JourneyResultsComponent(
         )
     }
     /**
-     * Strike window for these results (T7.12-B): departures lie inside the
+     * Strike window for these results: departures lie inside the
      * requested window while arrivals may extend one horizon beyond it. One
      * component-level observation plus one targeted stale refresh — never a
      * lookup per journey/result/card.
@@ -435,7 +434,7 @@ class JourneyResultsComponent(
 
     /**
      * Earliest freshness boundary across journey results and strike
-     * coverage (T7.14 corrective): a single component-level deadline, never
+     * coverage: a single component-level deadline, never
      * one timer per journey/card and never a provider poll.
      */
     private fun resultsStrikeDeadline(): Instant? = listOfNotNull(
@@ -444,7 +443,7 @@ class JourneyResultsComponent(
     ).minOrNull()
 
     /**
-     * Local tick (T7.14 corrective): re-derives results and strike-coverage
+     * Local tick: re-derives results and strike-coverage
      * freshness from the injected clock with zero provider calls, then
      * re-evaluates warning presentation against the aged strike freshness
      * (a stale backing can only downgrade operator confirmation, never
@@ -494,7 +493,7 @@ data class JourneyDetailState(
      */
     val resolved: Journey? = null,
     /**
-     * Provenance of the resolved journey (T7.14-B): the search-result
+     * Provenance of the resolved journey: the search-result
      * freshness on the restore path, Unknown on the live path where no fetch
      * timestamp is genuinely known. Aged by elapsed local time.
      */
@@ -514,19 +513,18 @@ data class JourneyDetailState(
     val bookingInProgress: Boolean = false,
     val bookingFailed: Boolean = false,
     /**
-     * Strike warnings per leg index from scheduled leg intervals (T7.12-B):
+     * Strike warnings per leg index from scheduled leg intervals:
      * no realtime correlation is required before a warning can display.
      */
     val strikeWarnings: Map<Int, List<ServiceStrikeWarning>> = emptyMap(),
     val strikesStale: Boolean = false,
     /**
-     * No authoritative coverage exists for the requested interval (T7.12
-     * corrective pass): never rendered as merely outdated.
+     * No authoritative coverage exists for the requested interval: never rendered as merely outdated.
      */
     val strikesUnknown: Boolean = false,
     val strikesFailed: Boolean = false,
     /**
-     * Available realtime enrichment per leg index (T7.12-D): already
+     * Available realtime enrichment per leg index: already
      * correlated/cached snapshots observed read-only. Never a realtime
      * lookup per leg: observation only, zero refresh calls.
      */
@@ -592,7 +590,7 @@ class JourneyDetailComponent(
     private val observedRealtimeLegs = mutableSetOf<Int>()
 
     init {
-        // Elapsed-time aging (T7.14-B, union deadline): the restored
+        // Elapsed-time aging (union deadline): the restored
         // provenance, every correlated realtime leg and the strike coverage
         // each age at their own TTL with zero provider calls; resume
         // recomputes from the clock. The strike repository's local expiry
@@ -607,7 +605,7 @@ class JourneyDetailComponent(
     }
 
     /**
-     * Restored-detail entry point (T7.13-C): re-resolves the persisted
+     * Restored-detail entry point: re-resolves the persisted
      * lookup key through the repository instead of deserializing a stale
      * snapshot. Only used by navigation restoration, never by live flows.
      */
@@ -651,7 +649,7 @@ class JourneyDetailComponent(
     }
 
     /**
-     * Restored-detail resolution (T7.13-C): the cached observation first
+     * Restored-detail resolution: the cached observation first
      * (fresh data, or useful stale data where the repository contract
      * allows it), then one allowed repository lookup when the cache no
      * longer holds the target. The serialized key is matching criteria
@@ -715,7 +713,10 @@ class JourneyDetailComponent(
         if (correlateUseCase != null) scope.launch {
             for ((index, leg) in resolved.legs.withIndex()) {
                 instrumentation.span("journey.detail.train_correlation", mapOf("leg" to index.toString())) {
-                    correlateUseCase(leg)
+                    correlateUseCase(leg) { platform ->
+                        val current = mutable.value
+                        mutable.value = current.copy(resolved = current.resolved?.withScheduledPlatform(index, platform))
+                    }
                 }?.let { id ->
                     currentCoroutineContext().ensureActive()
                     mutable.value = mutable.value.copy(trainRuns = mutable.value.trainRuns + (index to id))
@@ -755,7 +756,7 @@ class JourneyDetailComponent(
     }
 
     /**
-     * One targeted stale refresh for the exact journey interval (T7.12-B).
+     * One targeted stale refresh for the exact journey interval.
      * Never a realtime lookup and never one lookup per leg.
      */
     fun refreshStrikes() {
@@ -778,7 +779,7 @@ class JourneyDetailComponent(
     }
 
     /**
-     * Available realtime enrichment for one correlated leg (T7.12-D):
+     * Available realtime enrichment for one correlated leg:
      * observes the already correlated/cached snapshot read-only — scheduled
      * data stays primary and no refresh is ever issued here, so opening a
      * detail can never fan out into per-leg provider lookups.
@@ -787,7 +788,21 @@ class JourneyDetailComponent(
         val repository = trains ?: return
         scope.launch {
             repository.observeTrain(id).collect { result ->
-                mutable.value = mutable.value.copy(correlatedRuns = mutable.value.correlatedRuns + (index to result))
+                val current = mutable.value
+                val journey = current.resolved
+                val leg = journey?.legs?.getOrNull(index)
+                // The stop's planned departure platform is scheduled truth,
+                // even when learned from a correlated run. Keep it on the leg
+                // so a later missing/failed realtime observation cannot erase it.
+                // A platform already supplied by the journey stays authoritative.
+                val planned = (result as? DataResult.Data)?.value?.stops?.singleOrNull {
+                    it.station.normalizedName == leg?.origin?.normalizedName &&
+                        it.scheduledDeparture == leg?.departure
+                }?.scheduledPlatform
+                mutable.value = current.copy(
+                    resolved = journey?.withScheduledPlatform(index, planned),
+                    correlatedRuns = current.correlatedRuns + (index to result),
+                )
                 if (result is DataResult.Data && observedRealtimeLegs.add(index)) {
                     instrumentation.event("journey.detail.train_realtime_content", mapOf("leg" to index.toString()))
                 }
@@ -797,10 +812,17 @@ class JourneyDetailComponent(
         }
     }
 
+    private fun Journey.withScheduledPlatform(index: Int, planned: String?): Journey {
+        val leg = legs.getOrNull(index) ?: return this
+        if (planned == null || leg.scheduledPlatform != null) return this
+        return copy(legs = legs.mapIndexed { legIndex, scheduledLeg ->
+            if (legIndex == index) scheduledLeg.copy(scheduledPlatform = planned) else scheduledLeg
+        })
+    }
+
     /**
      * Earliest freshness boundary across the restored-journey provenance,
-     * every correlated realtime leg and the strike coverage (T7.14
-     * corrective): one component-level deadline, never one timer per leg
+     * every correlated realtime leg and the strike coverage: one component-level deadline, never one timer per leg
      * and never a provider poll.
      */
     private fun detailDeadline(): Instant? {
@@ -819,7 +841,7 @@ class JourneyDetailComponent(
     }
 
     /**
-     * Local tick (T7.14 corrective): re-derives the restored provenance,
+     * Local tick: re-derives the restored provenance,
      * every correlated leg and the strike coverage from the injected clock
      * with zero provider calls, then re-evaluates leg warnings against the
      * aged strike freshness. Repository truth is untouched: the next

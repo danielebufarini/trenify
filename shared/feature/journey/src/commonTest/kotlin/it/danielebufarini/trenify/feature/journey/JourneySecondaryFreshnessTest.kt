@@ -40,7 +40,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Union-deadline aging for secondary journey freshness (T7.14 corrective):
+ * Union-deadline aging for secondary journey freshness:
  * correlated realtime legs and strike coverage age through elapsed local
  * time with zero provider calls, a later emission restores Fresh, and
  * pause/resume/destroy behave like the primary watcher.

@@ -33,7 +33,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
- * T7.7 Settings vertical slice: persistent defaults, reactive saves,
+ * Settings vertical slice: persistent defaults, reactive saves,
  * validation, permission presentation, failure/retry, lifecycle and the
  * single shared strike opt-in with Alerts.
  */

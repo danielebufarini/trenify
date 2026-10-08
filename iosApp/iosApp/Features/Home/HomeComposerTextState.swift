@@ -1,4 +1,4 @@
-/// One composer text field's editing rule (T8.5 corrective). The TextField
+/// One composer text field's editing rule. The TextField
 /// writes through `userEdited`, which forwards only text the shared truth
 /// does not already hold; shared emissions apply through `applyShared`,
 /// which assigns the local copy directly and never invokes the user-edit

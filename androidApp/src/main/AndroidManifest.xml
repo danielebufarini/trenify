@@ -21,7 +21,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Local-notification taps (T7.13-F): the content intent action
+            <!-- Local-notification taps: the content intent action
                  plus a per-destination data URI route here on both cold and
                  warm entry; onNewIntent forwards warm taps to the shared root. -->
             <intent-filter>

@@ -58,13 +58,13 @@
     "en": {
      "stringUnit": {
       "state": "translated",
-      "value": "Strike warning"
+      "value": "Strike"
      }
     },
     "it": {
      "stringUnit": {
       "state": "translated",
-      "value": "Avviso sciopero"
+      "value": "Sciopero"
      }
     }
    }
@@ -109,13 +109,13 @@
     "en": {
      "stringUnit": {
       "state": "translated",
-      "value": "Strike period: %@ – %@"
+      "value": "%@ – %@"
      }
     },
     "it": {
      "stringUnit": {
       "state": "translated",
-      "value": "Periodo dello sciopero: %@ – %@"
+      "value": "%@ – %@"
      }
     }
    }

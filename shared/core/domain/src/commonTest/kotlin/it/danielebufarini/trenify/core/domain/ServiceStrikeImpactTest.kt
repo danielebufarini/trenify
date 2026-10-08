@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 
 /**
- * T7.12-B neutral interval/context strike-impact semantics: true interval
+ * Neutral interval/context strike-impact semantics: true interval
  * overlap (never timestamp membership), explicit endpoint/incomplete-time
  * rules, Europe/Rome DST cases, operator/geography evidence, revocation,
  * staleness and the never-cancelled guarantee.

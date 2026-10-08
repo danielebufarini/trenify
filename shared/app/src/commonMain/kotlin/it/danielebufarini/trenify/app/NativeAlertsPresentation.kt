@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlin.time.Instant
 
 /**
- * T8.10: semantic Alerts/Strike snapshots over the existing [AlertsTabComponent].
+ * Semantic Alerts/Strike snapshots over the existing [AlertsTabComponent].
  * No rendering, filtering-policy invention, correlation, revocation, freshness,
  * notification or URL-validation logic is owned here. The shared component owns
  * overview/detail navigation, strike selection identity, refresh, notification

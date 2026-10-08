@@ -52,7 +52,7 @@ private func journeyString(_ key: String) -> String {
     NSLocalizedString(key, tableName: "Journey", bundle: journeyBundle, comment: "")
 }
 
-/// Android-owned native Journey Results (T8.6): loading/refreshing with
+/// Android-owned native Journey Results: loading/refreshing with
 /// content, results, empty, stale/cached and failure states; direct and
 /// transfer cards with strike warnings. No prices, fares, classes or
 /// purchase UI. Content cards stay readable surfaces, never glass.
@@ -60,10 +60,10 @@ struct NativeJourneyResultsView: View {
     @ObservedObject var model: NativeJourneyResultsModel
 
     var body: some View {
-        // Back/title chrome belongs to the platform NavigationStack (Blocker 4):
+        // Back/title chrome belongs to the platform NavigationStack:
         // migrated destinations expose no in-content Back control.
         ScrollView {
-            // T8.14-R3: lazy vertical rendering for the card list (was an eager
+            // Lazy vertical rendering for the card list (was an eager
             // VStack creating every card up front). Same alignment/spacing as
             // before; matches the ScrollView+LazyVStack pattern of the other
             // long-list surfaces. Stable identity still via `\.key`.
@@ -215,7 +215,7 @@ struct NativeJourneyResultsView: View {
                 destination: journey.destinationName,
                 durationLabel: RailwayFormatting.duration(minutes: journey.durationMinutes),
                 changesLabel: changesLabel(journey),
-                statusTone: journey.warningCount > 0 ? .warning : .unknown,
+                statusTone: journey.warnings.isEmpty ? .unknown : .warning,
                 // Neutral/default scheduled results carry no badge; only
                 // genuine strike warnings render a status pill.
                 statusLabel: warningLabel(journey),
@@ -226,16 +226,11 @@ struct NativeJourneyResultsView: View {
                 model.select(index: journey.index)
             }
             .accessibilityIdentifier("journey-result-\(journey.index)")
-            // FR-DATA-001 provider attribution remains in shared state for
-            // diagnostics and detail presentation, but is not repeated on
-            // every traveler-facing result card.
-            // Full T7.12 warning semantics (Blocker 1/1B): every warning with
-            // impact/sector/interval/source/partial wording, plus coverage
-            // state truthful even with zero warnings. A warning never
-            // implies cancellation.
-            if !journey.warnings.isEmpty || state.strikesStale || state.strikesFailed || state.strikesUnknown {
+            // Strike intervals render in the card's status pill. Without a
+            // warning, retain the existing coverage status below the card.
+            if journey.warnings.isEmpty && (state.strikesStale || state.strikesFailed || state.strikesUnknown) {
                 journeyStrikeBlock(
-                    warnings: journey.warnings,
+                    warnings: [],
                     stale: state.strikesStale,
                     failed: state.strikesFailed,
                     unknown: state.strikesUnknown,
@@ -245,10 +240,8 @@ struct NativeJourneyResultsView: View {
         }
     }
 
-    /// Native T7.12 strike-warning presentation: one block per overlapping
-    /// strike plus mutually exclusive coverage qualifiers (Unknown alone;
-    /// Stale for stale or failed refresh). Renders nothing only when there
-    /// are no warnings and coverage is fully known.
+    /// Native strike-warning presentation: one block per overlapping
+    /// strike. Without warnings, show unknown/stale coverage when applicable.
     @ViewBuilder
     private func journeyStrikeBlock(
         warnings: [NativeServiceStrikeWarningPresentation],
@@ -260,11 +253,6 @@ struct NativeJourneyResultsView: View {
         RailwayStrikeBlock(
             warnings: warnings, stale: stale, failed: failed, unknown: unknown, tagPrefix: tagPrefix)
     }
-
-    private func strikeImpactLabel(_ warning: NativeServiceStrikeWarningPresentation) -> String {
-        RailwayStrikeImpactLabel(warning)
-    }
-
 
     private func changesLabel(_ journey: NativeJourneyCardPresentation) -> String {
         if journey.changes == 0 {
@@ -285,25 +273,22 @@ struct NativeJourneyResultsView: View {
     }
 
     private func warningLabel(_ journey: NativeJourneyCardPresentation) -> String? {
-        guard journey.warningCount > 0 else { return nil }
-        if journey.confirmedWarning { return railwayPresentationString("journey.warningConfirmed") }
-        let count = Int(journey.warningCount)
-        return String.localizedStringWithFormat(
-            journeyString(count == 1 ? "journey.warning.one" : "journey.warning.other"), count)
+        guard !journey.warnings.isEmpty else { return nil }
+        return journey.warnings.map(RailwayStrikeLabel).joined(separator: "\n")
     }
 }
 
 // MARK: - Detail
 
-/// Native Journey Detail (T8.6): route summary, per-leg schedule with
+/// Native Journey Detail: route summary, per-leg schedule with
 /// already-correlated realtime enrichment, strike warnings, platform info,
 /// transfer guidance and the secondary official-operator booking handoff.
-/// Train navigation forwards to the existing shared action (T8.7 owns Train).
+/// Train navigation forwards to the existing shared action.
 struct NativeJourneyDetailView: View {
     @ObservedObject var model: NativeJourneyDetailModel
 
     var body: some View {
-        // Back/title chrome belongs to the platform NavigationStack (Blocker 4):
+        // Back/title chrome belongs to the platform NavigationStack:
         // migrated destinations expose no in-content Back control.
         ScrollView {
             VStack(alignment: .leading, spacing: TrenifySpacing.l) {
@@ -345,7 +330,7 @@ struct NativeJourneyDetailView: View {
                         action: model.toggleFavoriteRoute
                     )
                     .accessibilityIdentifier("journey-route-favorite")
-                    // Restored T7-era behavior (Blocker 3): a failed update
+                    // Restored behavior: a failed update
                     // keeps content visible, shows the localized failure,
                     // invents no optimistic state and disables no unrelated
                     // action.
@@ -396,7 +381,7 @@ struct NativeJourneyDetailView: View {
     @ViewBuilder
     private func bookingBlock(_ state: NativeJourneyDetailState) -> some View {
         // Unavailable booking renders nothing: no explanatory or unavailable
-        // copy. Availability and handoff still follow the shared T5.5 policy.
+        // copy. Availability and handoff still follow the shared policy.
         if state.bookingAvailable {
             VStack(alignment: .leading, spacing: TrenifySpacing.s) {
                 TrenifySecondaryAction(
@@ -463,7 +448,7 @@ struct NativeJourneyDetailView: View {
                         .foregroundStyle(TrenifyColors.textSecondary)
                         .accessibilityIdentifier("journey-platform-actual-\(index)")
                 }
-                // Full T7.12 warning semantics per leg (Blocker 1/1B): every
+                // Full warning semantics per leg: every
                 // warning with impact/sector/interval/source/partial wording
                 // plus coverage state truthful even with zero warnings.
                 if !leg.warnings.isEmpty || state.strikesStale || state.strikesFailed || state.strikesUnknown {
@@ -485,11 +470,6 @@ struct NativeJourneyDetailView: View {
                         .font(TrenifyTypography.caption)
                         .foregroundStyle(TrenifyColors.textSecondary)
                         .accessibilityIdentifier("journey-correlating-\(index)")
-                } else {
-                    Text(journeyString("journey.realtimeUnavailable"))
-                        .font(TrenifyTypography.caption)
-                        .foregroundStyle(TrenifyColors.textSecondary)
-                        .accessibilityIdentifier("journey-realtime-unavailable-\(index)")
                 }
             }
             .padding(TrenifySpacing.l)

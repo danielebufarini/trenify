@@ -64,7 +64,7 @@ data class Strike(
 }
 
 /**
- * Single shared T7.12 strike-interval overlap definition: touching
+ * Single shared strike-interval overlap definition: touching
  * boundaries count as overlap (`aStart <= bEnd && bStart <= aEnd`).
  *
  * Every production layer that decides whether a strike belongs to a

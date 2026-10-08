@@ -1,10 +1,10 @@
 import SwiftUI
 @preconcurrency import SharedApp
 
-/// Native Home/Search (T8.5). One composed trip input with swap, native
+/// Native Home/Search. One composed trip input with swap, native
 /// date/time pickers, journey + train/station entries, recents and favorites.
 /// Shared facades stay authoritative; this view owns only ephemeral text editing
-/// and visual composition through the T8.3 design system.
+/// and visual composition through the design system.
 ///
 /// Text binding rule: the TextFields write through HomeComposerTextState, so
 /// only user keystrokes reach `stationText` (which clears the resolved

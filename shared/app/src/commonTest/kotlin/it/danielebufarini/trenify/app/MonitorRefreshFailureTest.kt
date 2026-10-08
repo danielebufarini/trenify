@@ -40,7 +40,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Monitor refresh-failure presentation truth (T7.14 corrective): a failed
+ * Monitor refresh-failure presentation truth: a failed
  * refresh is never evaluated as a new observation, yet the retained
  * snapshot becomes visibly stale-with-warning, stays distinguishable
  * offline vs temporary, generates no events/notifications, and recovers

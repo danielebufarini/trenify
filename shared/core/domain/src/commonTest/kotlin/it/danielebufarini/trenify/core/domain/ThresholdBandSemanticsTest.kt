@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 /**
- * T7.7 threshold-band semantics, kept unchanged: equality reaches the
+ * Threshold-band semantics, kept unchanged: equality reaches the
  * threshold band and recovery back below it notifies again.
  */
 class ThresholdBandSemanticsTest {

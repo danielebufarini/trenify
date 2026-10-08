@@ -22,7 +22,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 /**
- * T7.12 corrective pass, Blocker 3: a coverage row that certifies an
+ * A coverage row that certifies an
  * interval as fresh/empty is established only when the response is
  * parse-complete AND the provider contract says absence is authoritative.
  * Presence is still upserted either way.

@@ -34,7 +34,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 /**
- * Mandatory functional reachability audit (T7.13): every MVP destination is
+ * Mandatory functional reachability audit: every MVP destination is
  * reachable from Home/tabs/saved data/local notifications through
  * normalized identity/criteria (never saved full objects), and every
  * destination returns correctly.

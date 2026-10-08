@@ -27,7 +27,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * T7.8 corrective pass: a recurring-train save that committed before a
+ * A recurring-train save that committed before a
  * completed delete-all must not visually reappear merely because its
  * controller continuation resumes late. Same post-commit parking shape as
  * the station stale test.

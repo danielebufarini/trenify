@@ -5,11 +5,10 @@ import Foundation
 /// in Europe/Rome, independent of the device timezone; durations stay in
 /// whole minutes from shared state. No business logic lives here.
 ///
-/// T8.14-C2: the hot row formatters are cached shared instances instead of
+/// The hot row formatters are cached shared instances instead of
 /// per-call constructions (DateFormatter creation is expensive and these run
 /// per row on every list render). Configuration is unchanged on purpose:
-/// fixed POSIX month abbreviations stay exactly as before (T8.12 owns
-/// locale decisions). All call sites run on the main thread (SwiftUI bodies
+/// fixed POSIX month abbreviations stay exactly as before. All call sites run on the main thread (SwiftUI bodies
 /// and main-thread XCTest); the explicit opt-out documents that confinement.
 enum RailwayFormatting {
     static func date(forEpochSeconds value: Int64) -> Date {

@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 @preconcurrency import SharedApp
 
-/// T8.6 native Journey models, formatting and review captures. Production
+/// Native Journey models, formatting and review captures. Production
 /// models only, through the accepted SKIE boundary; one session/root per
 /// fixture. No repository/provider construction in Swift.
 @MainActor
@@ -229,7 +229,7 @@ final class NativeJourneyShellTests: XCTestCase {
         model.buy()
         await poll("booking settles") { model.state?.bookingInProgress == false }
         XCTAssertEqual(model.state?.bookingFailed, false)
-        // T8.7: the same shared root now exposes native Train Detail.
+        // The same shared root now exposes native Train Detail.
         model.openTrain(legIndex: 0)
         await poll("native train detail") {
             fixture.session.state.value.navigation.active.destination == .trainDetail
@@ -247,7 +247,7 @@ final class NativeJourneyShellTests: XCTestCase {
         defer { fixture.close() }
         fixture.selectHome()
         // Staged failure: the toggle reports failed instead of inventing
-        // optimistic state (restored T7-era behavior).
+        // optimistic state.
         fixture.stageRouteFavoriteFailure()
         await searchToResults(fixture)
         let shell = fixture.session.shell

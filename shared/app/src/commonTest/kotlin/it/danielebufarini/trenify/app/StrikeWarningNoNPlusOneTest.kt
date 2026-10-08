@@ -48,7 +48,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 /**
- * T7.12-D no-N+1 proof at the provider boundary: journey results, monitor
+ * No-N+1 proof at the provider boundary: journey results, monitor
  * cards and detail enrichment share one strike fetch per window and issue no
  * per-result/card/leg realtime requests.
  */

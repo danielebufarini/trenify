@@ -28,7 +28,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * T7.8: confirmed Settings deletions empty the Home aggregates reactively
+ * Confirmed Settings deletions empty the Home aggregates reactively
  * without reopening the screen, while monitors and unrelated state survive.
  */
 @OptIn(ExperimentalCoroutinesApi::class)

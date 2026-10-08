@@ -1,7 +1,7 @@
 package it.danielebufarini.trenify.core.platform
 
 /**
- * Effective ability to deliver a local notification (T7.7).
+ * Effective ability to deliver a local notification.
  *
  * This is separate state from the saved user preference: a denied or revoked
  * OS permission never implies that monitoring itself is disabled, it only

@@ -37,7 +37,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 /**
- * T7.11 corrective pass 2: a one-shot background graph closes right after
+ * A one-shot background graph closes right after
  * [MonitoringCoordinator.performBackgroundRefresh] returns, so the refresh
  * must await the terminal delivery attempts its own refresh created —
  * otherwise closing destroys a pending delivery it just committed.

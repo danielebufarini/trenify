@@ -22,7 +22,7 @@ private fun Station.record() = StationRecord(id.value, name)
     val provider: String, val number: String, val originRef: String, val date: String,
     val origin: StationRecord, val destination: String?, val scheduled: Long?,
     val status: String, val delay: Int?, val scheduledPlatform: String?, val actualPlatform: String?, val operator: String?,
-    // T7.10 additions, all optional: rows persisted before T7.10 decode with
+    // Additions, all optional: rows persisted before decode with
     // nulls (unknown/unavailable), never invented values. Position rides the
     // summary payload because the train table stores the summary column plus
     // stop rows rather than the whole snapshot record.

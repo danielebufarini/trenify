@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 
-/** Durations describe visual confirmation only; routeProgress is guidance for T8.7. */
+/** Durations describe visual confirmation only; routeProgress is guidance. */
 enum class TrenifyMotionRole(val milliseconds: Int) {
     Quick(100), Standard(200), Emphasized(300), RouteProgress(450), Selection(160), StatusChange(200),
 }

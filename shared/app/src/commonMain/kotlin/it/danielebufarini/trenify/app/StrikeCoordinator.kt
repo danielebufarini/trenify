@@ -72,7 +72,7 @@ class StrikeCoordinator(
     }
 
     /**
-     * Strike delivery precedence (T7.7): a strike notification is delivered
+     * Strike delivery precedence: a strike notification is delivered
      * only when the installation-wide switch, the strike opt-in and the
      * effective OS permission all allow it. All three are resolved fresh at
      * dispatch time. The installation switch gates delivery only; strike

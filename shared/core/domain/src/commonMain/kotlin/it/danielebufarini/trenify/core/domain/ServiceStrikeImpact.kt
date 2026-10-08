@@ -13,8 +13,7 @@ import it.danielebufarini.trenify.core.model.TrainRunId
 import kotlin.time.Instant
 
 /**
- * Provider-neutral scheduled-service context for strike-impact evaluation
- * (T7.12-B/C).
+ * Provider-neutral scheduled-service context for strike-impact evaluation.
  *
  * This is the neutral interval/context input journey and monitoring flows
  * evaluate against cached strikes: plain instants plus a normalized operator,
@@ -33,8 +32,7 @@ data class ServiceStrikeContext(
 fun JourneyLeg.strikeContext(): ServiceStrikeContext = ServiceStrikeContext(departure, arrival, operator)
 
 /**
- * Monitored-run context from an already persisted/current local snapshot
- * (T7.12-C).
+ * Monitored-run context from an already persisted/current local snapshot.
  *
  * Scheduled service times position the train; actuals are only a fallback
  * when a snapshot carries no scheduled times at all, so realtime drift can
@@ -79,7 +77,7 @@ enum class OperatorEvidence { MATCH, MISMATCH, UNKNOWN }
 enum class GeographyEvidence { NATIONAL_COVERAGE, UNKNOWN }
 
 /**
- * One strike assessment against one service context (T7.12 impact semantics).
+ * One strike assessment against one service context.
  *
  * [impact] is NONE for revoked/completed/non-railway strikes and whenever
  * temporal evidence is not [TemporalEvidence.OVERLAP]. Temporal overlap
@@ -164,7 +162,7 @@ class EvaluateServiceStrikeImpact(
         val departure = context.departure
         val arrival = context.arrival
         if (departure == null && arrival == null) return TemporalEvidence.INCOMPLETE
-        // Endpoint semantics (T7.12-B): endpoints are normalized with min/max
+        // Endpoint semantics: endpoints are normalized with min/max
         // so an inverted interval still denotes its span, then evaluated with
         // the single shared strikeIntervalsOverlap definition (inclusive
         // boundaries: a service touching the strike interval exactly at one

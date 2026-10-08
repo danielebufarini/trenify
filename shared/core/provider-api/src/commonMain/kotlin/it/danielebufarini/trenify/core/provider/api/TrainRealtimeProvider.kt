@@ -17,7 +17,7 @@ sealed interface ProviderResult<out T> {
     /**
      * Successful provider response.
      *
-     * [complete] is provider-neutral snapshot completeness (T7.12): true when
+     * [complete] is provider-neutral snapshot completeness: true when
      * no source record was skipped while producing [value], so absence from
      * [value] is meaningful evidence for the requested scope. Parsers that
      * skip undecodable records must report false here while keeping their
@@ -48,7 +48,7 @@ data class ProviderTrainCandidate(
     val scheduledTime: Instant? = null,
     /**
      * Scheduled origin departure / destination arrival. Detail snapshots only;
-     * always null for board rows (T7.10).
+     * always null for board rows.
      */
     val scheduledDeparture: Instant? = null,
     val scheduledArrival: Instant? = null,
@@ -57,7 +57,7 @@ data class ProviderTrainCandidate(
     val scheduledPlatform: String? = null,
     val actualPlatform: String? = null,
     val operator: Operator? = null,
-    /** Source-backed category; null when the provider supplies none (T7.10). */
+    /** Source-backed category; null when the provider supplies none. */
     val category: TrainCategory? = null,
 )
 data class ProviderTrainStop(
@@ -74,7 +74,7 @@ data class ProviderTrainStop(
 data class ProviderTrainSnapshot(
     val train: ProviderTrainCandidate,
     val stops: List<ProviderTrainStop>,
-    /** Source-backed operational position; null when the provider supplies none (T7.10). */
+    /** Source-backed operational position; null when the provider supplies none. */
     val position: ProviderOperationalPosition? = null,
 )
 /**

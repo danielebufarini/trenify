@@ -4,7 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * T7.7 Android effective notification availability: the POST_NOTIFICATIONS
+ * Android effective notification availability: the POST_NOTIFICATIONS
  * runtime permission only exists on API 33+, while system-level application
  * and channel state gate delivery on every API level.
  */

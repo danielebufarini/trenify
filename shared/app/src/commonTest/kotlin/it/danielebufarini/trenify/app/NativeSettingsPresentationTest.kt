@@ -40,7 +40,7 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 /**
- * T8.11 native Settings projection: the facade projects the existing
+ * Native Settings projection: the facade projects the existing
  * [DefaultSettingsComponent] truth and forwards its existing actions.
  * Notification, permission, threshold, event-flag, strike and deletion
  * semantics stay shared; this suite proves the projection never invents

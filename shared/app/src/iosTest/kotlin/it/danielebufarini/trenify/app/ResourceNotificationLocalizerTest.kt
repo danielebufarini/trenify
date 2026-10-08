@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 
 /**
  * Real shared notification wording in the default (English) locale
- * (T7.14-C, simulator-only: the JVM host cannot resolve real resources).
+ * (simulator-only: the JVM host cannot resolve real resources).
  * Italian catalog completeness is enforced by the resource-parity check;
  * identity stability across locales is covered by
  * [NotificationLocalizationTest] on both legs.
@@ -25,7 +25,7 @@ class ResourceNotificationLocalizerTest {
     }
 
     @Test fun trainDelayUnknownPreviousNeverBecomesZero() = runTest {
-        // FR-DATA-002: a previously unknown delay must read as unknown,
+        // A previously unknown delay must read as unknown,
         // never as a fabricated change from 0.
         val body = localizer.delayChanged(null, 20)
         assertEquals("Delay is now 20 minutes (previously unknown)", body)

@@ -38,7 +38,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * T7.11 corrective: a train detail opened for a retained ended monitor is
+ * A train detail opened for a retained ended monitor is
  * lifecycle-aware and read-only. The persisted monitor endedAt is
  * authoritative (never the possibly stale train cache): no automatic provider
  * access happens, no Stop/preferences controls are active, and only the

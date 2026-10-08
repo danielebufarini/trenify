@@ -60,7 +60,7 @@ class MonitoringCoordinatorTest {
         assertTrue(scheduler.cancelled.isNotEmpty())
 
         // Establish a known delay baseline first: unknown -> 20 is no
-        // truthful transition and must not notify (T7.11 corrective).
+        // truthful transition and must not notify.
         trains.trainState.value = DataResult.Data(
             testRun.copy(summary = testRun.summary.copy(delayMinutes = 5)),
             DataFreshness.Unknown,

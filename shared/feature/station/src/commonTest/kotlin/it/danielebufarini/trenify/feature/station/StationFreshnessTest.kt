@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Time-driven freshness for the station board (T7.14-B): Fresh becomes
+ * Time-driven freshness for the station board: Fresh becomes
  * Stale through elapsed local time with zero provider calls, and resume
  * after suspension recomputes elapsed age.
  */

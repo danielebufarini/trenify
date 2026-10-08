@@ -26,7 +26,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * T7.7 per-monitor preference edits: mute/unmute, threshold and flag edits
+ * Per-monitor preference edits: mute/unmute, threshold and flag edits
  * preserve identity, snapshots, event claims, expiry and enabled state
  * without recreation or synthetic events.
  */
@@ -209,7 +209,7 @@ class MonitorPreferencesTest {
             driver.execute(null, "INSERT INTO strike_notification_setting VALUES (1, 0)", 0)
 
             // Migrate to the current schema: the 9.sqm step still applies
-            // first, so pre-T7.7 rows are covered, and the T7.11 steps must
+            // first, so rows are covered, and the steps must
             // leave them active with no fabricated endedAt.
             TrenifyDatabase.Schema.migrate(driver, 9, TrenifyDatabase.Schema.version)
 
@@ -246,7 +246,7 @@ class MonitorPreferencesTest {
 
     private val String.sql: String get() = replace("'", "''")
 
-    // Version 9 monitor/strike tables, verbatim except for the T7.7 column the
+    // Version 9 monitor/strike tables, verbatim except for the column the
     // 9.sqm migration adds. Unrelated v9 tables are omitted: the migration
     // only alters active_monitor.
     private fun version9MonitorTables(): List<String> = listOf(

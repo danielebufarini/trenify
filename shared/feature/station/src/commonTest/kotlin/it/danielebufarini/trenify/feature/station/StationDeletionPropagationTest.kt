@@ -16,7 +16,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * T7.8: the confirmed Settings search-history deletion also clears the
+ * The confirmed Settings search-history deletion also clears the
  * user-visible recent-station suggestions observed on the Stations screen;
  * the component never writes deleted recency back and new openings work
  * normally afterwards.

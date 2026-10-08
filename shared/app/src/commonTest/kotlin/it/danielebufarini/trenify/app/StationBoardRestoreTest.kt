@@ -27,8 +27,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
- * Station-board identity-only restoration (T7.13 corrective pass,
- * blocker 4) through the real Decompose state keeper.
+ * Station-board identity-only restoration through the real Decompose state keeper.
  *
  * Durable board routes carry only the stable [StationId]; the board
  * displays the repository-resolved canonical station. A rename after the

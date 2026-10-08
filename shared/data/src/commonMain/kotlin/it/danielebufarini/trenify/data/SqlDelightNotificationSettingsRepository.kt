@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 /**
- * Installation-wide notification preferences (T7.7) stored in the shared
+ * Installation-wide notification preferences stored in the shared
  * `app_metadata` key/value table, so no schema migration is required.
  *
  * Absent keys read as the documented defaults (notifications on, 15-minute

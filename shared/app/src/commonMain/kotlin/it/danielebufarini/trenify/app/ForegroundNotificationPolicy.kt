@@ -11,7 +11,7 @@ import it.danielebufarini.trenify.core.platform.NotificationPermission
 import kotlinx.coroutines.flow.first
 
 /**
- * Foreground local-notification presentation eligibility (T7.13-G).
+ * Foreground local-notification presentation eligibility.
  *
  * The host decides platform presentation mechanics, but event/business
  * eligibility stays shared and follows the saved effective preferences —

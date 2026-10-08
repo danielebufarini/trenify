@@ -34,7 +34,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * End-to-end save/destroy/recreate restoration (T7.13-B/I) through the real
+ * End-to-end save/destroy/recreate restoration through the real
  * Decompose state-keeper mechanism: navigate through multiple tabs/stacks,
  * populate durable inputs, save, destroy the tree, recreate from the saved
  * state and verify selected tab, independent stacks, durable inputs and

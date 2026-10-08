@@ -12,7 +12,7 @@ import kotlinx.coroutines.test.*
 import kotlin.test.*
 
 /**
- * Typed FS §23 failure presentation for journey results (T7.14-A): a
+ * Typed failure presentation for journey results: a
  * provider failure is a retryable typed error while a valid empty result
  * stays a distinct non-error empty state.
  */

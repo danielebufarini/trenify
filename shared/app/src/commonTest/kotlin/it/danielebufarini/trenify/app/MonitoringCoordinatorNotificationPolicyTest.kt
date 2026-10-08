@@ -42,7 +42,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 /**
- * T7.7 coordinator delivery precedence and race safety: global switch x
+ * Coordinator delivery precedence and race safety: global switch x
  * per-train switch x event flag x effective OS permission, with snapshot
  * progression preserved whenever delivery is gated.
  */
@@ -85,7 +85,7 @@ class MonitoringCoordinatorNotificationPolicyTest {
             monitoring.createMonitor(testRunId, MonitorThresholds(delayMinutes = 15), clock.now() + 1.hours)
             coordinator.refreshOnce()
             // Known delay baseline: unknown -> N is no truthful transition
-            // (T7.11 corrective), so later threshold tests start from 5.
+            // so later threshold tests start from 5.
             trains.trainState.value = DataResult.Data(delayed(5), DataFreshness.Unknown)
             coordinator.refreshOnce()
             assertEquals(0, notifications.size)

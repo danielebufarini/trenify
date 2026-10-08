@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
 
 /**
- * Product journey-search window (T8 latency decision 2026-09-18): the search
+ * Product journey-search window: the search
  * horizon is 8 hours of instant arithmetic from the requested instant, not a
  * calendar day. Providers scope pagination to [departureFrom]/[departureUntil].
  */

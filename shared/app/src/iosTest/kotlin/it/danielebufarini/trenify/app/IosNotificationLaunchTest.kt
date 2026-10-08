@@ -13,7 +13,7 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 /**
- * Real delegate-installation ownership (T7.13-G corrective pass).
+ * Real delegate-installation ownership.
  *
  * Unlike [IosNotificationBoundaryTest] — which drives a directly constructed
  * [IosNotificationTapRouter] — every test here goes through the delegate

@@ -53,7 +53,7 @@ data class JourneySearchRequest(
 
     companion object {
         /**
-         * Product journey-search window (T8 latency decision 2026-09-18): 8
+         * Product journey-search window: 8
          * hours from the requested instant cover the normal Trenify use case
          * and bound provider pagination/aggregation work. Instant arithmetic
          * applies, so windows crossing midnight behave identically.
@@ -70,6 +70,8 @@ data class JourneyLeg(
     val number: TrainNumber?,
     val category: String?,
     val operator: Operator?,
+    /** Planned departure platform at this leg's boarding station, independent of realtime. */
+    val scheduledPlatform: String? = null,
 ) {
     init { require(arrival > departure) }
     val duration: Duration get() = arrival - departure

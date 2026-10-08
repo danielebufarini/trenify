@@ -27,7 +27,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
 
 /**
- * T7.12 corrective pass, Blocker 2: refresh failures are scoped to the
+ * Refresh failures are scoped to the
  * exact requested interval. A failure on B never contaminates A, a later
  * success on A never clears B, and only an applicable success on B clears
  * B. Overlapping but non-identical requests follow exact-key semantics.

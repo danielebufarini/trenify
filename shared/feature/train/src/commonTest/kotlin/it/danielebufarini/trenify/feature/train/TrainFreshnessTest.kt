@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Time-driven freshness for train detail (T7.14-B): Fresh becomes Stale
+ * Time-driven freshness for train detail: Fresh becomes Stale
  * through elapsed local time with zero provider calls, resume recomputes
  * after suspension, stale-plus-failure retains content with a typed warning,
  * success returns to Fresh, and destroy cancels local scheduling.

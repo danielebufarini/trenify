@@ -25,7 +25,7 @@ kotlin {
             implementation(project(":shared:core:domain"))
             implementation(libs.decompose)
             api(libs.kotlinx.coroutines.core)
-            // T8.15: compose.runtime is the only Compose UI artifact retained
+            // Compose.runtime is the only Compose UI artifact retained
             // in shared code. No @Composable remains in this module; the
             // runtime is required on the classpath by the Compose compiler
             // plugin (build-verified) and backs the retained Compose

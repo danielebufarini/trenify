@@ -1,7 +1,7 @@
 import XCTest
 @preconcurrency import SharedApp
 
-/// T8.5 Home/Search SKIE verification using the accepted facades directly.
+/// Home/Search SKIE verification using the accepted facades directly.
 /// No Combine, no model wrapper, no repository construction in Swift.
 @MainActor
 final class NativeHomeSearchInteropTests: XCTestCase {

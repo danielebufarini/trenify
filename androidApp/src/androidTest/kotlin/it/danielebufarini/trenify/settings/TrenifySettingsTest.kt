@@ -90,7 +90,7 @@ class TrenifySettingsTest {
     private fun waitGone(tag: String) = compose.waitUntil(5000) { compose.onAllNodesWithTag(tag).fetchSemanticsNodes().isEmpty() }
 
     @Test fun thresholdFieldReleasesDpadToSave() {
-        // T8.12 runtime finding: a directional controller inside the
+        // Runtime finding: a directional controller inside the
         // single-line threshold field must be able to leave it; the cursor
         // swallows DPAD up/down, so the field forwards them to traversal.
         mount()

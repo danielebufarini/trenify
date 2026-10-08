@@ -99,7 +99,7 @@ class ViaggiaTrenoAdapter(
             destinationName = dto.string("destinazione"),
             // Board rows carry only the station event time (departure from / arrival
             // at the board station). Terminal scheduled times come exclusively
-            // from detail snapshots; board rows keep them null (T7.10, no N+1).
+            // from detail snapshots; board rows keep them null (no N+1).
             scheduledTime = dto.instant("orario$direction"),
             scheduledDeparture = dto.instant("orarioPartenza").takeIf { detail },
             scheduledArrival = dto.instant("orarioArrivo").takeIf { detail },
@@ -117,7 +117,7 @@ class ViaggiaTrenoAdapter(
     }
 
     /**
-     * Source-backed train category (T7.10).
+     * Source-backed train category.
      *
      * Evidence (published andamentoTreno/partenze/arrivi schemas):
      * - `categoria` holds the coarse service designation (REG, IC, EC, …);
@@ -166,7 +166,7 @@ class ViaggiaTrenoAdapter(
     }
 
     /**
-     * Source-backed operational position (T7.10, FR-POSITION-001/002).
+     * Source-backed operational position.
      *
      * `stazioneUltimoRilevamento` names the last-detection station; the source
      * uses `--` for unknown. `oraUltimoRilevamento` is its own observation

@@ -22,14 +22,14 @@ struct NativeAppShell: View {
     private func destination(_ route: ShellRoute) -> some View {
         Group {
             if route.available {
-                // T8.5: production Search-tab Home is native SwiftUI. T8.6:
+                // Production Search-tab Home is native SwiftUI.
                 // production Journey Results/Detail are native SwiftUI.
-                // T8.7: Station Search/Board, Train Search/Detail are native
-                // SwiftUI. T8.8: Monitoring is native SwiftUI. T8.9: Saved is
+                // Station Search/Board, Train Search/Detail are native
+                // SwiftUI. Monitoring is native SwiftUI. Saved is
                 // native SwiftUI (corrective: History renders through the
-                // native History presentation). T8.10: Alerts
-                // overview and Strike Detail are native SwiftUI. T8.11:
-                // Settings is native SwiftUI. T8.15 removed the legacy
+                // native History presentation). Alerts
+                // overview and Strike Detail are native SwiftUI.
+                // Settings is native SwiftUI. Removed the legacy
                 // Compose hosting path; every production destination above
                 // renders natively. JourneySearch no longer appears as a separate
                 // visual entry (composer lives in Home), but render it
@@ -61,7 +61,7 @@ struct NativeAppShell: View {
                 } else {
                     // Structurally unreachable: every production destination has
                     // an explicit native host branch above. Render nothing
-                    // rather than hosting a legacy renderer (removed in T8.15).
+                    // rather than hosting a legacy renderer.
                     Color.clear
                         .id(route.identity)
                 }
@@ -69,8 +69,7 @@ struct NativeAppShell: View {
                 Color.clear
             }
         }
-        // All production destinations use native chrome (T8.15 removed the
-        // legacy back/title path that used to hide the navigation bar).
+        // All production destinations use native chrome.
         .toolbar(.visible, for: .navigationBar)
         .navigationTitle(Text(title(route.destination), tableName: "Shell", bundle: Bundle(for: NativeShellModel.self)))
         .navigationBarTitleDisplayMode(.inline)

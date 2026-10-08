@@ -83,7 +83,7 @@ class MitStrikeAdapter(
 }
 
 /**
- * Parsed RSS snapshot with provider-neutral completeness (T7.12-A).
+ * Parsed RSS snapshot with provider-neutral completeness.
  *
  * [complete] is false when at least one source `<item>` record was skipped
  * because it could not be decoded: absence from [strikes] is then not

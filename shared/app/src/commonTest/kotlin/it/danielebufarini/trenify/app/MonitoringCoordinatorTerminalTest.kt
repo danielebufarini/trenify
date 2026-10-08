@@ -62,7 +62,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
 
 /**
- * T7.11 terminal lifecycle at the coordinator level: polling shutdown,
+ * Terminal lifecycle at the coordinator level: polling shutdown,
  * final-snapshot protection, stale-refresh linearization, manual-stop
  * ordering, restart semantics and retention cleanup — all deterministic, no
  * sleeps.
@@ -436,7 +436,7 @@ class MonitoringCoordinatorTerminalTest {
         val snapshot = assertNotNull(
             harness.monitoring.observeEndedMonitors().first().single().lastSnapshot,
         )
-        // T7.10 semantics hold for the final snapshot: source observation
+        // Semantics hold for the final snapshot: source observation
         // timestamp and repository fetchedAt stay distinct.
         assertEquals(DataFreshness.Fresh(fetchedAt, sourceAt), snapshot.freshness)
         assertEquals(TrainStatus.ARRIVED, snapshot.train.summary.status)
@@ -483,7 +483,7 @@ class MonitoringCoordinatorTerminalTest {
         assertEquals(polls, harness.trains.trainRefreshes)
     }
 
-    // ---- T7.11 corrective: retention watcher (D3) ----
+    // ---- retention watcher ----
 
     private suspend fun kotlinx.coroutines.test.TestScope.advanceBoth(
         harness: Harness,
@@ -571,7 +571,7 @@ class MonitoringCoordinatorTerminalTest {
         collectJob.cancel()
     }
 
-    // ---- T7.11 corrective: terminal dispatch decoupling (D8) ----
+    // ---- terminal dispatch decoupling ----
 
     @Test fun terminalDispatchSurvivesCollectorSelfCancellation() = runTest {
         val harness = harness()
@@ -676,7 +676,7 @@ class MonitoringCoordinatorTerminalTest {
         assertEquals(1, harness.monitoring.observeEndedMonitors().first().size)
     }
 
-    // ---- T7.11 corrective: failure isolation (D9) ----
+    // ---- failure isolation ----
 
     @Test fun cleanupFailureDoesNotKillMonitoring() = runTest {
         val harness = harness()

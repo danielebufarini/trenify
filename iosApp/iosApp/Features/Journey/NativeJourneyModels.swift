@@ -1,7 +1,7 @@
 import SwiftUI
 @preconcurrency import SharedApp
 
-/// Native Journey Results content model (T8.6). Borrows one session, owns no
+/// Native Journey Results content model. Borrows one session, owns no
 /// graph, component, repository or polling job. Observes the shell snapshot
 /// through the SKIE AsyncSequence, then the live Results facade for this
 /// exact route identity. Every collector starts exactly once and every task
@@ -101,10 +101,10 @@ final class NativeJourneyResultsModel: ObservableObject {
     }
 }
 
-/// Native Journey Detail content model (T8.6). Same observation contract as
+/// Native Journey Detail content model. Same observation contract as
 /// the Results model: shell snapshot first, then the live Detail facade for
 /// this exact route identity. Booking opens through the shared policy action;
-/// train navigation forwards to the existing shared action (T8.7 owns Train).
+/// train navigation forwards to the existing shared action.
 @MainActor
 final class NativeJourneyDetailModel: ObservableObject {
     let session: NativeApplicationSession

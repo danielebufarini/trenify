@@ -9,7 +9,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * T7.11 final pass: the Android JobService outcome mapping never swallows
+ * The Android JobService outcome mapping never swallows
  * coroutine cancellation. A JobService is not directly unit-testable, so the
  * shared mapping it uses is pinned here at the orchestration abstraction.
  */

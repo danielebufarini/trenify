@@ -3,8 +3,7 @@ import SwiftUI
 import UIKit
 @preconcurrency import SharedApp
 
-/// Real increased Dynamic Type verification for native Home (T8.5
-/// corrective): the composer is measured at .large and .accessibility3 in a
+/// Real increased Dynamic Type verification for native Home: the composer is measured at.large and.accessibility3 in a
 /// narrow window. Growth proves scaling applies with no fixed-height
 /// clipping; key controls must still exist in the rendered hierarchy.
 @MainActor

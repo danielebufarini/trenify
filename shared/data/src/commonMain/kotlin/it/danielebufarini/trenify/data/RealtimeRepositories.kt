@@ -107,7 +107,7 @@ class RealtimeRepositories(
     }
 
     private fun failedTrain(id: TrainRunId, error: DomainFailure): DataResult<TrainRun> {
-        // Display fallback (T7.11 final pass): reread the currently accepted
+        // Display fallback: reread the currently accepted
         // cache rather than the object captured before the provider call, so
         // a failure landing after a concurrent success surfaces the freshest
         // accepted truth. Warning bookkeeping and staleness stay identical
@@ -122,7 +122,7 @@ class RealtimeRepositories(
     }
 
     /**
-     * Local canonical-station resolution (T7.13 corrective pass): observes
+     * Local canonical-station resolution: observes
      * the existing `stationById` row only. No provider call, no polling —
      * board routes identify the station by id and display this live value.
      */
@@ -214,7 +214,7 @@ class RealtimeRepositories(
 
     /**
      * Acquires the persistence-shared monotonic order token for one refresh
-     * invocation (T7.11 corrective pass 2). Must be called before the first
+     * invocation. Must be called before the first
      * network suspension of the refresh: the token identifies invocation
      * order across independent repository/AppGraph instances sharing this
      * database, whose instance-local flights cannot order each other.
@@ -269,7 +269,7 @@ class RealtimeRepositories(
         }.flowOn(dispatcher)
 
     override suspend fun refreshTrain(id: TrainRunId, force: Boolean): DataResult<TrainRun> {
-        // Admission ordering (T7.11 final pass): the persistence-shared
+        // Admission ordering: the persistence-shared
         // order token is captured before the first dispatcher hop, mutex
         // acquisition, child-coroutine suspension, network suspension, or any
         // other scheduling boundary that could let a later public invocation
@@ -706,7 +706,7 @@ private fun ProviderFailure.domain() = when (this) {
 }
 
 /**
- * Delete-wins ordering for one personal-data domain (T7.8).
+ * Delete-wins ordering for one personal-data domain.
  *
  * Writes capture a ticket on invocation; a deletion bumps the generation
  * when it completes, while still holding the mutex. A write commits only

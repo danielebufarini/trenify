@@ -36,7 +36,7 @@ class ItaloJourneyAdapter(
     private val mutex = Mutex()
     private var stationSession: GuestSession? = null
     /**
-     * Provider-local caches (T8 latency work), both in-memory and bounded:
+     * Provider-local caches, both in-memory and bounded:
      *
      * - Station resolution is shared by autocomplete and journey search.
      *   Positive resolutions live 24 hours (station codes are stable); an

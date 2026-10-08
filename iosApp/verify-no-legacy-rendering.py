@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""T8.15 architecture guard: prevent reintroduction of shared production
+"""Prevent reintroduction of shared production
 feature rendering and iOS Compose hosting.
 
 Path-aware (not blind grep): Android-owned Compose in androidApp is

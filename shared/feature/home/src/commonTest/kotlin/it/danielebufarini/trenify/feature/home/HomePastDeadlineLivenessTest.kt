@@ -28,7 +28,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * Past-deadline watcher liveness (T7.14 final pass): a persisted monitor
+ * Past-deadline watcher liveness: a persisted monitor
  * snapshot older than its TTL when Home starts observing must age to
  * stale exactly once and then stop — the component-level watcher never
  * busy-loops the Main thread waiting for a boundary that already

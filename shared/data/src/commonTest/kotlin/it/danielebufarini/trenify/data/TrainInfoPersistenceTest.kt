@@ -12,9 +12,9 @@ import kotlinx.serialization.encodeToString
 import kotlin.test.*
 import kotlin.time.Instant
 
-// T7.10 persistence: new optional realtime fields ride the existing JSON
+// Persistence: new optional realtime fields ride the existing JSON
 // payload columns, so no SQLDelight schema change or migration is required.
-// These tests prove round-trip, NULL preservation, pre-T7.10 row
+// These tests prove round-trip, NULL preservation, row
 // compatibility and observation/fetch timestamp separation on real drivers.
 @OptIn(ExperimentalCoroutinesApi::class)
 class TrainInfoPersistenceTest {
@@ -98,7 +98,7 @@ class TrainInfoPersistenceTest {
 
     @Test fun legacyRowsWithoutNewFieldsDecodeAsUnknown() = runTest {
         withRepository { repository, _, clock, database ->
-            // A pre-T7.10 summary payload: no category/terminal keys at all.
+            // A summary payload: no category/terminal keys at all.
             val legacySummary = """{"provider":"test","number":"123","originRef":"opaque-origin","date":"2026-09-05","origin":{"id":"internal-station","name":"Roma Termini"},"destination":"Milano Centrale","scheduled":null,"status":"RUNNING","delay":null,"scheduledPlatform":"1","actualPlatform":"2","operator":null}"""
             val legacyStop = """{"station":{"id":"internal-station","name":"Roma Termini"},"scheduledArrival":null,"scheduledDeparture":null,"actualArrival":null,"actualDeparture":null,"scheduledPlatform":"1","actualPlatform":"2","delay":null,"status":"COMPLETED"}"""
             database.transaction {

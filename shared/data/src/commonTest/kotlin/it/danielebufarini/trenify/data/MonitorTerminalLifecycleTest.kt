@@ -28,7 +28,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * T7.11 terminal lifecycle on the real SQLDelight driver: ACTIVE → ENDED,
+ * Terminal lifecycle on the real SQLDelight driver: ACTIVE → ENDED,
  * stable endedAt, retention visibility/expiry, stale-refresh protection,
  * manual-stop versus terminal ordering, idempotent cleanup and migration.
  */
@@ -460,7 +460,7 @@ class MonitorTerminalLifecycleTest {
 
     private val String.sql: String get() = replace("'", "''")
 
-    // Version 10 monitor tables, verbatim except for the T7.11 column the
+    // Version 10 monitor tables, verbatim except for the column the
     // 10.sqm migration adds.
     private fun version10MonitorTables(): List<String> = listOf(
         "CREATE TABLE active_monitor (id TEXT NOT NULL PRIMARY KEY, train_run_id TEXT NOT NULL UNIQUE, " +

@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * Time-driven freshness for restored journey detail (T7.14-B): the
+ * Time-driven freshness for restored journey detail: the
  * re-resolution provenance ages through elapsed local time with zero
  * provider calls, and resume after suspension recomputes elapsed age.
  */

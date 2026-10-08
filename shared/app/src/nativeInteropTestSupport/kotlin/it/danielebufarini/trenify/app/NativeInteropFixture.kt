@@ -101,7 +101,7 @@ class NativeInteropFixture private constructor(
         }
     }
     /**
-     * Strike coverage for journey warning presentation (T8.6). The default
+     * Strike coverage for journey warning presentation. The default
      * payload does not overlap the canonical fake journey legs, so warnings
      * stay empty unless [stageStrikeWarning] is called; wiring itself adds
      * no provider calls.
@@ -228,7 +228,7 @@ class NativeInteropFixture private constructor(
         override fun status(): StateFlow<ConnectivityStatus> = MutableStateFlow(ConnectivityStatus.Unavailable)
         override fun close() { connectivityCloses++ }
     }, notificationPermission = gatedSettingsPermission ?: defaultServices.notificationPermission)
-    // T8.11: persisted installation defaults for native Settings tests.
+    // Persisted installation defaults for native Settings tests.
     // Declared after the gated driver: a second database instance over the
     // same in-memory driver stays consistent with the graph's own instance.
     // NOTE: on the iOS simulator this name resolves to a FILE-backed
@@ -261,7 +261,7 @@ class NativeInteropFixture private constructor(
         }
     }
     /**
-     * Production booking wiring with a test URL opener (T8.6): the real
+     * Production booking wiring with a test URL opener: the real
      * [OpenBookingLink] policy decides availability and the target, so the
      * native handoff exercises the approved allowlist path. Disabled by
      * default; existing fixtures keep the unwired behavior.
@@ -274,7 +274,7 @@ class NativeInteropFixture private constructor(
         repositories, trainRepository, history, repositories, MutableStateFlow(false),
         journeyRepository = journeyRepository,
         monitoringRepository = monitoring,
-        // T8.11: Settings needs the same persisted installation defaults as
+        // Settings needs the same persisted installation defaults as
         // production (real in-memory database behind the gated driver), so
         // native Settings tests exercise true save/flag/deletion round-trips.
         notificationSettingsRepository = notificationSettings,
@@ -335,8 +335,8 @@ class NativeInteropFixture private constructor(
     val sameRoot: Boolean get() = session.root === originalRoot
     fun openHistory() = session.state.value.main!!.openHistory()
     /**
-     * T8.10: Alerts overview/detail are native. Strikes are staged by
-     * default ([FakeStrikeRepository] serves [testStrike]). T8.11:
+     * Alerts overview/detail are native. Strikes are staged by
+     * default ([FakeStrikeRepository] serves [testStrike]).
      * Settings is native too.
      */
     fun openStrikeDetail(): Boolean {
@@ -351,7 +351,7 @@ class NativeInteropFixture private constructor(
     }
 
     /**
-     * T8.10 fixture-only staging: a future-dated strike visible in the
+     * Fixture-only staging: a future-dated strike visible in the
      * native overview (the default [testStrike] ended 2026-09-08 and is
      * hidden by the shared upcoming predicate under a real clock).
      * Never compiled into the normal export.
@@ -400,19 +400,19 @@ class NativeInteropFixture private constructor(
 
     /**
      * Stages the correlated realtime run for the canonical fake journey leg
-     * (T8.6): the operator-carrying summary plus the exact scheduled stop
+     * the operator-carrying summary plus the exact scheduled stop
      * times [CorrelateJourneyLeg] requires, with Fresh provenance so the
      * detail resolves its train action and enrichment like production.
      */
     /**
-     * Swaps the journey payload for a two-leg transfer journey (T8.6):
+     * Swaps the journey payload for a two-leg transfer journey:
      * Roma Termini → Bologna Centrale → Milano Centrale with a 15-minute
      * scheduled interchange. Search/observe semantics are unchanged; only
      * the returned journeys differ.
      */
     /**
      * Stages [count] deterministic single-leg journeys for long-list rendering
-     * audits (T8.14-R3): departures one minute apart, distinct train numbers,
+     * audits: departures one minute apart, distinct train numbers,
      * all inside the fake request window. Follows the stageTransferJourney style.
      */
     fun stageManyJourneys(count: Int = 200) {
@@ -466,7 +466,7 @@ class NativeInteropFixture private constructor(
 
     /**
      * Stages strike coverage overlapping the canonical fake journey legs
-     * with Fresh provenance (T8.6), so the next journey observation carries
+     * with Fresh provenance, so the next journey observation carries
      * exactly one warning per journey/leg without any provider call.
      */
     fun stageStrikeWarning() {
@@ -477,13 +477,13 @@ class NativeInteropFixture private constructor(
         )
     }
 
-    /** Swaps the journey payload for a provider failure with no content (T8.6). */
+    /** Swaps the journey payload for a provider failure with no content. */
     fun stageJourneyFailure() {
         val fake = journeyRepository as? FakeJourneyRepository ?: return
         fake.state.value = DataResult.Failure(DomainFailure.TEMPORARY)
     }
 
-    /** Swaps the journey payload for an empty result with Fresh provenance (T8.6). */
+    /** Swaps the journey payload for an empty result with Fresh provenance. */
     fun stageEmptyJourneyResult() {
         val fake = journeyRepository as? FakeJourneyRepository ?: return
         fake.state.value = DataResult.Data(
@@ -498,7 +498,7 @@ class NativeInteropFixture private constructor(
     }
 
     /**
-     * Makes the next route-favorite toggle fail (T8.6): the shared
+     * Makes the next route-favorite toggle fail: the shared
      * controller keeps content visible with the failure flagged instead of
      * inventing optimistic state. No provider call.
      */
@@ -508,7 +508,7 @@ class NativeInteropFixture private constructor(
 
     /**
      * Swaps the journey payload sources for one genuine known provider
-     * (T8.6 micro-corrective): Detail must surface the shared Journey
+     * Detail must surface the shared Journey
      * source set, never anything inferred from the train operator.
      */
     fun stageKnownJourneySources() {
@@ -536,7 +536,27 @@ class NativeInteropFixture private constructor(
             DataFreshness.Fresh(Clock.System.now(), null),
         )
     }
-    /** T8.7 fixture-only staging. Never compiled into normal export. */
+    /** Scheduled provider payload and independent correlated realtime, through production components. */
+    fun stageJourneyPlatforms(scheduledPlatform: String?, actualPlatform: String?, realtimeAvailable: Boolean) {
+        val fake = journeyRepository as? FakeJourneyRepository ?: return
+        val leg = testJourney.legs.single().copy(scheduledPlatform = scheduledPlatform)
+        fake.state.value = DataResult.Data(
+            journeyResult.copy(journeys = listOf(testJourney.copy(legs = listOf(leg)))),
+            DataFreshness.Fresh(Clock.System.now(), null),
+        )
+        repositories.trainState.value = if (!realtimeAvailable) DataResult.Failure(DomainFailure.NOT_FOUND)
+        else DataResult.Data(
+            TrainRun(testSummary.copy(operator = leg.operator, status = TrainStatus.RUNNING), listOf(
+                TrainStop(leg.origin, scheduledDeparture = leg.departure, actualPlatform = actualPlatform),
+                TrainStop(leg.destination, scheduledArrival = leg.arrival),
+            )),
+            DataFreshness.Fresh(Clock.System.now(), null),
+        )
+    }
+
+    fun stageJourneyRealtimeFailure() { repositories.trainState.value = DataResult.Failure(DomainFailure.TEMPORARY) }
+
+    /** Fixture-only staging. Never compiled into normal export. */
     fun stageStationFailure() { repositories.stationResult = DataResult.Failure(DomainFailure.OFFLINE) }
     fun stageStationResults() { repositories.stationResult = DataResult.Data(listOf(testStation), DataFreshness.Fresh(stationTrainAt, stationTrainAt)) }
     fun stageRecentStation() { runBlocking { repositories.record(testStation) } }
@@ -582,7 +602,7 @@ class NativeInteropFixture private constructor(
             OperationalPosition("Firenze Santa Maria Novella", stationTrainAt + 1.hours)), freshness)
     }
     fun stageTrainFavoriteFailure() { repositories.favoriteFailure = IllegalStateException("T8.7 favorite failure") }
-    /** T8.8 fixture-only monitoring staging. Never compiled into normal export. */
+    /** Fixture-only monitoring staging. Never compiled into normal export. */
     fun stageActiveMonitor(number: String = "123", delayMinutes: Int? = 0, stale: Boolean = false, unknown: Boolean = false,
                            category: TrainCategory? = null, scheduledPlatform: String? = null, actualPlatform: String? = null) { runBlocking {
         val id = TrainRunId(ProviderId("viaggiatreno"), TrainNumber(number), ExternalStationRef("opaque-origin"),
@@ -639,7 +659,7 @@ class NativeInteropFixture private constructor(
     val boardRefreshes: Int get() = repositories.boardRefreshes
     fun selectHome() { session.state.value.main!!.select(NativePrimaryArea.Search) }
 
-    /** T8.9 fixture-only Saved staging. Never compiled into normal export. */
+    /** Fixture-only Saved staging. Never compiled into normal export. */
     fun stageFavoriteRoute() { runBlocking {
         repositories.setFavorite(FavoriteRoute.create(testStation, journeyDestination), true)
     } }

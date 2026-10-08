@@ -157,7 +157,7 @@ class NativeJourneyPresentationTest {
     }
 
     /**
-     * Presentation policy (pre-T8.13 corrective A-C, E): progressive,
+     * Presentation policy: progressive,
      * partial, cached-refresh and failed-refresh states never project an
      * "outdated" warning, while internal freshness/partial/failure
      * distinctions stay intact for the content and retry paths.
@@ -558,6 +558,37 @@ class NativeJourneyPresentationTest {
             assertEquals("8", projected.actualPlatform)
         } finally {
             lifecycle.destroy()
+        }
+    }
+
+    @Test fun plannedBoardingPlatformSurvivesRealtimeFailureAndMissingPlatform() = runTest {
+        for (replacementFails in listOf(false, true)) {
+            val lifecycle = LifecycleRegistry()
+            lifecycle.resume()
+            try {
+                val journey = unknownOperator2815Journey()
+                val base = correlated2815Run(journey, Operator("Trenord"))
+                val planned = base.copy(stops = base.stops.mapIndexed { index, stop ->
+                    if (index == 1) stop.copy(scheduledPlatform = "7", actualPlatform = null) else stop
+                })
+                val trains = correlated2815Trains(planned)
+                val facade = NativeJourneyDetailPresentation(
+                    JourneyDetailComponent(DefaultComponentContext(lifecycle), journey,
+                        CorrelateJourneyLeg(trains), {}, StandardTestDispatcher(testScheduler), trains = trains),
+                    NativeProjectionOwner(),
+                )
+                advanceUntilIdle()
+                assertEquals("7", facade.state.value.legs.single().scheduledPlatform)
+                assertNull(facade.state.value.legs.single().actualPlatform)
+                trains.trainState.value = if (replacementFails) DataResult.Failure(DomainFailure.TEMPORARY)
+                    else DataResult.Data(base, DataFreshness.Fresh(MutableClock().now(), null))
+                runCurrent()
+                assertEquals("7", facade.state.value.legs.single().scheduledPlatform,
+                    "A missing realtime snapshot/platform must preserve the planned boarding platform")
+                assertNull(facade.state.value.legs.single().actualPlatform)
+            } finally {
+                lifecycle.destroy()
+            }
         }
     }
 

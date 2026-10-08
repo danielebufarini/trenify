@@ -14,8 +14,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.getString
 
 /**
- * Shared presentation/application localizer for notification content
- * (T7.14-C).
+ * Shared presentation/application localizer for notification content.
  *
  * Coordinators create notification text outside Composable rendering, so
  * they resolve user-facing wording through this boundary instead of calling
@@ -59,7 +58,7 @@ class ResourceNotificationLocalizer : NotificationLocalizer {
 
     override suspend fun delayChanged(previousMinutes: Int?, currentMinutes: Int): String =
         // An unknown previous delay stays explicitly unknown: it must never
-        // render as a fabricated zero (FR-DATA-002).
+        // render as a fabricated zero.
         if (previousMinutes == null) getString(Res.string.notif_delay_changed_unknown, currentMinutes)
         else getString(Res.string.notif_delay_changed, previousMinutes, currentMinutes)
 

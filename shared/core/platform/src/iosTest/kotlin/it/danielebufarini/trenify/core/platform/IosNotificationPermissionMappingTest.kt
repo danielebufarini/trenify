@@ -10,7 +10,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * T7.7 iOS effective authorization mapping, semantically aligned with
+ * IOS effective authorization mapping, semantically aligned with
  * Android: authorized (including provisional and ephemeral grants) allows
  * delivery, while denied, not-determined or missing settings deny it.
  */

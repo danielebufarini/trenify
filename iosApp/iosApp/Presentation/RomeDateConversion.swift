@@ -1,6 +1,6 @@
 import Foundation
 
-/// Europe/Rome railway wall-time conversion (T8.5 corrective). The shared
+/// Europe/Rome railway wall-time conversion. The shared
 /// truth is a Rome-local date plus hour/minute; these helpers map it to an
 /// absolute Date for the system pickers and back, always through an explicit
 /// Rome calendar. Nothing here reads the device timezone, so rendering and

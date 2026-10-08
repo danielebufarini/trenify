@@ -1,8 +1,8 @@
 import SwiftUI
 @preconcurrency import SharedApp
 
-/// Native Home/Search content model (T8.5). Borrows one session, owns no graph,
-/// component, repository or polling job. Observes the accepted T8.2 Main/Home/
+/// Native Home/Search content model. Borrows one session, owns no graph,
+/// component, repository or polling job. Observes the accepted Main/Home/
 /// Journey facades through SKIE AsyncSequence on the main actor and forwards
 /// existing shared actions. Ephemeral text editing lives in the view; durable
 /// validation, search, history and navigation stay shared.

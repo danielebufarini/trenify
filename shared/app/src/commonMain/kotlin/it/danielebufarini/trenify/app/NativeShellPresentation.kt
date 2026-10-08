@@ -50,7 +50,7 @@ data class NativeShellState(
     val canGoBack: Boolean get() = path.isNotEmpty()
 }
 
-/** Additive T8.4 projection over the SAME Decompose tree. No component/graph construction.
+/** Additive projection over the SAME Decompose tree. No component/graph construction.
  * Native path writes may only request removal of a matching authoritative prefix.
  */
 class NativeShellPresentation internal constructor(
@@ -117,9 +117,9 @@ class NativeShellPresentation internal constructor(
     fun close() = owner.close()
 
     /**
-     * Android-owned native Home (T8.5) entry points. Hidden from Swift so the
+     * Android-owned native Home entry points. Hidden from Swift so the
      * iOS export stays narrow; Swift consumes the same live components through
-     * the accepted T8.2 Main/Home/Journey facades. No new navigation state.
+     * the accepted Main/Home/Journey facades. No new navigation state.
      */
     @OptIn(ExperimentalObjCRefinement::class)
     @HiddenFromObjC
@@ -151,7 +151,7 @@ class NativeShellPresentation internal constructor(
     }
 
     /**
-     * Android-owned native Journey Results/Detail (T8.6) entry points. Hidden
+     * Android-owned native Journey Results/Detail entry points. Hidden
      * from Swift so the iOS export stays narrow; Swift consumes the same live
      * facades through the shell entries in its own snapshot. No new
      * navigation state.
@@ -273,7 +273,7 @@ class NativeShellPresentation internal constructor(
         val main = main()
         val chains = main.pages.value.items.associate { page ->
             val chain = when (val child = page.instance) {
-                // T8.5: the journey composer lives in the native Home base.
+                // The journey composer lives in the native Home base.
                 // The Search form is not a separate visual destination; only
                 // Results/Detail/History appear above Home. The shared Journey
                 // stack still retains Search below them; Back returns to Home.
@@ -311,7 +311,7 @@ class NativeShellPresentation internal constructor(
                         NativeAlertsPresentation(child.component, it)
                     }
                     val strikeId = (it.instance as? AlertsTabComponent.Child.Detail)?.strikeId?.value
-                    // T8.10: production Alerts overview/detail are native.
+                    // Production Alerts overview/detail are native.
                     entry(if (it.instance == AlertsTabComponent.Child.Overview) child else it.instance,
                         if (it.instance == AlertsTabComponent.Child.Overview) NativeDestination.AlertsOverview
                             else NativeDestination.StrikeDetail,
@@ -323,7 +323,7 @@ class NativeShellPresentation internal constructor(
                 is MainComponent.Child.Favorites -> listOf(entry(child, NativeDestination.Saved,
                     saved = facade(child.component) { NativeSavedPresentation(child.component, it) }))
                 is MainComponent.Child.Settings -> listOf(entry(child, NativeDestination.Settings,
-                    // T8.11: production Settings is native.
+                    // Production Settings is native.
                     settings = facade(child.component) {
                         NativeSettingsPresentation(child.component, it)
                     }))

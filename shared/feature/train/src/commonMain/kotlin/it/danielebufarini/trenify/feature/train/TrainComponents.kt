@@ -29,7 +29,7 @@ data class TrainSearchState(
     val noCompatibleService: Boolean = false,
 )
 /**
- * Durable train-search input (T7.13-B): the entered number and explicit
+ * Durable train-search input: the entered number and explicit
  * service date required to continue the flow after save/destroy/recreate.
  * Results, loading flags and transient errors re-derive from a fresh
  * search; the favorite discrimination stays in the route that launched it.
@@ -88,7 +88,7 @@ class TrainSearchComponent(
             )
         }
         if (autoSearch && mutable.value.number.isNotBlank()) search()
-        // Elapsed-time aging (T7.14-B): candidate freshness becomes Stale
+        // Elapsed-time aging: candidate freshness becomes Stale
         // at the policy boundary with zero provider calls.
         freshnessWatcher.observe(
             nextDeadline = { mutable.value.results.freshness?.staleTransitionAt(policy.trainTtl) },
@@ -202,7 +202,7 @@ data class TrainDetailState(
     val monitorPrefsError: Boolean = false,
     /**
      * True once the persisted monitor lifecycle has been observed at least
-     * once (T7.11 corrective pass 2). While false with a monitor source
+     * once. While false with a monitor source
      * present, the detail must not expose Start/Stop, manual Refresh,
      * active-monitor preferences or the ended Remove: an ended route would
      * otherwise briefly render active controls before the first emission
@@ -211,15 +211,14 @@ data class TrainDetailState(
      */
     val monitorLifecycleResolved: Boolean = true,
     /**
-     * Strike warnings from the observed local snapshot (T7.12-C/D):
+     * Strike warnings from the observed local snapshot:
      * scheduled-first context, read-only evaluation. Ended details keep
      * showing their persisted snapshot's warnings without restarting polling.
      */
     val strikeWarnings: List<ServiceStrikeWarning> = emptyList(),
     val strikesStale: Boolean = false,
     /**
-     * No authoritative coverage exists for the detail window (T7.12
-     * corrective pass): never rendered as merely outdated.
+     * No authoritative coverage exists for the detail window: never rendered as merely outdated.
      */
     val strikesUnknown: Boolean = false,
 ) {
@@ -230,7 +229,7 @@ data class TrainDetailState(
     val freshness get() = realtime.freshness
 
     /**
-     * Persisted terminal lifecycle (T7.11 corrective): the monitor row's
+     * Persisted terminal lifecycle: the monitor row's
      * endedAt is authoritative. The mutable train cache may still look
      * non-terminal when stale, so ended state is never derived from it.
      */
@@ -271,7 +270,7 @@ class TrainDetailComponent(
     private var firstUsefulContent = false
     /**
      * Strike observation window from the snapshot's scheduled times
-     * (T7.12-C): one detail-level observation plus one targeted stale
+     * one detail-level observation plus one targeted stale
      * refresh per stable interval. Snapshot realtime drift never moves it,
      * and strike evaluation never issues train provider access.
      */
@@ -285,7 +284,7 @@ class TrainDetailComponent(
     val favoriteTrainState: Value<TrainFavoriteState>? = trainFavorite?.state
 
     init {
-        // Elapsed-time aging (T7.14-B, union deadline): the held snapshot
+        // Elapsed-time aging (union deadline): the held snapshot
         // becomes Stale at the policy boundary and the strike coverage at
         // the strike cache TTL, both with zero provider calls; resume
         // recomputes from the clock. Repository emissions overwrite the
@@ -305,9 +304,9 @@ class TrainDetailComponent(
                         realtime = mutable.value.realtime.copy(
                             failure = result.error.takeUnless { mutable.value.loading },
                             // A failure arriving over visible cached data
-                            // marks it Stale (T7.14 final pass): the
+                            // marks it Stale: the
                             // snapshot is retained but no longer confirmed
-                            // fresh — the FS §23 stale-content-plus-error
+                            // fresh — the stale-content-plus-error
                             // presentation. Bare failures stay unstale.
                             stale = mutable.value.realtime.stale ||
                                 mutable.value.realtime.data != null,
@@ -431,7 +430,7 @@ class TrainDetailComponent(
 
     /**
      * Earliest freshness boundary across the held train snapshot and the
-     * strike coverage (T7.14 corrective): one component-level deadline,
+     * strike coverage: one component-level deadline,
      * never a provider poll.
      */
     private fun trainStrikeDeadline(): Instant? = listOfNotNull(
@@ -442,7 +441,7 @@ class TrainDetailComponent(
     ).minOrNull()
 
     /**
-     * Local tick (T7.14 corrective): re-derives the snapshot and the strike
+     * Local tick: re-derives the snapshot and the strike
      * coverage from the injected clock with zero provider calls, then
      * re-evaluates warning presentation against the aged strike freshness.
      * Repository truth is untouched.
@@ -462,7 +461,7 @@ class TrainDetailComponent(
     }
 
     /**
-     * Manual early removal of this retained ended monitor (T7.11 corrective).
+     * Manual early removal of this retained ended monitor.
      * No-op unless the persisted lifecycle is ended.
      */
     fun removeEndedMonitor() {
@@ -547,7 +546,7 @@ class TrainDetailComponent(
             MonitorEventKind.DEPARTURE -> current.copy(notifyDeparture = enabled)
             MonitorEventKind.ARRIVAL -> current.copy(notifyArrival = enabled)
             // Schedule, status and route-change events have no dedicated
-            // installation flag (T7.7/T7.11): nothing to edit per monitor.
+            // installation flag: nothing to edit per monitor.
             MonitorEventKind.SCHEDULE, MonitorEventKind.STATUS, MonitorEventKind.ROUTE_CHANGED -> return
         }
         lastMonitorPreferenceRequest = { update(id, thresholds) }
@@ -579,7 +578,7 @@ class TrainDetailComponent(
 }
 
 /**
- * Strike observation window from scheduled snapshot times (T7.12-C): the
+ * Strike observation window from scheduled snapshot times: the
  * exact scheduled service interval when both ends are known, a symmetric
  * one-minute widening around a single known time (evaluation still uses the
  * exact context), and null when the snapshot positions nothing in time.

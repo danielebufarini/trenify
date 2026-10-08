@@ -25,7 +25,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * T7.11 corrective (iOS): true persisted-driver reopen evidence on the real
+ * (iOS): true persisted-driver reopen evidence on the real
  * native driver. A uniquely named file-backed database is closed and reopened
  * with a fresh driver/repository. The unique name keeps runs hermetic without
  * guessing sandbox paths for cleanup.

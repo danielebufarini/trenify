@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 @preconcurrency import SharedApp
 
-/// Bottom-reachability proofs for native Home (T8.5 post-acceptance).
+/// Bottom-reachability proofs for native Home.
 ///
 /// The simulator renders a docked tab bar with full automatic insets, so the
 /// device-only floating-glass shortfall cannot reproduce with real chrome

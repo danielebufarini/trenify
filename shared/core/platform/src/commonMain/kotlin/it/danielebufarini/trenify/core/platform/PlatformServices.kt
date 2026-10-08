@@ -29,7 +29,7 @@ data class NotificationMessage(
     val title: String,
     val body: String,
     /**
-     * Optional typed routing destination (T7.13-D). Routing metadata only:
+     * Optional typed routing destination. Routing metadata only:
      * it never affects [id] (anti-spam/deduplication fingerprint) and the
      * title/body are never parsed for navigation.
      */
@@ -45,7 +45,7 @@ interface NotificationPermission {
     suspend fun request(): Boolean
 
     /**
-     * Effective delivery state (T7.7). Defaults to the runtime grant for
+     * Effective delivery state. Defaults to the runtime grant for
      * platforms without a richer check; Android and iOS override it with
      * system/channel and authorization state respectively.
      */

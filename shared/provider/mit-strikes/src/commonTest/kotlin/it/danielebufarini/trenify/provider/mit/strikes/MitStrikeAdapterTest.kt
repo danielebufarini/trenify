@@ -113,7 +113,7 @@ class MitStrikeAdapterTest {
 
     @Test
     fun exactBoundaryStrikesAreReturnedForRequestedInterval() = runTest {
-        // T7.12 inclusive overlap: touching boundaries count. Fixture strike
+        // Inclusive overlap: touching boundaries count. Fixture strike
         // 8479 spans 2026-09-07T19:18Z..2026-09-08T19:00Z.
         val strikeStart = Instant.parse("2026-09-07T19:18:00Z")
         val strikeEnd = Instant.parse("2026-09-08T19:00:00Z")

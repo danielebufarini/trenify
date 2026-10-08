@@ -131,7 +131,7 @@ class JourneyBookingTest {
             results.select(testJourney)
             val detail = assertIs<JourneyTabComponent.Child.Detail>(tab.stack.value.active.instance).component
             // Tab detail navigation re-resolves through the repository
-            // (T7.13): the handoff is available once resolution completes.
+            // the handoff is available once resolution completes.
             advanceUntilIdle()
             assertTrue(detail.state.value.bookingAvailable)
             detail.buy(); advanceUntilIdle()

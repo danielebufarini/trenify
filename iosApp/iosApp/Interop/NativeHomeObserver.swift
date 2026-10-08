@@ -1,7 +1,7 @@
 import Observation
 import SharedApp
 
-/// T8.2 observation proof. Production ContentView does not instantiate this adapter.
+/// Observation proof. Production ContentView does not instantiate this adapter.
 @MainActor
 @Observable
 final class NativeHomeObserver {

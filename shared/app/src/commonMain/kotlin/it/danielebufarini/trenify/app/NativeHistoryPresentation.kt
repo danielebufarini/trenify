@@ -6,7 +6,7 @@ import it.danielebufarini.trenify.feature.journey.SearchHistoryComponent
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * T8.9 corrective: semantic History snapshots over the existing
+ * Semantic History snapshots over the existing
  * [SearchHistoryComponent] that backs the Journey-tab History child.
  * Ordering, recording, corrupt-row skipping, bad-date degradation and
  * repeat routing stay shared; platforms only project truth.

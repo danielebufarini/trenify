@@ -31,7 +31,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 /**
- * T7.11 Recently ended at the component level: Active versus Recently ended
+ * Recently ended at the component level: Active versus Recently ended
  * separation, manual Stop versus terminal retention, early removal and
  * retention expiry — without any polling from the UI layer.
  */

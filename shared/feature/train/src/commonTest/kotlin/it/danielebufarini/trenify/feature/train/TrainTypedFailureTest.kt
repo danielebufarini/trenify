@@ -12,7 +12,7 @@ import kotlin.test.*
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Typed FS §23 failure presentation for train search and detail (T7.14-A):
+ * Typed failure presentation for train search and detail:
  * empty candidates are the not-found condition (never a retryable failure),
  * refresh failures keep cached content with a typed warning, and retry
  * recovers to fresh data.

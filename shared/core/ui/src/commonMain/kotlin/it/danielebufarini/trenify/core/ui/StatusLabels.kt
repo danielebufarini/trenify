@@ -6,7 +6,7 @@ import it.danielebufarini.trenify.core.ui.resources.*
 import org.jetbrains.compose.resources.StringResource
 
 /**
- * Explicit localized mappings for user-visible enum values (T7.14-C).
+ * Explicit localized mappings for user-visible enum values.
  *
  * Production UI must never expose `enum.name` (or lowercased/underscored
  * variants) as final user-visible text. These pure resource mappings keep

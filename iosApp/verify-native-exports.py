@@ -186,8 +186,8 @@ REQUIRED_PRODUCTION = frozenset({
     "UiRealtimeState",
 })
 
-# T8.15: the legacy-transitional category is intentionally EMPTY. The three
-# T8.14 transitional exports (IosLegacyScreenHost, IosLegacyScreenHosting,
+# The legacy-transitional category is intentionally EMPTY. The three
+# Transitional exports (IosLegacyScreenHost, IosLegacyScreenHosting,
 # MainViewControllerKt) were removed with the Compose host path. The set is
 # kept (empty) so `known()` below fails closed: any reintroduced legacy
 # symbol is reported as an unexpected production export.
@@ -259,16 +259,16 @@ def main():
     forbidden = sorted({match for pattern in active_forbidden for match in re.findall(pattern, header)})
     stale_swift = [str(path.relative_to(args.swift)) for path in files
                    if any(re.search(pattern, path.read_text()) for pattern in active_forbidden)]
-    # T8.14-R9: the required contract covers the complete current production
+    # The required contract covers the complete current production
     # native API (shell/state/entry/destination, Home, Journey Results/Detail/
     # Search, Station/Train, Monitoring, Saved, History, Alerts, Settings plus
     # consumed value types), derived from actual Swift production use
     # (see doc/design/review/t8_14/skie-symbol-classification.json).
     required = sorted(REQUIRED_PRODUCTION)
     missing = [name for name in required if f'swift_name("{name}")' not in header]
-    # T8.14-R10: fail closed on any production export outside the accepted
+    # Fail closed on any production export outside the accepted
     # contract (required + toolchain plumbing + companions of required
-    # types; T8.15 emptied the legacy-transitional set so reintroduced
+    # types; emptied the legacy-transitional set so reintroduced
     # legacy symbols fail here). Counts alone are not the contract.
     declared = sorted(set(re.findall(r"^@(?:interface|protocol)\s+(\w+)", header, re.M)))
 

@@ -29,7 +29,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
- * T8.9 corrective B2: the Journey-tab History child renders through the
+ * The Journey-tab History child renders through the
  * native [NativeHistoryPresentation]. Ordering,
  * recording and repeat routing stay in [SearchHistoryComponent].
  */

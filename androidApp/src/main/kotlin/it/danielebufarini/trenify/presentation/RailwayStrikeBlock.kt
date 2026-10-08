@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import it.danielebufarini.trenify.R
 import it.danielebufarini.trenify.app.NativeServiceStrikeWarningPresentation
-import it.danielebufarini.trenify.core.domain.StrikeImpact
 import it.danielebufarini.trenify.design.component.TrenifyStatusPill
 import it.danielebufarini.trenify.design.component.TrenifyStatusTone
 import it.danielebufarini.trenify.design.theme.TrenifySpacing
@@ -32,48 +31,20 @@ fun RailwayStrikeBlock(
             ) {
                 TrenifyStatusPill(
                     tone = TrenifyStatusTone.Warning,
-                    label = railwayStrikeImpactLabel(warning),
+                    label = railwayStrikeLabel(warning),
                     modifier = Modifier.testTag("$tagPrefix-strike-impact-${warning.strikeId}"),
                 )
-                Text(warning.sector, style = TrenifyTheme.typography.bodyEmphasized, color = TrenifyTheme.colors.textPrimary)
-                Text(
-                    stringResource(
-                        R.string.journey_strike_interval,
-                        railwayDateTime(warning.startEpochSeconds),
-                        railwayDateTime(warning.endEpochSeconds),
-                    ),
-                    Modifier.testTag("$tagPrefix-strike-interval-${warning.strikeId}"),
-                    style = TrenifyTheme.typography.metadata,
-                    color = TrenifyTheme.colors.textSecondary,
-                )
-                warning.sourceUrl?.let { url ->
-                    Text(
-                        stringResource(R.string.journey_strike_source, listOfNotNull(warning.sourceLabel, url).joinToString(" · ")),
-                        Modifier.testTag("$tagPrefix-strike-source-${warning.strikeId}"),
-                        style = TrenifyTheme.typography.metadata,
-                        color = TrenifyTheme.colors.textSecondary,
-                    )
-                }
-                if (warning.partialContext) {
-                    Text(
-                        stringResource(R.string.journey_strike_partial),
-                        Modifier.testTag("$tagPrefix-strike-partial-${warning.strikeId}"),
-                        style = TrenifyTheme.typography.caption,
-                        color = TrenifyTheme.colors.textSecondary,
-                    )
-                }
             }
         }
-        // Unknown means no authoritative coverage. Stale also covers failed
-        // refreshes with retained content; neither state implies no issue.
-        if (unknown) {
+        // Without a warning, retain coverage status rather than imply no strike.
+        if (warnings.isEmpty() && unknown) {
             Text(
                 stringResource(R.string.journey_warning_unknown),
                 Modifier.testTag("$tagPrefix-strikes-unknown"),
                 style = TrenifyTheme.typography.status,
                 color = TrenifyTheme.colors.statusWarning,
             )
-        } else if (stale || failed) {
+        } else if (warnings.isEmpty() && (stale || failed)) {
             Text(
                 stringResource(R.string.journey_warning_stale),
                 Modifier.testTag("$tagPrefix-strikes-stale"),
@@ -85,13 +56,9 @@ fun RailwayStrikeBlock(
 }
 
 @Composable
-private fun railwayStrikeImpactLabel(warning: NativeServiceStrikeWarningPresentation): String =
-    if (warning.officiallyConfirmed) stringResource(R.string.journey_warning_confirmed)
-    else stringResource(
-        when (warning.impact) {
-            StrikeImpact.NONE -> R.string.journey_strike_impact_none
-            StrikeImpact.POTENTIAL -> R.string.journey_strike_impact_potential
-            StrikeImpact.LIKELY -> R.string.journey_strike_impact_likely
-            StrikeImpact.CONFIRMED_BY_OPERATOR -> R.string.journey_warning_confirmed
-        },
+fun railwayStrikeLabel(warning: NativeServiceStrikeWarningPresentation): String =
+    stringResource(R.string.journey_strike_impact_none) + " · " + stringResource(
+        R.string.journey_strike_interval,
+        railwayDateTime(warning.startEpochSeconds),
+        railwayDateTime(warning.endEpochSeconds),
     )

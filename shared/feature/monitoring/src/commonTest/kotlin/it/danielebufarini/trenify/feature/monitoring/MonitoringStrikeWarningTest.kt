@@ -43,9 +43,9 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
 
 /**
- * T7.12-C monitored-train warnings from local snapshots: list/ended cards
+ * Monitored-train warnings from local snapshots: list/ended cards
  * expose warnings through one union refresh, react to strike and snapshot
- * changes, and never disturb the T7.11 terminal lifecycle.
+ * changes, and never disturb the terminal lifecycle.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class MonitoringStrikeWarningTest {

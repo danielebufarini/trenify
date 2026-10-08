@@ -1,4 +1,4 @@
--- T7.11 corrective pass 2: persistence-shared refresh ordering.
+-- Persistence-shared refresh ordering.
 --
 -- Two independent repository/AppGraph instances (foreground Activity vs
 -- background service) share one SQLite database but their instance-local

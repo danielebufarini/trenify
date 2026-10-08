@@ -29,7 +29,7 @@ internal class AndroidNotificationPresenter(
 
     override suspend fun show(message: NotificationMessage) {
         val icon = appContext.applicationInfo.icon.takeIf { it != 0 } ?: android.R.drawable.ic_dialog_info
-        // Real content intent (T7.13-F): carries only the minimal validated
+        // Real content intent: carries only the minimal validated
         // destination payload from the shared tap contract. Immutable and
         // update-safe flags; the stable per-destination request code plus the
         // distinct data URI keep different notifications from overwriting
@@ -77,7 +77,7 @@ internal class AndroidNotificationPermission(
         context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
 
     /**
-     * Effective delivery state (T7.7): the runtime permission (API 33+ only;
+     * Effective delivery state: the runtime permission (API 33+ only;
      * it does not exist on API 31/32) plus the system-level application and
      * channel notification state. A disabled app or channel denies delivery
      * on every API level.

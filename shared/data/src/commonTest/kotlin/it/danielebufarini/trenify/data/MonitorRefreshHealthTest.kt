@@ -21,7 +21,7 @@ import kotlin.test.assertNull
 import kotlin.time.Duration.Companion.minutes
 
 /**
- * Persisted monitor refresh health (T7.14 corrective, both drivers):
+ * Persisted monitor refresh health (both drivers):
  * a failed refresh records typed presentation-only metadata on the
  * retained snapshot, survives repository recreation, clears on the next
  * clean accepted commit, and never touches ended monitors.

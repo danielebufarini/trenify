@@ -1,14 +1,13 @@
 package it.danielebufarini.trenify.core.platform
 
 /**
- * Small deterministic cold-entry handoff for notification destinations
- * (T7.13-H).
+ * Small deterministic cold-entry handoff for notification destinations.
  *
  * There is a period where a native notification callback exists before the
  * shared root component is constructed. The native host offers the validated
  * destination here; the shared root consumes it once it becomes available.
  *
- * Rules, also recorded in tests and T7.13 evidence:
+ * Rules, also recorded in tests:
  * - at most one pending destination is retained (a newer offer replaces an
  *   older unconsumed one; the latest tap wins);
  * - [consume] returns the pending destination exactly once and clears it;

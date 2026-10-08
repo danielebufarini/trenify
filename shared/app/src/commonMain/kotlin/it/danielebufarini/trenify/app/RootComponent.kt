@@ -30,7 +30,7 @@ interface RootComponent {
     fun back()
 
     /**
-     * One shared notification-routing entry point (T7.13-E): both platforms
+     * One shared notification-routing entry point: both platforms
      * ultimately invoke this same shared behavior with a validated typed
      * destination. The shared root translates it into navigation; native
      * hosts never push feature screens directly.
@@ -64,7 +64,7 @@ class DefaultRootComponent(
     componentContext: ComponentContext,
     private val componentFactory: AppComponentFactory,
     /**
-     * Cold-entry pending destination (T7.13-H): offered by the native host
+     * Cold-entry pending destination: offered by the native host
      * before this tree existed. Restored navigation is applied first (by
      * construction, through the serializers below); the pending destination
      * is then routed on top, so Back from the notification target returns
@@ -125,7 +125,7 @@ class DefaultRootComponent(
     )
 
     /**
-     * Monotonic duplicate-push discriminator (T7.13-A), restored safely
+     * Monotonic duplicate-push discriminator, restored safely
      * (corrective pass): the next allocation must exceed every generation
      * already present in the restored stack, otherwise a post-restoration
      * push would recreate an equal configuration and `pushNew` would throw.
@@ -218,7 +218,7 @@ class DefaultRootComponent(
     override fun back() { navigation.pop() }
 
     /**
-     * Durable root route contract (T7.13-A): every configuration is
+     * Durable root route contract: every configuration is
      * serializable and carries minimal provider-neutral routing
      * information only — string identity parts and search criteria, never
      * full domain objects, snapshots, repository flows or provider wire
@@ -337,7 +337,7 @@ fun TrainLookupIntent.serialized(): SerializedTrainLookup = SerializedTrainLooku
 
 private const val KEY_NAVIGATION_GENERATION = "root-navigation-generation"
 
-/** Persisted duplicate-push discriminator for root search routes (T7.13-A corrective pass). */
+/** Persisted duplicate-push discriminator for root search routes. */
 @Serializable
 private data class SavedNavigationGeneration(val next: Long = 0L)
 

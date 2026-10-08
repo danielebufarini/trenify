@@ -31,7 +31,7 @@ import kotlin.test.assertNotEquals
 import kotlin.time.Duration.Companion.hours
 
 /**
- * T8.14-C1 guard: journey result rows keep a stable content-derived [key]
+ * Journey result rows keep a stable content-derived [key]
  * across user re-sorts, while the positional [index] remains the selection
  * key. Native lists must key rows by [key], never by [index].
  */

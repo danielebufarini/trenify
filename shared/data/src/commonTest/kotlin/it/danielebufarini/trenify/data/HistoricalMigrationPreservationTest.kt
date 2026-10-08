@@ -13,7 +13,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
- * T7.15 persistence closure: every historical migration runs in order against
+ * Persistence closure: every historical migration runs in order against
  * real seeded data on both database drivers. Version 1 exercises the full
  * empty version 1 through the full chain, the version 2 base tables, and the
  * version 4 monitor/strike tables. All prove no

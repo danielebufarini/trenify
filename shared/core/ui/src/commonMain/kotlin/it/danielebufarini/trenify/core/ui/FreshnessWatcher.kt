@@ -14,7 +14,7 @@ import kotlin.time.Duration
 import kotlin.time.Instant
 
 /**
- * Local time-observation for display freshness (T7.14-B).
+ * Local time-observation for display freshness.
  *
  * A visible component owns at most one of these and it schedules at most
  * one delayed re-evaluation at a time — never one timer per card/row and

@@ -7,7 +7,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * T7.12-D strike/operator-information reference validation: dedicated
+ * Strike/operator-information reference validation: dedicated
  * allowlist, never the booking allowlist, never fabricated targets.
  */
 class StrikeInformationPolicyTest {

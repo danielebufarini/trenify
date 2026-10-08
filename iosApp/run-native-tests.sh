@@ -1,5 +1,5 @@
 #!/bin/sh
-# Canonical native-test entry point (T8.5 post-acceptance cleanup).
+# Canonical native-test entry point.
 #
 # Every run is hermetic:
 #   - an explicit isolated -derivedDataPath under .trenify-derived/<Scheme>,

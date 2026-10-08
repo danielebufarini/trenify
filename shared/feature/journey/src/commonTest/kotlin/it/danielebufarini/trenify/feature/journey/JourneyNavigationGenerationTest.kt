@@ -17,8 +17,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 /**
- * Restore-safe navigation-generation semantics (T7.13 corrective pass,
- * blocker 3).
+ * Restore-safe navigation-generation semantics.
  *
  * The History/Search generation discriminator must stay unique after a
  * save/destroy/recreate cycle through the real Decompose state keeper —

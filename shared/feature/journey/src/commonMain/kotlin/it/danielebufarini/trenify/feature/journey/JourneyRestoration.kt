@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 import kotlin.time.Instant
 
 /**
- * Minimal normalized journey lookup identity (T7.13-C).
+ * Minimal normalized journey lookup identity.
  *
  * A restored journey detail must never resurrect a stale serialized domain
  * snapshot as live data: it re-resolves the journey through the repository

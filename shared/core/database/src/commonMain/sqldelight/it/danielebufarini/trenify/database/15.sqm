@@ -1,4 +1,4 @@
--- T7.15 closure: installation notification preferences live in app_metadata
+-- Closure: installation notification preferences live in app_metadata
 -- (see AppMetadata.sq), but no earlier migration created the table, so
 -- databases upgraded from any historical version lack it and settings
 -- reads/writes fail with "no such table". Create it for migrated databases;

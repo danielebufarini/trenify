@@ -14,12 +14,12 @@ import kotlin.time.Clock
 import kotlin.time.Instant
 
 /**
- * Shared realtime presentation state (T7.14-A).
+ * Shared realtime presentation state.
  *
  * [failure] preserves the typed [DomainFailure] from the repository instead
  * of collapsing every condition into an undifferentiated flag, so shared UI
  * can distinguish offline-with-cache, temporary service failure, not found
- * and the remaining FS §23 conditions. [failed] remains as the
+ * and the remaining conditions. [failed] remains as the
  * undifferentiated convenience read.
  */
 data class RealtimeState<T>(
@@ -33,7 +33,7 @@ data class RealtimeState<T>(
 }
 
 /**
- * Display TTL mirroring the repository classification (T7.14-B): terminal
+ * Display TTL mirroring the repository classification: terminal
  * trains keep the completed-train TTL, everything else the train TTL, so
  * elapsed-time aging agrees with repository freshness instead of inventing
  * its own boundary.

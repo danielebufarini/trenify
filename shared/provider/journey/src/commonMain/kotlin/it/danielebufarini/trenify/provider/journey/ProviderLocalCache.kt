@@ -12,7 +12,7 @@ import kotlin.time.Duration
 import kotlin.time.Instant
 
 /**
- * Small bounded provider-local in-memory read cache (T8 latency work).
+ * Small bounded provider-local in-memory read cache.
  *
  * Purpose: eliminate repeated identical provider lookups (station
  * resolution, catalogues) across searches in one process. It stores

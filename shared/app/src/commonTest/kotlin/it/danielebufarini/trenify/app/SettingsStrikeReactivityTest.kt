@@ -21,7 +21,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * T7.7 strike preference integration: Alerts and Settings observe and mutate
+ * Strike preference integration: Alerts and Settings observe and mutate
  * the same persisted opt-in, and Settings adds the installation-wide gate.
  */
 @OptIn(ExperimentalCoroutinesApi::class)

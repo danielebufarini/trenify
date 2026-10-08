@@ -35,7 +35,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 /**
- * T7.11 corrective pass 2: persistence-shared refresh ordering for the
+ * Persistence-shared refresh ordering for the
  * shared train_run cache. Request invocation order — not response completion
  * order — decides which concurrent refresh may supersede another, across two
  * independent repository instances sharing one real database.

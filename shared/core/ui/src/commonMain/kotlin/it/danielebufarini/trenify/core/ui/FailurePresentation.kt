@@ -5,7 +5,7 @@ import it.danielebufarini.trenify.core.ui.resources.*
 import org.jetbrains.compose.resources.StringResource
 
 /**
- * Provider-neutral FS §23 presentation mapping (T7.14-A).
+ * Provider-neutral presentation mapping.
  *
  * Maps a preserved [DomainFailure] to the user-facing message without
  * leaking transport/provider internals. Callers pass whether useful cached
@@ -23,7 +23,7 @@ fun failureMessageResource(failure: DomainFailure, hasCachedContent: Boolean): S
 }
 
 /**
- * Presentation context for [DomainFailure.NOT_FOUND] (T7.14 final pass):
+ * Presentation context for [DomainFailure.NOT_FOUND]:
  * the repository taxonomy stays provider-neutral, while the
  * user-facing semantics depend on what is already known. A
  * train-number search with no match reports the entered number; any
@@ -40,7 +40,7 @@ enum class NotFoundContext {
 }
 
 /**
- * List-screen NOT_FOUND normalization (T7.14-A): for board and strike lists
+ * List-screen NOT_FOUND normalization: for board and strike lists
  * a 404 means "no content", never a train message — the empty state (no
  * data) or the stale flag (cached data) already carries the truth. Returns
  * null for NOT_FOUND so callers store no failure.

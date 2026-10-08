@@ -24,8 +24,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 /**
- * Restore-safe root search-generation semantics (T7.13 corrective pass,
- * blocker 3): a save/destroy/recreate cycle through the real Decompose
+ * Restore-safe root search-generation semantics: a save/destroy/recreate cycle through the real Decompose
  * state keeper must not let a later search push recreate an equal
  * configuration and throw.
  */

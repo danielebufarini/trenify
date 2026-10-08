@@ -159,7 +159,7 @@ CREATE TABLE strike_sync_state (
 );
 
 /**
- * Successfully covered strike intervals (T7.12-A).
+ * Successfully covered strike intervals.
  *
  * One row per explicitly refreshed interval whose snapshot was successfully
  * complete: freshness for that interval — and only that interval — while the
@@ -602,7 +602,7 @@ SELECT * FROM strike WHERE id = ?;
 allStrikes:
 SELECT * FROM strike ORDER BY start_epoch_ms, id;
 
--- Exact SQL mirror of the shared T7.12 strikeIntervalsOverlap definition in
+-- Exact SQL mirror of the shared strikeIntervalsOverlap definition in
 -- core:model (touching boundaries count as overlap). Keep the two in sync;
 -- see its KDoc for the single-definition rule.
 strikesOverlapping:
@@ -610,8 +610,7 @@ SELECT * FROM strike
 WHERE start_epoch_ms <= :to_epoch_ms AND end_epoch_ms >= :from_epoch_ms
 ORDER BY start_epoch_ms, id;
 
--- Expiry-transition lookup for the local reactive-expiry ticker (T7.12
--- corrective pass): ends of still-applicable strikes touching the observed
+-- Expiry-transition lookup for the local reactive-expiry ticker: ends of still-applicable strikes touching the observed
 -- window. Same inclusive mirror as strikesOverlapping.
 strikeEndsOverlapping:
 SELECT end_epoch_ms FROM strike

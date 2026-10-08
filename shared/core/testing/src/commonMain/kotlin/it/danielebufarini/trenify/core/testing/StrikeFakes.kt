@@ -65,7 +65,7 @@ class FakeStrikeProvider(private val clock: Clock = MutableClock()) : StrikeProv
     override var suppliesCompleteSnapshots = true
     var values = listOf(testProviderStrike)
     var result: ProviderResult<List<ProviderStrike>>? = null
-    /** Per-response snapshot completeness (T7.12-A): false simulates a partially parsed RSS snapshot. */
+    /** Per-response snapshot completeness: false simulates a partially parsed RSS snapshot. */
     var complete = true
     var calls = 0
     val requestedIntervals = mutableListOf<Pair<Instant, Instant>>()

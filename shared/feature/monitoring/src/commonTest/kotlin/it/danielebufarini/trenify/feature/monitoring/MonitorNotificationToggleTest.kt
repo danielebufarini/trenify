@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 
 /**
- * T7.7 per-train mute/unmute from the monitoring list: reactive, preserving
+ * Per-train mute/unmute from the monitoring list: reactive, preserving
  * the monitor, with pending and retryable error state.
  */
 @OptIn(ExperimentalCoroutinesApi::class)

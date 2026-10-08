@@ -38,7 +38,7 @@ data class MonitoredTrainSnapshot(
 )
 
 /**
- * Post-terminal retention for naturally ended monitors (T7.11, G-MVP-RETENTION).
+ * Post-terminal retention for naturally ended monitors.
  *
  * Exactly 24 elapsed hours from [TrainMonitor.endedAt]. Instant/Duration
  * arithmetic is used so Europe/Rome DST transitions cannot shorten or extend
@@ -47,7 +47,7 @@ data class MonitoredTrainSnapshot(
 val MONITOR_POST_TERMINAL_RETENTION: Duration = 24.hours
 
 /**
- * Stable terminal states (T7.11, FR-MONITOR-002). Only these end active
+ * Stable terminal states. Only these end active
  * monitoring. PARTIALLY_CANCELLED, DIVERTED, RESCHEDULED, ROUTE_CHANGED,
  * DELAYED, temporary provider failure and unknown status are not terminal.
  *
@@ -60,7 +60,7 @@ fun isTerminalStatus(status: TrainStatus): Boolean =
     status == TrainStatus.ARRIVED || status == TrainStatus.CANCELLED
 
 /**
- * Monitor lifecycle (T7.11), stored as [TrainMonitor.endedAt]:
+ * Monitor lifecycle, stored as [TrainMonitor.endedAt]:
  *
  * - ACTIVE: row exists, enabled, `endedAt == null`; eligible for polling.
  * - ENDED / RECENTLY_ENDED: row exists, enabled, `endedAt != null`; retained
@@ -83,27 +83,25 @@ data class TrainMonitor(
     val lastSnapshot: MonitoredTrainSnapshot? = null,
     val lastEvent: TrainMonitorEvent? = null,
     /**
-     * Per-train notification delivery switch (T7.7). Muting gates delivery
+     * Per-train notification delivery switch. Muting gates delivery
      * only: monitor evaluation and snapshot progression continue while muted,
      * and unmuting never replays changes from the muted period.
      */
     val notificationsEnabled: Boolean = true,
     /**
-     * Terminal transition instant (T7.11). Null while ACTIVE; set once when a
+     * Terminal transition instant. Null while ACTIVE; set once when a
      * stable ARRIVED/final CANCELLED state commits. Never reset, never moved
      * by repeated terminal observations or restart.
      */
     val endedAt: Instant? = null,
     /**
-     * Optimistic-concurrency version of the accepted monitor snapshot (T7.11
-     * corrective). Bumped on every accepted snapshot commit; evaluations
+     * Optimistic-concurrency version of the accepted monitor snapshot. Bumped on every accepted snapshot commit; evaluations
      * commit against the version they were based on so stale refreshes are
      * rejected instead of duplicating events or regressing newer state.
      */
     val snapshotVersion: Long = 0,
     /**
-     * Presentation-only refresh health for the retained snapshot (T7.14
-     * corrective): the typed failure of the latest attempted refresh that
+     * Presentation-only refresh health for the retained snapshot: the typed failure of the latest attempted refresh that
      * produced no new accepted train observation (offline fallback or
      * warning-backed stale replay), with the instant of that attempt. Null
      * after any clean accepted refresh. Never a new observation: it changes
@@ -207,7 +205,7 @@ sealed interface TrainMonitorEvent {
     }
 
     /**
-     * Structural route change (T7.11): added, removed or reordered stops.
+     * Structural route change: added, removed or reordered stops.
      *
      * Identity uses stable station IDs, never display strings. Stops whose
      * status is CANCELLED are excluded from the comparison: a newly cancelled
@@ -242,7 +240,7 @@ interface MonitoringRepository {
     suspend fun removeMonitor(trainRunId: TrainRunId)
 
     /**
-     * Explicit per-monitor preference edits (T7.7). Both preserve monitor
+     * Explicit per-monitor preference edits. Both preserve monitor
      * identity, enabled state, creation metadata, expiry, snapshots and event
      * claims without recreation, reset or synthetic change events.
      */
@@ -252,14 +250,14 @@ interface MonitoringRepository {
     fun observeActiveMonitors(): Flow<List<TrainMonitor>>
 
     /**
-     * Recently ended monitors (T7.11): terminal ARRIVED/final CANCELLED rows
+     * Recently ended monitors: terminal ARRIVED/final CANCELLED rows
      * within the 24-hour retention window. Never polled, read-only except for
      * manual early removal.
      */
     fun observeEndedMonitors(): Flow<List<TrainMonitor>>
     fun observeMonitor(trainRunId: TrainRunId): Flow<TrainMonitor?>
     /**
-     * Versioned non-terminal commit (T7.11 corrective). The evaluation must
+     * Versioned non-terminal commit. The evaluation must
      * have been performed against the accepted snapshot carrying
      * [expectedVersion] ([TrainMonitor.snapshotVersion], 0 before the first
      * accepted snapshot): the commit is atomically rejected with
@@ -270,8 +268,7 @@ interface MonitoringRepository {
      * base instead of committing blindly.
      *
      * [observationOrder] is the persistence-shared refresh invocation
-     * generation backing [snapshot] (T7.11 corrective pass 2, carried from
-     * [DataResult.Data.refreshGeneration]): the commit is additionally
+     * generation backing [snapshot] (carried from [DataResult.Data.refreshGeneration]): the commit is additionally
      * rejected when a newer observation generation was already accepted, so
      * a superseded observation can never be rebranded as current by a CAS
      * retry — even when the snapshot version it retries against still
@@ -287,7 +284,7 @@ interface MonitoringRepository {
     ): EvaluationCommit
 
     /**
-     * Observation-ordered terminal commit (T7.11 final pass). The first
+     * Observation-ordered terminal commit. The first
      * accepted terminal observation establishes `endedAt` (ACTIVE → ENDED);
      * strictly newer accepted terminal observations may correct the retained
      * final snapshot while `endedAt` and the ENDED lifecycle stay monotonic.
@@ -318,13 +315,13 @@ interface MonitoringRepository {
     ): List<TrainMonitorEvent>
 
     /**
-     * Manual early removal of a retained ended monitor (T7.11). Removes the
+     * Manual early removal of a retained ended monitor. Removes the
      * row and its state/events, idempotently. Never touches active monitors.
      */
     suspend fun removeEndedMonitor(trainRunId: TrainRunId)
 
     /**
-     * Best-effort cleanup of retention-expired ended monitors (T7.11).
+     * Best-effort cleanup of retention-expired ended monitors.
      * Idempotent; never touches active monitors or unrelated state.
      */
     suspend fun cleanupExpiredEnded(now: Instant)
@@ -334,8 +331,7 @@ interface MonitoringRepository {
     suspend fun claimNotification(event: TrainMonitorEvent, emittedAt: Instant, cooldown: Duration): Boolean
 
     /**
-     * Records presentation-only refresh health for an ACTIVE monitor (T7.14
-     * corrective): the latest attempted refresh produced no new accepted
+     * Records presentation-only refresh health for an ACTIVE monitor: the latest attempted refresh produced no new accepted
      * train observation ([DataResult.Failure] or warning-backed fallback).
      * Updates only the refresh-health metadata of the retained snapshot —
      * never the snapshot, events, version, ordering generation or endedAt —
