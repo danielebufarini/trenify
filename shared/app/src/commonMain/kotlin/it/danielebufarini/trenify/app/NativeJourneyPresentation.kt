@@ -46,6 +46,8 @@ data class NativeJourneyLegPresentation(
     val operatorName: String?,
     /** Scheduled dwell between the previous leg arrival and this departure; null for the first leg. */
     val transferWaitMinutesAfterPrevious: Long?,
+    /** Planned departure platform at this leg's boarding station, independent of realtime. */
+    val scheduledPlatform: String? = null,
 )
 
 /**
@@ -273,6 +275,7 @@ private fun JourneyLeg.projected(transferWaitMinutesAfterPrevious: Long?): Nativ
         trainIdentity = trainIdentity(),
         operatorName = operator?.name,
         transferWaitMinutesAfterPrevious = transferWaitMinutesAfterPrevious,
+        scheduledPlatform = scheduledPlatform,
     )
 
 private fun JourneyLeg.trainIdentity(): String? =

@@ -12,11 +12,12 @@ import kotlin.test.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class JourneyScheduledPlatformTest {
-    private fun TestScope.verify(scheduled: String?, actual: String?, realtime: Boolean, failed: Boolean = false) {
+    private fun TestScope.verify(scheduled: String?, actual: String?, realtime: Boolean, failed: Boolean = false,
+        operator: String = "Trenitalia") {
         val lifecycle = LifecycleRegistry()
         lifecycle.resume()
         try {
-            val leg = testJourney.legs.single().copy(scheduledPlatform = scheduled)
+            val leg = testJourney.legs.single().copy(scheduledPlatform = scheduled, operator = Operator(operator))
             val journey = testJourney.copy(legs = listOf(leg))
             val trains = FakeRealtimeRepositories().apply {
                 trainState.value = if (!realtime) DataResult.Failure(if (failed) DomainFailure.TEMPORARY else DomainFailure.NOT_FOUND)
@@ -33,6 +34,7 @@ class JourneyScheduledPlatformTest {
             advanceUntilIdle()
             val projected = facade.state.value.legs.single()
             assertEquals(scheduled, projected.scheduledPlatform)
+            assertEquals(operator, projected.operatorName)
             assertEquals(if (realtime) actual else null, projected.actualPlatform)
             assertEquals(scheduled, component.state.value.resolved!!.legs.single().scheduledPlatform)
             assertEquals(realtime, projected.hasTrainAction)
@@ -56,4 +58,7 @@ class JourneyScheduledPlatformTest {
     @Test fun realtimeOnlyDoesNotInventScheduledPlatform() = runTest { verify(null, "8", realtime = true) }
     @Test fun neitherSourceHasAPlatform() = runTest { verify(null, null, realtime = false) }
     @Test fun identicalScheduledAndActualRetainBothValues() = runTest { verify("7", "7", realtime = true) }
+    @Test fun italoScheduledWithoutRealtime() = runTest { verify("7", null, realtime = false, operator = "Italo") }
+    @Test fun italoScheduledAndActualStayIndependent() = runTest { verify("7", "8", realtime = true, operator = "Italo") }
+    @Test fun italoWithoutAnyPlatformStaysUnknown() = runTest { verify(null, null, realtime = false, operator = "Italo") }
 }

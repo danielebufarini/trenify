@@ -226,6 +226,44 @@ class JourneyProviderTest {
         }
     }
 
+    @Test fun observedItalo9931ResponsePreservesIdentityAndDoesNotInventAPlatform() = runTest {
+        val request = JourneySearchRequest(station("Milano Centrale"), station("Roma Termini"),
+            Instant.parse("2026-10-08T09:00:00Z"))
+        val engine = MockEngine { httpRequest ->
+            when {
+                httpRequest.url.encodedPath.endsWith("/api/login") -> respond("{}",
+                    headers = headersOf(HttpHeaders.SetCookie, "BIGSessionToken=synthetic-token; Path=/; Secure"))
+                httpRequest.url.encodedPath.endsWith("stations/list") -> respond(
+                    """{"RMT":{"name":"Roma Termini"},"MC_":{"name":"Milano Centrale"}}""", headers = jsonHeaders)
+                httpRequest.url.encodedPath.endsWith("stations") -> respond(
+                    if (httpRequest.url.parameters["sn"] == "Milano Centrale")
+                        """{"stations":[{"stationCode":"MC_","name":"Milano Centrale"}]}"""
+                    else """{"stations":[{"stationCode":"RMT","name":"Roma Termini"}]}""", headers = jsonHeaders)
+                else -> {
+                    assertTrue(httpRequest.url.encodedPath.endsWith("booking"))
+                    val body = Json.parseToJsonElement(httpRequest.body.toByteArray().decodeToString()).jsonObject
+                    assertEquals("2026-10-08", body.getValue("departureDate").jsonPrimitive.content)
+                    assertEquals("MC_", body.getValue("departureStation").jsonPrimitive.content)
+                    assertEquals("RMT", body.getValue("arrivalStation").jsonPrimitive.content)
+                    respond(italo9931Fixture, headers = jsonHeaders)
+                }
+            }
+        }
+        createHttpClient(engine).use { client ->
+            val journey = assertIs<ProviderResult.Success<JourneySearchResult>>(
+                ItaloJourneyAdapter(client, clock).search(request)).value.journeys.single()
+            val leg = journey.legs.single()
+            assertEquals(request.origin, leg.origin)
+            assertEquals(request.destination, leg.destination)
+            assertEquals(Operator("Italo"), leg.operator)
+            assertEquals(TrainNumber("9931"), leg.number)
+            assertEquals(Instant.parse("2026-10-08T09:40:00Z"), leg.departure)
+            assertEquals(Instant.parse("2026-10-08T13:19:00Z"), leg.arrival)
+            assertEquals(setOf(ProviderId("italo-journeys")), journey.sources)
+            assertNull(leg.scheduledPlatform)
+        }
+    }
+
     @Test fun arriveByUsesArrivalDeadlineAndIncludesPreviousDayDepartures() = runTest {
         val arrival = query.copy(at = at + 6.hours, mode = JourneySearchMode.ARRIVE_BY)
         val source = Source(ProviderId("a")) { request ->

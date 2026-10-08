@@ -19,7 +19,7 @@ final class NativeJourneyPlatformTests: XCTestCase {
         await task.value
     }
 
-    private func openDetail(_ fixture: NativeInteropFixture) async -> NativeJourneyDetailModel {
+    private func searchToResults(_ fixture: NativeInteropFixture) async {
         fixture.selectHome()
         let input = fixture.session.state.value.main!.state.value.journey!.state.value.journeySearch!
         input.stationText(origin: true, text: "Roma")
@@ -32,6 +32,11 @@ final class NativeJourneyPlatformTests: XCTestCase {
         fixture.session.state.value.main!.state.value.home!.openJourneySearch()
         let shell = fixture.session.shell
         await poll("results") { shell.state.value.active.journeyResults?.state.value.journeys.isEmpty == false }
+    }
+
+    private func openDetail(_ fixture: NativeInteropFixture) async -> NativeJourneyDetailModel {
+        await searchToResults(fixture)
+        let shell = fixture.session.shell
         shell.state.value.active.journeyResults!.selectJourney(index: 0)
         await poll("detail") { shell.state.value.active.journeyDetail != nil }
         let model = NativeJourneyDetailModel(session: fixture.session, identity: shell.state.value.active.identity)
@@ -102,10 +107,12 @@ final class NativeJourneyPlatformTests: XCTestCase {
             ("7", nil, false), ("7", nil, true), ("7", "8", true),
             (nil, "8", true), (nil, nil, false), ("7", "7", true)
         ]
-        for (index, entry) in cases.enumerated() {
+        for (index, entry) in (cases.map { ("Trenitalia", $0) } + cases.map { ("Italo", $0) }).enumerated() {
+            let (operatorName, entry) = entry
             let (scheduled, actual, realtime) = entry
             let fixture = NativeInteropFixture()
-            fixture.stageJourneyPlatforms(scheduledPlatform: scheduled, actualPlatform: actual, realtimeAvailable: realtime)
+            fixture.stageJourneyPlatformsForOperator(operatorName: operatorName, scheduledPlatform: scheduled,
+                actualPlatform: actual, realtimeAvailable: realtime)
             let model = await openDetail(fixture)
             let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
             let appeared = expectation(description: "journey platform rows appear")
@@ -118,6 +125,7 @@ final class NativeJourneyPlatformTests: XCTestCase {
             await fulfillment(of: [appeared], timeout: 5)
             defer { window.isHidden = true; _ = model.close(); fixture.close() }
             XCTAssertEqual(model.state?.legs.first?.scheduledPlatform, scheduled)
+            XCTAssertEqual(model.state?.legs.first?.operatorName, operatorName)
             XCTAssertEqual(model.state?.legs.first?.actualPlatform, actual)
             let text = try renderedText(window, name: "ios-journey-platform-case-\(index)")
             if let scheduled {
@@ -140,6 +148,41 @@ final class NativeJourneyPlatformTests: XCTestCase {
                 XCTAssertFalse(failedText.contains("Actual platform"), failedText)
             }
             XCTAssertEqual(fixture.networkRequests, 0)
+        }
+    }
+
+    func testResultsRenderExpectedPlatformForBothOperatorsWithoutRealtime() async throws {
+        for operatorName in ["Italo", "Trenitalia"] {
+            for scheduled in ["7", nil] as [String?] {
+                let fixture = NativeInteropFixture()
+                fixture.stageJourneyPlatformsForOperator(operatorName: operatorName, scheduledPlatform: scheduled,
+                    actualPlatform: nil, realtimeAvailable: false)
+                await searchToResults(fixture)
+                let model = NativeJourneyResultsModel(session: fixture.session,
+                    identity: fixture.session.shell.state.value.active.identity)
+                model.start()
+                await poll("results model ready") { model.state?.journeys.count == 1 }
+                let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+                let appeared = expectation(description: "journey results appear")
+                let window = UIWindow(windowScene: scene)
+                window.frame = CGRect(x: 0, y: 0, width: 430, height: 1000)
+                window.rootViewController = UIHostingController(rootView:
+                    NativeJourneyResultsView(model: model).environment(\.locale, Locale(identifier: "en_US"))
+                        .onAppear { appeared.fulfill() })
+                window.makeKeyAndVisible()
+                await fulfillment(of: [appeared], timeout: 5)
+                defer { window.isHidden = true; _ = model.close(); fixture.close() }
+                XCTAssertEqual(model.state?.journeys.first?.legs.first?.scheduledPlatform, scheduled)
+                let text = try renderedText(window, name: "ios-results-platform-\(operatorName)-\(scheduled ?? "missing")")
+                if let scheduled {
+                    XCTAssertTrue(text.contains("Expected platform \(scheduled)"), text)
+                } else {
+                    XCTAssertFalse(text.contains("Expected platform"), text)
+                }
+                XCTAssertFalse(text.contains("Actual platform"), text)
+                XCTAssertFalse(text.contains("%@"), text)
+                XCTAssertEqual(fixture.networkRequests, 0)
+            }
         }
     }
 }

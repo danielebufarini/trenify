@@ -13,6 +13,7 @@ import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
@@ -403,6 +404,36 @@ class TrenifyJourneyTest {
         }
     }
 
+    @Test fun resultsShowOnlyTheFirstLegsExpectedDeparturePlatformForBothOperators() {
+        var rendered by mutableStateOf(resultsState())
+        compose.setContent {
+            TrenifyTheme(darkTheme = false, reduceMotion = true) {
+                TrenifyJourneyResultsContent(rendered, {}, {}, {})
+            }
+        }
+        for (operator in listOf("Italo", "Trenitalia")) {
+            for (planned in listOf("7", null)) {
+                val card = resultsState().journeys.single()
+                val first = card.legs.single().copy(operatorName = operator, scheduledPlatform = planned)
+                compose.runOnIdle {
+                    rendered = resultsState().copy(journeys = listOf(card.copy(
+                        operatorNames = listOf(operator),
+                        // A connecting leg's platform never belongs to the initial departure.
+                        legs = listOf(first, first.copy(originName = "Bologna Centrale", scheduledPlatform = "42")),
+                    )))
+                }
+                if (planned != null) {
+                    compose.onNode(hasText(compose.activity.getString(R.string.journey_platform_expected, planned)) and
+                        hasAnyAncestor(hasTestTag("journey-result-0"))).assertIsDisplayed()
+                } else {
+                    compose.onNodeWithText(compose.activity.getString(R.string.journey_platform_expected, "7")).assertDoesNotExist()
+                }
+                compose.onNodeWithText(compose.activity.getString(R.string.journey_platform_expected, "42")).assertDoesNotExist()
+                compose.onNodeWithText(compose.activity.getString(R.string.journey_platform_actual, "7")).assertDoesNotExist()
+            }
+        }
+    }
+
     @Test fun scheduledPlatformRemainsVisibleWithoutRealtimeAndAfterRealtimeFailure() {
         var failed by mutableStateOf(false)
         compose.setContent {
@@ -422,6 +453,30 @@ class TrenifyJourneyTest {
         compose.runOnIdle { failed = true }
         compose.onNodeWithTag("journey-platform-expected-0").assertIsDisplayed()
         compose.onNodeWithTag("journey-platform-actual-0").assertDoesNotExist()
+    }
+
+    @Test fun detailPlatformSemanticsAreIndependentOfOperatorAndRealtimeAvailability() {
+        var rendered by mutableStateOf(detailState())
+        compose.setContent {
+            TrenifyTheme(darkTheme = false, reduceMotion = true) {
+                TrenifyJourneyDetailContent(rendered, null, {}, {}, {},)
+            }
+        }
+        for (operator in listOf("Italo", "Trenitalia")) {
+            for ((planned, actual) in listOf("7" to null, "7" to "8", null to "8", null to null)) {
+                val base = detailState(scheduledPlatform = planned, actualPlatform = actual)
+                compose.runOnIdle {
+                    rendered = base.copy(legs = base.legs.map { it.copy(
+                        operatorName = operator, hasTrainAction = actual != null,
+                        realtimeStatus = if (actual == null) TrainStatus.UNKNOWN else TrainStatus.RUNNING,
+                    ) })
+                }
+                if (planned == null) compose.onNodeWithTag("journey-platform-expected-0").assertDoesNotExist()
+                else compose.onNodeWithText(compose.activity.getString(R.string.journey_platform_expected, planned)).assertIsDisplayed()
+                if (actual == null) compose.onNodeWithTag("journey-platform-actual-0").assertDoesNotExist()
+                else compose.onNodeWithText(compose.activity.getString(R.string.journey_platform_actual, actual)).assertIsDisplayed()
+            }
+        }
     }
 
     @Test fun detailPlatformRowsFollowAvailability() {

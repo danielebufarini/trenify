@@ -219,6 +219,9 @@ struct NativeJourneyResultsView: View {
                 // Neutral/default scheduled results carry no badge; only
                 // genuine strike warnings render a status pill.
                 statusLabel: warningLabel(journey),
+                platformLabel: (journey.legs.first?.scheduledPlatform).map {
+                    String.localizedStringWithFormat(journeyString("journey.platformExpected"), $0)
+                },
                 detailsLabel: journeyString("journey.details"),
                 departureLabel: journeyString("journey.departure"),
                 arrivalLabel: journeyString("journey.arrival")

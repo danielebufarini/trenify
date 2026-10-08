@@ -540,8 +540,13 @@ class NativeInteropFixture private constructor(
     }
     /** Scheduled provider payload and independent correlated realtime, through production components. */
     fun stageJourneyPlatforms(scheduledPlatform: String?, actualPlatform: String?, realtimeAvailable: Boolean) {
+        stageJourneyPlatformsForOperator("Trenitalia", scheduledPlatform, actualPlatform, realtimeAvailable)
+    }
+
+    /** Synthetic data for operator-independent UI semantics; not provider availability evidence. */
+    fun stageJourneyPlatformsForOperator(operatorName: String, scheduledPlatform: String?, actualPlatform: String?, realtimeAvailable: Boolean) {
         val fake = journeyRepository as? FakeJourneyRepository ?: return
-        val leg = testJourney.legs.single().copy(scheduledPlatform = scheduledPlatform)
+        val leg = testJourney.legs.single().copy(scheduledPlatform = scheduledPlatform, operator = Operator(operatorName))
         fake.state.value = DataResult.Data(
             journeyResult.copy(journeys = listOf(testJourney.copy(legs = listOf(leg)))),
             DataFreshness.Fresh(Clock.System.now(), null),

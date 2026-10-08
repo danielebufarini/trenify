@@ -32,11 +32,12 @@ class CorrelateJourneyLeg(private val trains: TrainRepository) {
         val number = leg.number ?: return null
         val expectedOperator = leg.operator
         val day = RailwayTime.serviceDate(leg.departure)
-        val searches = listOf(day, day - DatePeriod(days = 1)).map { trains.findTrainRuns(number, it) }
+        val serviceDates = listOf(day, day - DatePeriod(days = 1))
+        val searches = serviceDates.map { trains.findTrainRuns(number, it) }
         // Missing candidate coverage is not evidence of uniqueness.
         if (searches.any { it is DataResult.Failure || (it is DataResult.Data && it.warning != null) }) return null
         val candidates = searches.filterIsInstance<DataResult.Data<List<TrainRunSummary>>>()
-            .flatMap { it.value }.filter { it.id.number == number }.distinctBy { it.id }
+            .flatMap { it.value }.filter { it.id.number == number && it.id.serviceDate in serviceDates }.distinctBy { it.id }
         val matches = mutableListOf<TrainRunId>()
         val scheduledBoardings = mutableListOf<String?>()
         for (candidate in candidates) {

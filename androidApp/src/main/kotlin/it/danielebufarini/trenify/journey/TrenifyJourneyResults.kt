@@ -241,6 +241,9 @@ private fun JourneyResultCard(
             destination = journey.destinationName,
             durationLabel = railwayDurationLabel(journey.durationMinutes),
             changesLabel = journeyChangesLabel(journey),
+            platformLabel = journey.legs.firstOrNull()?.scheduledPlatform?.let {
+                stringResource(R.string.journey_platform_expected, it)
+            },
             onDetails = onDetails,
             statusTone = if (warningLabel != null) TrenifyStatusTone.Warning else TrenifyStatusTone.Unknown,
             // Neutral/default scheduled results carry no badge; only genuine

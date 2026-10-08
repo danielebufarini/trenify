@@ -25,3 +25,12 @@ internal val italoFixtureV1 = """
 "std":"2026-09-06T06:35:00","sta":"2026-09-06T10:20:00","trainNumber":"9908","carrierCode":"VF","equipmentType":"EVO"}]}]
 }]}]}
 """.trimIndent()
+
+// Reduced live guest-search response observed on 2026-10-08. Fare/sell/session
+// fields removed. No platform was supplied; this is not a simulated RFI feed.
+internal val italo9931Fixture = """
+{"trips":[{"direction":"forward","travelSolutions":[{"journeys":[
+{"serviceProvider":"ITALO","sequence":1,"segments":[{"departureStation":"MC_","arrivalStation":"RMT",
+"std":"2026-10-08T11:40:00","sta":"2026-10-08T15:19:00","trainNumber":"9931","carrierCode":"VF"}]}]
+}]}]}
+""".trimIndent()

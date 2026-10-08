@@ -5,6 +5,7 @@ import it.danielebufarini.trenify.core.testing.*
 import kotlinx.coroutines.test.runTest
 import kotlin.test.*
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.days
 
 class ScheduledPlatformCorrelationTest {
     private val leg = testJourney.legs.single()
@@ -55,5 +56,51 @@ class ScheduledPlatformCorrelationTest {
         var planned: String? = null
         assertNull(CorrelateJourneyLeg(trains)(leg) { planned = it })
         assertNull(planned)
+    }
+
+    @Test fun candidateOutsidePossibleServiceDatesCannotSupplyPlannedPlatform() = runTest {
+        // Inconsistent provider data: an old run carrying today's stop schedule.
+        val wrong = run().let { it.copy(summary = it.summary.copy(
+            id = testRunId.copy(serviceDate = RailwayTime.serviceDate(leg.departure - 3.days)),
+        )) }
+        val trains = FakeRealtimeRepositories().apply {
+            runsResult = DataResult.Data(listOf(wrong.summary), DataFreshness.Unknown)
+            trainState.value = DataResult.Data(wrong, DataFreshness.Fresh(MutableClock().now(), null))
+        }
+        var planned: String? = null
+        assertNull(CorrelateJourneyLeg(trains)(leg) { planned = it })
+        assertNull(planned)
+        assertEquals(0, trains.trainRefreshes)
+    }
+
+    @Test fun otherOperatorCannotSupplyPlannedPlatformForTheSameTrainNumber() = runTest {
+        val trains = FakeRealtimeRepositories().apply {
+            trainState.value = DataResult.Data(run().let { it.copy(summary = it.summary.copy(operator = Operator("Italo"))) },
+                DataFreshness.Fresh(MutableClock().now(), null))
+        }
+        var planned: String? = null
+        assertNull(CorrelateJourneyLeg(trains)(leg) { planned = it })
+        assertNull(planned)
+    }
+
+    @Test fun otherStationCannotSupplyPlannedPlatformAtTheSameTime() = runTest {
+        val trains = FakeRealtimeRepositories().apply {
+            trainState.value = DataResult.Data(run().let { it.copy(stops = it.stops.map { stop ->
+                if (stop.scheduledDeparture != null) stop.copy(station = Station(StationId("other"), "Bologna Centrale")) else stop
+            }) }, DataFreshness.Fresh(MutableClock().now(), null))
+        }
+        var planned: String? = null
+        assertNull(CorrelateJourneyLeg(trains)(leg) { planned = it })
+        assertNull(planned)
+    }
+
+    @Test fun unavailableCandidateCoverageDoesNotGuessAPlatform() = runTest {
+        val trains = FakeRealtimeRepositories().apply {
+            runsResult = DataResult.Failure(DomainFailure.TEMPORARY)
+        }
+        var planned: String? = null
+        assertNull(CorrelateJourneyLeg(trains)(leg) { planned = it })
+        assertNull(planned)
+        assertEquals(0, trains.trainRefreshes)
     }
 }
