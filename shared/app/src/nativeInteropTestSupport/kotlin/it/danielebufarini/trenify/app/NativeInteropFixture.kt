@@ -263,10 +263,12 @@ class NativeInteropFixture private constructor(
     /**
      * Production booking wiring with a test URL opener: the real
      * [OpenBookingLink] policy decides availability and the target, so the
-     * native handoff exercises the approved allowlist path. Disabled by
+     * native handoff observes the production eligibility policy. Disabled by
      * default; existing fixtures keep the unwired behavior.
      */
-    private val bookingHandoff = OpenBookingLink(openUrl = { true })
+    var bookingLaunchCount: Int = 0
+        private set
+    private val bookingHandoff = OpenBookingLink(openUrl = { bookingLaunchCount++; true })
     private val graph = AppGraph.create(driver, MockEngine {
         networkRequests++
         error("Native interop tests must not call providers")

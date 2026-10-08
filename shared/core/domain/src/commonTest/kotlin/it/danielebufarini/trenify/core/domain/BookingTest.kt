@@ -25,27 +25,71 @@ class BookingTest {
         setOf(testJourney.sources.single()),
     )
 
-    @Test fun knownOperatorsResolveToTheirApprovedOfficialChannel() {
+    @Test fun previousHomepageChannelsAreIndividuallyIneligible() {
         val policy = BookingLinkPolicy()
-        assertEquals(BookingTarget("https://www.trenitalia.com", "Trenitalia"), policy.target(journeyWith("Trenitalia")))
-        assertEquals(BookingTarget("https://www.trenitalia.com", "TRENITALIA"), policy.target(journeyWith("TRENITALIA")))
-        assertEquals(BookingTarget("https://www.trenitalia.com", "Trenitalia Tper"), policy.target(journeyWith("Trenitalia Tper")))
-        assertEquals(BookingTarget("https://www.italotreno.com", "Italo"), policy.target(journeyWith("Italo")))
-        assertEquals(BookingTarget("https://www.trenord.it", "Trenord"), policy.target(journeyWith("Trenord")))
+        listOf("Trenitalia", "TRENITALIA", "Trenitalia Tper", "Italo", "Trenord").forEach {
+            assertNull(policy.target(journeyWith(it)), it)
+        }
+        assertNull(policy.target(journeyWith("Italo", "Trenitalia")))
     }
 
     @Test fun unknownOrMissingOperatorHasNoApprovedTarget() {
-        val policy = BookingLinkPolicy()
+        val policy = bookingContractTestPolicy()
         assertNull(policy.target(journeyWith("Unknown Operator")))
         assertNull(policy.target(journeyWith(null)))
+        assertNull(policy.target(journeyWith("Italo", "Trenitalia")))
     }
 
-    @Test fun mixedOperatorJourneyUsesFirstLegOperatorChannel() {
-        val policy = BookingLinkPolicy()
-        assertEquals(
-            BookingTarget("https://www.italotreno.com", "Italo"),
-            policy.target(journeyWith("Italo", "Trenitalia")),
-        )
+    @Test fun registeredContractReceivesSelectedJourneyAndEncodesBothStations() {
+        // Synthetic contract tests the policy, not live Trenitalia support.
+        val journey = testJourney.copy(legs = testJourney.legs.map {
+            it.copy(origin = it.origin.copy(name = "Reggio nell'Emilia & città"),
+                destination = it.destination.copy(name = "Milano/Centrale?x=1"))
+        })
+        val target = assertNotNull(bookingContractTestPolicy().target(journey))
+        assertEquals("https://www.trenitalia.com/contract-test?from=Reggio%20nell%27Emilia%20%26%20citt%C3%A0&to=Milano%2FCentrale%3Fx%3D1", target.url)
+        assertEquals("Trenitalia", target.operatorName)
+        val other = assertNotNull(bookingContractTestPolicy().target(testJourney))
+        assertNotEquals(other.url, target.url)
+    }
+
+    @Test fun genericHomepageAndUnverifiedParametersAreNotBookingDestinations() {
+        listOf("https://www.trenitalia.com", "https://www.italotreno.com", "https://www.trenord.it").forEach { url ->
+            val homepage = BookingChannel(url, "from", "to", "", parameters = { emptyMap() })
+            assertNull(BookingLinkPolicy(mapOf("trenitalia" to homepage)).target(testJourney))
+            // Parameter-looking URLs alone do not constitute verification evidence.
+            val guessed = BookingChannel(url, "from", "to", "", parameters = {
+                mapOf("from" to it.origin.name, "to" to it.destination.name)
+            })
+            assertNull(BookingLinkPolicy(mapOf("trenitalia" to guessed)).target(testJourney))
+        }
+    }
+
+    @Test fun requiredStationParametersMustBothBePresentAndNonBlank() = runTest {
+        val cases = listOf<Map<String, String>?>(null, emptyMap(), mapOf("from" to "Roma"),
+            mapOf("to" to "Milano"), mapOf("from" to "", "to" to "Milano"),
+            mapOf("from" to "Roma", "to" to "  "))
+        for (parameters in cases) {
+            val channel = BookingChannel("https://www.trenitalia.com/contract-test", "from", "to",
+                "Synthetic contract double", parameters = { parameters })
+            var calls = 0
+            val handoff = OpenBookingLink(BookingLinkPolicy(mapOf("trenitalia" to channel))) { calls++; true }
+            assertFalse(handoff.canBook(testJourney))
+            assertIs<BookingHandoffResult.Unavailable>(handoff(testJourney))
+            assertEquals(0, calls)
+        }
+    }
+
+    @Test fun contractCanTransferSupportedAdditionalContext() {
+        val channel = BookingChannel("https://www.trenitalia.com/contract-test", "from", "to",
+            "Synthetic contract double", parameters = {
+                mapOf("from" to it.origin.name, "to" to it.destination.name, "date" to "2026-10-08",
+                    "time" to "10:30", "train" to it.legs.single().number!!.value)
+            })
+        val target = assertNotNull(BookingLinkPolicy(mapOf("trenitalia" to channel)).target(testJourney))
+        assertTrue("&date=2026-10-08&time=10%3A30&train=123" in target.url)
+        // The simpler contract needs neither date nor train: they are optional.
+        assertNotNull(bookingContractTestPolicy().target(testJourney))
     }
 
     @Test fun allowlistRequiresHttpsOfficialHosts() {
@@ -67,14 +111,18 @@ class BookingTest {
         assertFalse(policy.isAllowed(""))
         assertFalse(policy.isAllowed("not a url"))
         assertFalse(policy.isAllowed("https://"))
+        assertFalse(policy.isAllowed("https://www.trenitalia.com/path with spaces"))
+        assertFalse(policy.isAllowed("https://www.trenitalia.com/%GG"))
+        assertFalse(policy.isAllowed("https://www.trenitalia.com/path\\evil"))
+        assertFalse(policy.isAllowed("https://www.trenitalia.com/\n"))
     }
 
     @Test fun handoffOpensValidatedTargetWithoutPricing() = runTest {
         val opened = mutableListOf<String>()
-        val handoff = OpenBookingLink { opened.add(it); true }
+        val handoff = OpenBookingLink(bookingContractTestPolicy()) { opened.add(it); true }
         val result = handoff(testJourney)
-        assertEquals(listOf("https://www.trenitalia.com"), opened)
-        assertEquals(BookingHandoffResult.Opened(BookingTarget("https://www.trenitalia.com", "Trenitalia")), result)
+        assertEquals(listOf("https://www.trenitalia.com/contract-test?from=Roma%20Termini&to=Milano%20Centrale"), opened)
+        assertEquals(BookingHandoffResult.Opened(BookingTarget("https://www.trenitalia.com/contract-test?from=Roma%20Termini&to=Milano%20Centrale", "Trenitalia")), result)
     }
 
     @Test fun availabilityAndExecutionShareOnePolicyConfiguration() = runTest {
@@ -82,11 +130,11 @@ class BookingTest {
         val restrictive = OpenBookingLink(BookingLinkPolicy(operatorChannels = emptyMap())) { calls++; true }
         assertFalse(restrictive.canBook(testJourney))
         assertEquals(
-            BookingHandoffResult.Unavailable(BookingUnavailableReason.UNKNOWN_OPERATOR),
+            BookingHandoffResult.Unavailable(BookingUnavailableReason.NO_QUALIFYING_TARGET),
             restrictive(testJourney),
         )
         assertEquals(0, calls)
-        val permissive = OpenBookingLink { true }
+        val permissive = OpenBookingLink(bookingContractTestPolicy()) { true }
         assertTrue(permissive.canBook(testJourney))
         assertIs<BookingHandoffResult.Opened>(permissive(testJourney))
     }
@@ -95,7 +143,7 @@ class BookingTest {
         var calls = 0
         val handoff = OpenBookingLink { calls++; true }
         assertEquals(
-            BookingHandoffResult.Unavailable(BookingUnavailableReason.UNKNOWN_OPERATOR),
+            BookingHandoffResult.Unavailable(BookingUnavailableReason.NO_QUALIFYING_TARGET),
             handoff(journeyWith("Unknown Operator")),
         )
         assertEquals(0, calls)
@@ -103,7 +151,7 @@ class BookingTest {
 
     @Test fun handoffRejectsNonAllowlistedPolicyTargetWithoutOpening() = runTest {
         var calls = 0
-        val policy = BookingLinkPolicy(operatorChannels = mapOf("trenitalia" to "https://evil.com"))
+        val policy = BookingLinkPolicy(operatorChannels = mapOf("trenitalia" to bookingContractTestChannel("https://evil.com/contract-test")))
         val handoff = OpenBookingLink(policy) { calls++; true }
         assertFalse(handoff.canBook(testJourney))
         assertEquals(
@@ -113,17 +161,32 @@ class BookingTest {
         assertEquals(0, calls)
     }
 
+    @Test fun everyInvalidDestinationIsRejectedBeforeTheLauncher() = runTest {
+        val urls = listOf("http://www.trenitalia.com/search", "https://example.com/search",
+            "https://www.trenitalia.com.evil.com/search", "https://user@www.trenitalia.com/search",
+            "https://www.trenitalia.com:443/search", "https://www.trenitalia.com/path with spaces",
+            "https://www.trenitalia.com/%GG", "not a url")
+        for (url in urls) {
+            var calls = 0
+            val policy = BookingLinkPolicy(mapOf("trenitalia" to bookingContractTestChannel(url)))
+            val handoff = OpenBookingLink(policy) { calls++; true }
+            assertFalse(handoff.canBook(testJourney), url)
+            assertIs<BookingHandoffResult.Unavailable>(handoff(testJourney), url)
+            assertEquals(0, calls, url)
+        }
+    }
+
     @Test fun launcherRefusalAndThrowBecomeFailed() = runTest {
-        val target = BookingTarget("https://www.trenitalia.com", "Trenitalia")
-        assertEquals(BookingHandoffResult.Failed(target), OpenBookingLink { false }(testJourney))
+        val target = BookingTarget("https://www.trenitalia.com/contract-test?from=Roma%20Termini&to=Milano%20Centrale", "Trenitalia")
+        assertEquals(BookingHandoffResult.Failed(target), OpenBookingLink(bookingContractTestPolicy()) { false }(testJourney))
         assertEquals(
             BookingHandoffResult.Failed(target),
-            OpenBookingLink { throw IllegalStateException("no handler") }(testJourney),
+            OpenBookingLink(bookingContractTestPolicy()) { throw IllegalStateException("no handler") }(testJourney),
         )
     }
 
     @Test fun handoffDoesNotSwallowCancellation() = runTest {
-        val handoff = OpenBookingLink { throw CancellationException("gone") }
+        val handoff = OpenBookingLink(bookingContractTestPolicy()) { throw CancellationException("gone") }
         assertFailsWith<CancellationException> { handoff(testJourney) }
     }
 }

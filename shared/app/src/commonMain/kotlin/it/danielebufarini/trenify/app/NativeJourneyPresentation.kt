@@ -1,6 +1,5 @@
 package it.danielebufarini.trenify.app
 
-import it.danielebufarini.trenify.core.domain.BookingLinkPolicy
 import it.danielebufarini.trenify.core.domain.DataResult
 import it.danielebufarini.trenify.core.domain.DomainFailure
 import it.danielebufarini.trenify.core.domain.GeographyEvidence
@@ -454,9 +453,9 @@ private fun JourneyDetailState.projected(): NativeJourneyDetailState {
         bookingAvailable = bookingAvailable,
         bookingInProgress = bookingInProgress,
         bookingFailed = bookingFailed,
-        // Display name only, from the same shared policy the component uses
-        // for availability; the URL itself never enters presentation state.
+        // Display name only, from the resolved journey operator. Availability is
+        // computed by the injected shared handoff; the URL never enters state.
         bookingOperatorName = journey?.takeIf { bookingAvailable }
-            ?.let { BookingLinkPolicy().target(it)?.operatorName },
+            ?.legs?.first()?.operator?.name?.trim()?.takeIf(String::isNotEmpty),
     )
 }

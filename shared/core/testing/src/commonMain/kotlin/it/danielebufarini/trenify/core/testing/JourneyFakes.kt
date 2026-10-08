@@ -15,6 +15,23 @@ val journeyResult = JourneySearchResult(listOf(testJourney), listOf(JourneyCover
     listOf(Operator("Trenitalia")), listOf("Frecce"), JourneySourceStatus.AVAILABLE, true)),
     journeyRequest.departureFrom, journeyRequest.departureUntil)
 
+/**
+ * Synthetic query contract for exercising booking policy and launcher boundaries.
+ * /contract-test and its parameters are NOT a working operator integration, nor
+ * evidence of live prefill. Never register this channel in production.
+ */
+fun bookingContractTestChannel(url: String = "https://www.trenitalia.com/contract-test") = BookingChannel(
+    url = url,
+    originParameter = "from",
+    destinationParameter = "to",
+    verificationReference = "Synthetic contract double; no live operator verification",
+    parameters = { journey -> linkedMapOf("from" to journey.origin.name, "to" to journey.destination.name) },
+)
+
+fun bookingContractTestPolicy() = BookingLinkPolicy(
+    operatorChannels = mapOf("trenitalia" to bookingContractTestChannel()),
+)
+
 /** This module is a test dependency only; production never depends on core:testing. */
 class FakeJourneyProvider(private val clock: Clock = MutableClock()) : JourneyProvider {
     override val id = ProviderId("test-journey")

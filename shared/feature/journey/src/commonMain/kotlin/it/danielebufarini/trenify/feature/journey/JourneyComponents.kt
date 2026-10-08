@@ -888,7 +888,8 @@ class JourneyDetailComponent(
             currentCoroutineContext().ensureActive()
             mutable.value = mutable.value.copy(
                 bookingInProgress = false,
-                bookingFailed = result !is BookingHandoffResult.Opened,
+                bookingAvailable = mutable.value.bookingAvailable && result !is BookingHandoffResult.Unavailable,
+                bookingFailed = result is BookingHandoffResult.Failed,
             )
         }
     }

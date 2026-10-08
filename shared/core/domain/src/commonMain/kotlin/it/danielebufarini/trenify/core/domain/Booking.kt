@@ -12,40 +12,78 @@ import kotlinx.coroutines.CancellationException
  * provider or commercial integration: there is intentionally no `PricingProvider`
  * reference anywhere on this path.
  *
- * URL discipline: no documented operator deep link carrying origin, destination, date,
- * time, or train reference exists in the repository, so targets are safe fallbacks to
- * approved official operator channels (fixed homepage URLs — never string-concatenated
- * and never carrying invented deep-link parameters). A future pricing offer may supply
- * a pricing-derived deep-link target as enrichment; that is future scope and never a
- * prerequisite for this path.
+ * A safe official URL alone is not a booking target: the approved mechanism must
+ * transfer both stations. Generic homepage fallback was superseded on 2026-10-08.
  */
 data class BookingTarget(val url: String, val operatorName: String)
 
+/**
+ * A reviewed HTTPS query contract. Register only mechanisms backed by operator
+ * documentation or reproducible prefill evidence, cited in [verificationReference].
+ * Parameter names and station identifiers must come from that evidence, never guesses.
+ * [parameters] maps the selected journey to the operator's identifiers; return null
+ * if any required context is unavailable. Include date/time/train only if supported.
+ * This is application configuration, not a provider-supplied URL or user preference.
+ */
+class BookingChannel(
+    val url: String,
+    val originParameter: String,
+    val destinationParameter: String,
+    val verificationReference: String,
+    val parameters: (Journey) -> Map<String, String>?,
+)
+
 class BookingLinkPolicy(
-    private val operatorChannels: Map<String, String> = defaultOperatorChannels,
+    private val operatorChannels: Map<String, BookingChannel> = defaultOperatorChannels,
     private val allowedHosts: Set<String> = defaultAllowedBookingHosts,
 ) {
     /**
-     * Approved official operator target for [journey], or null when no approved channel
-     * exists (unknown or missing operator, or a resolved target outside the allowlist).
-     * Mixed-operator journeys resolve to the first leg's operator channel: the journey
-     * starts there and every operator channel sells its own departures.
+     * Approved, journey-prefilled target, or null. Channel admission requires evidence;
+     * resolution requires both station parameters; URL safety is checked separately.
+     * Each registered contract must support the selected journey, including its legs.
      */
     fun target(journey: Journey): BookingTarget? =
         resolve(journey)?.takeIf { isAllowed(it.url) }
 
-    /** Operator mapping without allowlist approval. Null means no known channel. */
+    /** Resolve a registered contract. The launcher must additionally check URL safety. */
     fun resolve(journey: Journey): BookingTarget? {
         val operator = journey.legs.first().operator?.name?.trim()?.takeIf(String::isNotEmpty) ?: return null
-        val url = operatorChannels[normalizeStationQuery(operator)] ?: return null
-        return BookingTarget(url, operator)
+        val channel = operatorChannels[normalizeStationQuery(operator)] ?: return null
+        if (channel.verificationReference.isBlank() || channel.originParameter.isBlank() ||
+            channel.destinationParameter.isBlank() || channel.originParameter == channel.destinationParameter ||
+            '?' in channel.url || '#' in channel.url) return null
+        val parameters = channel.parameters(journey) ?: return null
+        if (parameters[channel.originParameter].isNullOrBlank() ||
+            parameters[channel.destinationParameter].isNullOrBlank() ||
+            parameters.any { (key, value) -> key.isBlank() || value.any(Char::isISOControl) }) return null
+        val query = parameters.entries.joinToString("&") { (key, value) ->
+            "${encodeParameter(key)}=${encodeParameter(value)}"
+        }
+        return BookingTarget("${channel.url}?$query", operator)
     }
 
     /** HTTPS-only official-host allowlist validation. Arbitrary URLs are rejected. */
     fun isAllowed(url: String): Boolean {
         if (!url.startsWith("https://", ignoreCase = true)) return false
+        // Reject malformed paths/queries too, not just malformed authorities.
+        if (url.any { it.isWhitespace() || it.isISOControl() || it.code > 127 } ||
+            '\\' in url || url.any { it in "<>\"{}|^`" }) return false
+        if (Regex("%(?![0-9a-fA-F]{2})").containsMatchIn(url)) return false
         val host = hostOf(url) ?: return false
         return host.lowercase() in allowedHosts
+    }
+
+    private fun encodeParameter(value: String): String = buildString {
+        value.encodeToByteArray().forEach { byte ->
+            val unsigned = byte.toInt() and 0xff
+            val char = unsigned.toChar()
+            if (char in 'a'..'z' || char in 'A'..'Z' || char in '0'..'9' || char in "-._~") append(char)
+            else {
+                append('%')
+                append("0123456789ABCDEF"[unsigned ushr 4])
+                append("0123456789ABCDEF"[unsigned and 15])
+            }
+        }
     }
 
     private fun hostOf(url: String): String? {
@@ -59,19 +97,13 @@ class BookingLinkPolicy(
 
     companion object {
         /**
-         * Operator name (normalized) to approved official channel.
-         *
-         * Evidence: "Trenitalia" and "Italo" are the operators produced by the production
-         * journey adapters; "Trenord" and "Trenitalia Tper" values are produced by the
-         * Italo adapter mapping. The targets are the operators' official homepages used
-         * as the safe fallback channel.
+         * Operator name (normalized) to verified prefill contract.
+         * Trenitalia (including Tper), Italo and Trenord were individually assessed:
+         * their previous entries were fixed homepages with no station transfer, and
+         * no qualifying contract/evidence was found. Do not restore those fallbacks.
+         * Future registrations require evidence and journey-specific parameter mapping.
          */
-        val defaultOperatorChannels: Map<String, String> = mapOf(
-            "trenitalia" to "https://www.trenitalia.com",
-            "trenitalia tper" to "https://www.trenitalia.com",
-            "italo" to "https://www.italotreno.com",
-            "trenord" to "https://www.trenord.it",
-        )
+        val defaultOperatorChannels: Map<String, BookingChannel> = emptyMap()
 
         /**
          * Official hosts approved for booking. Least privilege: exactly the hosts the
@@ -93,7 +125,7 @@ sealed interface BookingHandoffResult {
     data class Failed(val target: BookingTarget) : BookingHandoffResult
 }
 
-enum class BookingUnavailableReason { UNKNOWN_OPERATOR, REJECTED_TARGET }
+enum class BookingUnavailableReason { UNKNOWN_OPERATOR, REJECTED_TARGET, NO_QUALIFYING_TARGET }
 
 /**
  * Application-layer handoff: validates the policy target before opening it.
@@ -111,7 +143,7 @@ class OpenBookingLink(
 
     suspend operator fun invoke(journey: Journey): BookingHandoffResult {
         val resolved = policy.resolve(journey)
-            ?: return BookingHandoffResult.Unavailable(BookingUnavailableReason.UNKNOWN_OPERATOR)
+            ?: return BookingHandoffResult.Unavailable(BookingUnavailableReason.NO_QUALIFYING_TARGET)
         if (!policy.isAllowed(resolved.url)) {
             return BookingHandoffResult.Unavailable(BookingUnavailableReason.REJECTED_TARGET)
         }

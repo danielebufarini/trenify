@@ -40,7 +40,7 @@ final class NativeJourneyPlatformTests: XCTestCase {
         return model
     }
 
-    private func renderedText(_ window: UIWindow, name: String) throws -> String {
+    private func renderedLines(_ window: UIWindow, name: String) throws -> [VNRecognizedTextObservation] {
         window.layoutIfNeeded()
         let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
             XCTAssertTrue(window.drawHierarchy(in: window.bounds, afterScreenUpdates: true))
@@ -55,7 +55,46 @@ final class NativeJourneyPlatformTests: XCTestCase {
         request.recognitionLevel = .accurate
         request.recognitionLanguages = ["en-US"]
         try VNImageRequestHandler(cgImage: try XCTUnwrap(image.cgImage)).perform([request])
-        return (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+        return request.results ?? []
+    }
+
+    private func renderedText(_ window: UIWindow, name: String) throws -> String {
+        try renderedLines(window, name: name).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+    }
+
+    func testKnownOperatorWithoutPrefillRendersNoBookingOrEmptySpace() async throws {
+        let fixture = NativeInteropFixture(bookingHandoffEnabled: true)
+        let model = await openDetail(fixture)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let appeared = expectation(description: "journey detail appears")
+        let window = UIWindow(windowScene: scene)
+        window.frame = CGRect(x: 0, y: 0, width: 430, height: 1000)
+        window.rootViewController = UIHostingController(rootView:
+            NativeJourneyDetailView(model: model).environment(\.locale, Locale(identifier: "en_US"))
+                .onAppear { appeared.fulfill() })
+        window.makeKeyAndVisible()
+        await fulfillment(of: [appeared], timeout: 5)
+        defer { window.isHidden = true; _ = model.close(); fixture.close() }
+        XCTAssertEqual(model.state?.legs.first?.operatorName, "Trenitalia")
+        XCTAssertEqual(model.state?.bookingAvailable, false)
+        XCTAssertNil(model.state?.bookingOperatorName)
+        let lines = try renderedLines(window, name: "ios-journey-no-homepage-booking")
+        let text = lines.compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+        XCTAssertTrue(text.contains("Leg 1 of 1"), text)
+        XCTAssertFalse(text.contains("Continue to"), text)
+        XCTAssertFalse(text.contains("Unable to open"), text)
+        XCTAssertFalse(text.lowercased().contains("booking unavailable"), text)
+        let leg = try XCTUnwrap(lines.first { $0.topCandidates(1).first?.string.contains("Leg 1 of 1") == true })
+        // Vision coordinates start at the bottom; the first leg must remain
+        // near the summary, with no hidden booking container occupying space.
+        let legTop = (1 - leg.boundingBox.maxY) * window.bounds.height
+        // The detail summary has two text rows and its own spacing; this bound
+        // catches a retained booking container without coupling the test to a
+        // precise font rasterization or Dynamic Type measurement.
+        XCTAssertLessThan(legTop, 340, "Unexpected space before the first leg")
+        model.buy()
+        XCTAssertEqual(fixture.bookingLaunchCount, 0)
+        XCTAssertEqual(fixture.networkRequests, 0)
     }
 
     func testScheduledAndActualPlatformRowsRenderIndependently() async throws {

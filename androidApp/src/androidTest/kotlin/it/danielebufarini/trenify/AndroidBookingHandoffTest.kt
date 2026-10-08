@@ -11,6 +11,8 @@ import it.danielebufarini.trenify.core.domain.OpenBookingLink
 import it.danielebufarini.trenify.core.model.Operator
 import it.danielebufarini.trenify.core.platform.ExternalUrlLauncher
 import it.danielebufarini.trenify.core.platform.createPlatformServices
+import it.danielebufarini.trenify.core.testing.bookingContractTestChannel
+import it.danielebufarini.trenify.core.testing.bookingContractTestPolicy
 import it.danielebufarini.trenify.core.testing.testJourney
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -20,30 +22,35 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class AndroidBookingHandoffTest {
-    @Test fun officialOperatorsReachTheAndroidViewIntent() = runTest {
+    @Test fun homepageFallbacksNeverReachTheAndroidViewIntent() = runTest {
         withLauncher { context, launcher ->
             val handoff = OpenBookingLink(openUrl = launcher::open)
-            val channels = mapOf(
-                "Trenitalia" to "https://www.trenitalia.com",
-                "Trenitalia Tper" to "https://www.trenitalia.com",
-                "Italo" to "https://www.italotreno.com",
-                "Trenord" to "https://www.trenord.it",
-            )
-            channels.forEach { (operator, url) ->
+            listOf("Trenitalia", "Trenitalia Tper", "Italo", "Trenord", "Unknown Operator").forEach { operator ->
                 val journey = testJourney.copy(legs = testJourney.legs.map { it.copy(operator = Operator(operator)) })
-                assertIs<BookingHandoffResult.Opened>(handoff(journey))
-                val intent = context.intents.last()
-                assertEquals(Intent.ACTION_VIEW, intent.action)
-                assertEquals(url, intent.dataString)
-                assertTrue(intent.flags and Intent.FLAG_ACTIVITY_NEW_TASK != 0)
+                assertFalse(handoff.canBook(journey), operator)
+                assertIs<BookingHandoffResult.Unavailable>(handoff(journey), operator)
             }
-            assertEquals(channels.size, context.intents.size)
+            assertTrue(context.intents.isEmpty())
+        }
+    }
+
+    @Test fun eligibleContractTargetReachesTheAndroidViewIntentUnchanged() = runTest {
+        // Contract double exercises the real policy and OS boundary; no live site claim.
+        withLauncher { context, launcher ->
+            val handoff = OpenBookingLink(bookingContractTestPolicy(), launcher::open)
+            assertTrue(handoff.canBook(testJourney))
+            val result = assertIs<BookingHandoffResult.Opened>(handoff(testJourney))
+            val intent = context.intents.single()
+            assertEquals(Intent.ACTION_VIEW, intent.action)
+            assertEquals("https://www.trenitalia.com/contract-test?from=Roma%20Termini&to=Milano%20Centrale", intent.dataString)
+            assertEquals(result.target.url, intent.dataString)
+            assertTrue(intent.flags and Intent.FLAG_ACTIVITY_NEW_TASK != 0)
         }
     }
 
     @Test fun rejectedBookingTargetNeverReachesAndroid() = runTest {
         withLauncher { context, launcher ->
-            val policy = BookingLinkPolicy(operatorChannels = mapOf("trenitalia" to "https://example.com"))
+            val policy = BookingLinkPolicy(operatorChannels = mapOf("trenitalia" to bookingContractTestChannel("https://example.com/search")))
             val handoff = OpenBookingLink(policy, launcher::open)
             assertIs<BookingHandoffResult.Unavailable>(handoff(testJourney))
             assertTrue(context.intents.isEmpty())
@@ -62,14 +69,14 @@ class AndroidBookingHandoffTest {
         withLauncher { context, launcher ->
             context.launchFailure = ActivityNotFoundException("No browser")
             assertFalse(launcher.open("https://www.trenitalia.com"))
-            assertIs<BookingHandoffResult.Failed>(OpenBookingLink(openUrl = launcher::open)(testJourney))
+            assertIs<BookingHandoffResult.Failed>(OpenBookingLink(bookingContractTestPolicy(), launcher::open)(testJourney))
         }
     }
 
     @Test fun deniedActivityLaunchReturnsHandoffFailure() = runTest {
         withLauncher { context, launcher ->
             context.launchFailure = SecurityException("Activity launch denied")
-            assertIs<BookingHandoffResult.Failed>(OpenBookingLink(openUrl = launcher::open)(testJourney))
+            assertIs<BookingHandoffResult.Failed>(OpenBookingLink(bookingContractTestPolicy(), launcher::open)(testJourney))
         }
     }
 

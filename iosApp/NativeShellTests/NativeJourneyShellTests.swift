@@ -224,11 +224,13 @@ final class NativeJourneyShellTests: XCTestCase {
         // Default fake journey sources are genuinely unknown: unknown
         // stays unknown, never inferred from the operator.
         XCTAssertNil(model.state?.journeySourceNames)
-        XCTAssertEqual(model.state?.bookingOperatorName, "Trenitalia")
-        // Booking forwards through the shared policy; the test opener accepts.
+        XCTAssertEqual(model.state?.bookingAvailable, false)
+        XCTAssertNil(model.state?.bookingOperatorName)
+        // Unsupported booking is silent, including direct action dispatch.
         model.buy()
         await poll("booking settles") { model.state?.bookingInProgress == false }
         XCTAssertEqual(model.state?.bookingFailed, false)
+        XCTAssertEqual(fixture.bookingLaunchCount, 0)
         // The same shared root now exposes native Train Detail.
         model.openTrain(legIndex: 0)
         await poll("native train detail") {

@@ -38,8 +38,7 @@ import it.danielebufarini.trenify.app.NativeJourneyCardPresentation
 import it.danielebufarini.trenify.app.NativeServiceStrikeWarningPresentation
 import it.danielebufarini.trenify.app.NativeJourneyLegPresentation
 import it.danielebufarini.trenify.app.RootComponent
-import it.danielebufarini.trenify.core.domain.BookingHandoffResult
-import it.danielebufarini.trenify.core.domain.BookingTarget
+import it.danielebufarini.trenify.core.domain.OpenBookingLink
 import it.danielebufarini.trenify.core.domain.DataResult
 import it.danielebufarini.trenify.core.domain.DomainFailure
 import it.danielebufarini.trenify.core.domain.HistoryRepository
@@ -67,6 +66,7 @@ import it.danielebufarini.trenify.core.testing.MutableClock
 import it.danielebufarini.trenify.core.testing.journeyDestination
 import it.danielebufarini.trenify.core.testing.journeyRequest
 import it.danielebufarini.trenify.core.testing.journeyResult
+import it.danielebufarini.trenify.core.testing.bookingContractTestPolicy
 import it.danielebufarini.trenify.core.testing.testJourney
 import it.danielebufarini.trenify.core.testing.testStation
 import it.danielebufarini.trenify.core.testing.testStrike
@@ -84,6 +84,7 @@ import kotlinx.coroutines.flow.flow
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class TrenifyJourneyTest {
     @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
@@ -94,7 +95,7 @@ class TrenifyJourneyTest {
         journeyRepository: JourneyRepository? = null,
         historyRepository: HistoryRepository? = null,
         strikeRepository: StrikeRepository? = null,
-        booking: Boolean = false,
+        bookingHandoff: OpenBookingLink = OpenBookingLink { true },
     ): RootComponent {
         return DefaultRootComponent(
             DefaultComponentContext(lifecycle),
@@ -102,10 +103,8 @@ class TrenifyJourneyTest {
                 trains, trains, historyRepository ?: trains, trains, MutableStateFlow(false),
                 journeyRepository = journeyRepository ?: FakeJourneyRepository(),
                 strikeRepository = strikeRepository,
-                bookingAvailability = if (booking) ({ true }) else null,
-                openBookingLink = if (booking) {
-                    { BookingHandoffResult.Opened(BookingTarget("https://www.trenitalia.com", "Trenitalia")) }
-                } else null,
+                bookingAvailability = bookingHandoff::canBook,
+                openBookingLink = bookingHandoff::invoke,
             ),
         )
     }
@@ -525,7 +524,11 @@ class TrenifyJourneyTest {
             // render; the leg without realtime keeps a single status pill
             // and the flow can still go back.
             compose.onNodeWithTag("journey-detail-sources").assertDoesNotExist()
+            compose.onNodeWithTag("journey-buy").assertDoesNotExist()
             compose.onNodeWithTag("journey-buy-unavailable").assertDoesNotExist()
+            compose.onNodeWithTag("journey-buy-failed").assertDoesNotExist()
+            compose.onNodeWithTag("journey-buy-disclosure").assertDoesNotExist()
+            compose.onNodeWithTag("journey-leg-0").assertIsDisplayed()
             compose.onNodeWithTag("journey-service-0").assertIsDisplayed()
                 .assertContentDescriptionEquals(string(R.string.journey_status_no_realtime))
             compose.onNodeWithTag("journey-realtime-unavailable-0").assertDoesNotExist()
@@ -543,7 +546,9 @@ class TrenifyJourneyTest {
     @Test fun detailBookingActionForwardsAndStaysActionable() {
         val lifecycle = LifecycleRegistry()
         lateinit var root: RootComponent
-        compose.runOnUiThread { root = root(lifecycle, booking = true) }
+        val opened = mutableListOf<String>()
+        val handoff = OpenBookingLink(bookingContractTestPolicy()) { opened += it; true }
+        compose.runOnUiThread { root = root(lifecycle, bookingHandoff = handoff) }
         compose.setContent { TrenifyAndroidShell(root) }
         try {
             submitSearch(root)
@@ -570,9 +575,39 @@ class TrenifyJourneyTest {
                 }
             }
             compose.onNodeWithTag("journey-buy").assertIsDisplayed()
+            compose.runOnIdle {
+                assertEquals(listOf("https://www.trenitalia.com/contract-test?from=Roma%20Termini&to=Milano%20Centrale"), opened)
+            }
         } finally {
             compose.runOnUiThread { lifecycle.destroy() }
         }
+    }
+
+    @Test fun milanoBolognaFrecciarossa9587OmitsBookingAndCollapsesItsSpace() {
+        val journey = testJourney.copy(legs = testJourney.legs.map {
+            it.copy(origin = journeyDestination,
+                destination = Station(StationId("bologna"), "Bologna Centrale"), number = TrainNumber("9587"))
+        })
+        val handoff = OpenBookingLink { error("Ineligible journey must not launch") }
+        val state = detailState().copy(
+            originName = "Milano Centrale", destinationName = "Bologna Centrale",
+            legs = detailState().legs.map { it.copy(originName = "Milano Centrale", destinationName = "Bologna Centrale",
+                trainIdentity = "Frecciarossa 9587") },
+            bookingAvailable = handoff.canBook(journey), bookingOperatorName = null,
+        )
+        compose.setContent {
+            TrenifyTheme(reduceMotion = true) {
+                TrenifyJourneyDetailContent(state, null, {}, {}, {})
+            }
+        }
+        compose.onNodeWithText("Frecciarossa 9587").assertIsDisplayed()
+        compose.onNodeWithTag("journey-buy").assertDoesNotExist()
+        compose.onNodeWithTag("journey-buy-unavailable").assertDoesNotExist()
+        compose.onNodeWithTag("journey-buy-failed").assertDoesNotExist()
+        val meta = compose.onNodeWithTag("journey-detail-meta").fetchSemanticsNode().boundsInRoot
+        val leg = compose.onNodeWithTag("journey-leg-0").fetchSemanticsNode().boundsInRoot
+        val expectedGap = with(compose.density) { it.danielebufarini.trenify.design.theme.TrenifySpacing.l.toPx() }
+        assertTrue(kotlin.math.abs(leg.top - meta.bottom - expectedGap) < 2f, "Unexpected booking gap: ${leg.top - meta.bottom}")
     }
 
     @Test fun detailTrainActionForwardsToLegacyTrainDestination() {

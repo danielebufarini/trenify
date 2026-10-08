@@ -113,10 +113,46 @@ class JourneyBookingTest {
         } finally { lifecycle.destroy() }
     }
 
+    @Test fun productionPolicyHidesKnownOperatorWithoutCallingLauncher() = runTest {
+        val lifecycle = LifecycleRegistry()
+        var calls = 0
+        val handoff = OpenBookingLink { calls++; true }
+        val component = detail(lifecycle, testScope = this, canBook = handoff::canBook, openBooking = handoff::invoke)
+        lifecycle.resume()
+        try {
+            assertFalse(component.state.value.bookingAvailable)
+            component.buy()
+            advanceUntilIdle()
+            assertEquals(0, calls)
+            assertFalse(component.state.value.bookingInProgress)
+            assertFalse(component.state.value.bookingFailed)
+        } finally { lifecycle.destroy() }
+    }
+
+    @Test fun newlyUnavailableHandoffDisappearsWithoutFailureCopy() = runTest {
+        val lifecycle = LifecycleRegistry()
+        var calls = 0
+        val component = detail(lifecycle, testScope = this, canBook = { true }, openBooking = {
+            calls++
+            BookingHandoffResult.Unavailable(BookingUnavailableReason.NO_QUALIFYING_TARGET)
+        })
+        lifecycle.resume()
+        try {
+            component.buy()
+            advanceUntilIdle()
+            assertFalse(component.state.value.bookingAvailable)
+            assertFalse(component.state.value.bookingInProgress)
+            assertFalse(component.state.value.bookingFailed)
+            component.buy()
+            advanceUntilIdle()
+            assertEquals(1, calls)
+        } finally { lifecycle.destroy() }
+    }
+
     @Test fun tabThreadsHandoffThroughToDetail() = runTest {
         val lifecycle = LifecycleRegistry()
         val opened = mutableListOf<String>()
-        val handoff = OpenBookingLink { opened += it; true }
+        val handoff = OpenBookingLink(bookingContractTestPolicy()) { opened += it; true }
         val tab = DefaultJourneyTabComponent(DefaultComponentContext(lifecycle), FakeJourneyRepository(),
             dispatcher = StandardTestDispatcher(testScheduler),
             canBook = handoff::canBook, openBooking = handoff::invoke)
@@ -135,7 +171,7 @@ class JourneyBookingTest {
             advanceUntilIdle()
             assertTrue(detail.state.value.bookingAvailable)
             detail.buy(); advanceUntilIdle()
-            assertEquals(listOf("https://www.trenitalia.com"), opened)
+            assertEquals(listOf("https://www.trenitalia.com/contract-test?from=Roma%20Termini&to=Milano%20Centrale"), opened)
             assertFalse(detail.state.value.bookingFailed)
         } finally { lifecycle.destroy() }
     }

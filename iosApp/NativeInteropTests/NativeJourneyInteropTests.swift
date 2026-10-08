@@ -167,9 +167,9 @@ final class NativeJourneyInteropTests: XCTestCase {
         XCTAssertEqual(fixture.networkRequests, 0)
     }
 
-    func testBookingActionForwardsThroughSharedPolicy() async {
-        // Production booking wiring (real OpenBookingLink policy, test URL
-        // opener): the approved Trenitalia target resolves to Opened.
+    func testHomepageBookingActionIsAbsentThroughSharedPolicy() async {
+        // Real production policy: a known operator's homepage is not a
+        // qualifying handoff. Direct invocation must remain inert too.
         let fixture = NativeInteropFixture(bookingHandoffEnabled: true)
         defer { fixture.close() }
         let searched = await searchToResults(fixture)
@@ -181,10 +181,13 @@ final class NativeJourneyInteropTests: XCTestCase {
             try? await Task.sleep(nanoseconds: 50_000_000)
         }
         let detail = shell.state.value.path.first(where: { $0.destination == .journeyDetail })!.journeyDetail!
-        XCTAssertTrue(detail.state.value.bookingAvailable)
-        XCTAssertEqual(detail.state.value.bookingOperatorName, "Trenitalia")
-        // The test URL opener accepts the approved target: the shared handoff
-        // settles to Opened without hanging, and the UI stays actionable.
+        for _ in 0..<100 {
+            if !detail.state.value.resolving { break }
+            try? await Task.sleep(nanoseconds: 50_000_000)
+        }
+        XCTAssertNotNil(detail.state.value.originName)
+        XCTAssertFalse(detail.state.value.bookingAvailable)
+        XCTAssertNil(detail.state.value.bookingOperatorName)
         detail.buy()
         for _ in 0..<100 {
             if !detail.state.value.bookingInProgress { break }
@@ -192,6 +195,7 @@ final class NativeJourneyInteropTests: XCTestCase {
         }
         XCTAssertFalse(detail.state.value.bookingInProgress)
         XCTAssertFalse(detail.state.value.bookingFailed)
+        XCTAssertEqual(fixture.bookingLaunchCount, 0)
         XCTAssertTrue(fixture.sameRoot)
         XCTAssertEqual(fixture.networkRequests, 0)
     }

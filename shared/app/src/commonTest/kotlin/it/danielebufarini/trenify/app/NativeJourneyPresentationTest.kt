@@ -4,9 +4,8 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.resume
-import it.danielebufarini.trenify.core.domain.BookingHandoffResult
 import it.danielebufarini.trenify.core.domain.BookingLinkPolicy
-import it.danielebufarini.trenify.core.domain.BookingTarget
+import it.danielebufarini.trenify.core.domain.OpenBookingLink
 import it.danielebufarini.trenify.core.domain.CorrelateJourneyLeg
 import it.danielebufarini.trenify.core.domain.DataResult
 import it.danielebufarini.trenify.core.domain.DomainFailure
@@ -46,6 +45,7 @@ import it.danielebufarini.trenify.core.testing.MutableClock
 import it.danielebufarini.trenify.core.testing.journeyDestination
 import it.danielebufarini.trenify.core.testing.journeyRequest
 import it.danielebufarini.trenify.core.testing.journeyResult
+import it.danielebufarini.trenify.core.testing.bookingContractTestPolicy
 import it.danielebufarini.trenify.core.testing.testJourney
 import it.danielebufarini.trenify.core.testing.testStation
 import it.danielebufarini.trenify.core.testing.testStrike
@@ -304,6 +304,8 @@ class NativeJourneyPresentationTest {
     @Test fun detailProjectionPreservesLegsAndBookingPolicy() = runTest {
         val lifecycle = LifecycleRegistry()
         lifecycle.resume()
+        val opened = mutableListOf<String>()
+        val handoff = OpenBookingLink(bookingContractTestPolicy()) { opened += it; true }
         try {
             val facade = NativeJourneyDetailPresentation(
                 JourneyDetailComponent(
@@ -312,8 +314,8 @@ class NativeJourneyPresentationTest {
                     correlate = null,
                     onTrain = {},
                     dispatcher = StandardTestDispatcher(testScheduler),
-                    canBook = { true },
-                    openBooking = { BookingHandoffResult.Opened(BookingTarget("https://www.trenitalia.com", "Trenitalia")) },
+                    canBook = handoff::canBook,
+                    openBooking = handoff::invoke,
                 ),
                 NativeProjectionOwner(),
             )
@@ -340,9 +342,32 @@ class NativeJourneyPresentationTest {
             runCurrent()
             assertFalse(facade.state.value.bookingInProgress)
             assertFalse(facade.state.value.bookingFailed)
+            assertEquals(listOf("https://www.trenitalia.com/contract-test?from=Roma%20Termini&to=Milano%20Centrale"), opened)
         } finally {
             lifecycle.destroy()
         }
+    }
+
+    @Test fun productionBookingPolicyProjectsNoActionForKnownTrenitaliaJourney() = runTest {
+        val lifecycle = LifecycleRegistry()
+        lifecycle.resume()
+        var launches = 0
+        val handoff = OpenBookingLink { launches++; true }
+        try {
+            val facade = NativeJourneyDetailPresentation(
+                JourneyDetailComponent(DefaultComponentContext(lifecycle), testJourney, null, {},
+                    StandardTestDispatcher(testScheduler), canBook = handoff::canBook, openBooking = handoff::invoke),
+                NativeProjectionOwner(),
+            )
+            runCurrent()
+            assertEquals("Trenitalia", facade.state.value.legs.single().operatorName)
+            assertFalse(facade.state.value.bookingAvailable)
+            assertNull(facade.state.value.bookingOperatorName)
+            facade.buy()
+            runCurrent()
+            assertEquals(0, launches)
+            assertFalse(facade.state.value.bookingFailed)
+        } finally { lifecycle.destroy() }
     }
 
     @Test fun unknownOperatorRegionalLegProjectsCorrelatedRealtimeWithoutChangingJourneyIdentity() = runTest {
