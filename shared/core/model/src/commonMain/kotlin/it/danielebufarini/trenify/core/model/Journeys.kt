@@ -48,7 +48,9 @@ data class JourneySearchRequest(
     // An explicit search horizon, also returned as coverage and shown by the UI.
     val departureFrom: Instant get() = if (mode == JourneySearchMode.ARRIVE_BY) at - horizon else at
     val departureUntil: Instant get() = if (mode == JourneySearchMode.ARRIVE_BY) at else at + horizon
-    val key: String get() = listOf(origin.normalizedName, destination.normalizedName, at.toString(), mode.name)
+    // Provider-qualified locations cannot share a journey cache merely because their names match.
+    // Keep the existing name keys for legacy unambiguous stations and their offline cache entries.
+    val key: String get() = listOf(origin.journeyStationKey, destination.journeyStationKey, at.toString(), mode.name)
         .joinToString("") { "${it.length}:$it" }
 
     companion object {
@@ -61,6 +63,9 @@ data class JourneySearchRequest(
         val horizon: Duration = 8.hours
     }
 }
+
+private val Station.journeyStationKey: String get() =
+    if (id.value.startsWith("location:")) id.value else normalizedName
 
 data class JourneyLeg(
     val origin: Station,

@@ -44,8 +44,8 @@ class StationDestinationResolutionTest {
         client().use { client ->
             val provider = MultiSourceJourneyProvider(listOf(TrenitaliaJourneyAdapter(client, clock)), clock)
             val stations = assertIs<ProviderResult.Success<List<Station>>>(provider.searchStations(" TÈRNI ")).value
-            assertEquals(StationId("station:terni"), stations.first().id)
-            assertTrue(stations.take(5).any { it.id == StationId("station:terni") })
+            assertEquals(StationId("location:trenitalia-journeys:830007226"), stations.first().id)
+            assertTrue(stations.take(5).any { it.id == StationId("location:trenitalia-journeys:830007226") })
         }
     }
 
@@ -54,11 +54,11 @@ class StationDestinationResolutionTest {
         client { arrival = it.getValue("arrivalLocationId").jsonPrimitive.long }.use { client ->
             val provider = MultiSourceJourneyProvider(listOf(TrenitaliaJourneyAdapter(client, clock)), clock)
             val destination = assertIs<ProviderResult.Success<List<Station>>>(provider.searchStations("Terni"))
-                .value.single { it.id == StationId("station:terni") }
+                .value.single { it.id == StationId("location:trenitalia-journeys:830007226") }
             assertEquals("Terni", destination.name)
             val request = JourneySearchRequest(station("Roma Termini"), destination, at)
             assertIs<ProviderResult.Success<JourneySearchResult>>(provider.search(request))
-            assertEquals(StationId("station:terni"), request.destination.id)
+            assertEquals(StationId("location:trenitalia-journeys:830007226"), request.destination.id)
             assertEquals(830007226L, arrival)
         }
     }
@@ -68,7 +68,7 @@ class StationDestinationResolutionTest {
         client { arrival = it.getValue("arrivalLocationId").jsonPrimitive.long }.use { client ->
             val provider = MultiSourceJourneyProvider(listOf(TrenitaliaJourneyAdapter(client, clock)), clock)
             val destination = assertIs<ProviderResult.Success<List<Station>>>(provider.searchStations("Milano Centrale")).value.single()
-            assertEquals(StationId("station:milano centrale"), destination.id)
+            assertEquals(StationId("location:trenitalia-journeys:830001700"), destination.id)
             assertIs<ProviderResult.Success<JourneySearchResult>>(provider.search(JourneySearchRequest(station("Roma Termini"), destination, at)))
             assertEquals(830001700L, arrival)
         }
@@ -88,7 +88,7 @@ class StationDestinationResolutionTest {
         client { departure = it.getValue("departureLocationId").jsonPrimitive.long }.use { client ->
             val provider = MultiSourceJourneyProvider(listOf(TrenitaliaJourneyAdapter(client, clock)), clock)
             val origin = assertIs<ProviderResult.Success<List<Station>>>(provider.searchStations("Terni")).value.first()
-            assertEquals(StationId("station:terni"), origin.id)
+            assertEquals(StationId("location:trenitalia-journeys:830007226"), origin.id)
             assertIs<ProviderResult.Success<JourneySearchResult>>(provider.search(JourneySearchRequest(origin, station("Roma Termini"), at)))
             assertEquals(830007226L, departure)
         }

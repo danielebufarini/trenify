@@ -108,23 +108,40 @@ class SqlDelightJourneyRepository(
     }
 
     override suspend fun searchStations(query: String): DataResult<List<Station>> = withContext(dispatcher) {
-        val normalized = normalizeStationQuery(query)
+        val normalized = normalizeStationSearchQuery(query)
         if (normalized.length < 2) return@withContext DataResult.Data(emptyList(), DataFreshness.Unknown)
         val key = "journey-stations-v1:$normalized"
         val row = queries.cacheByKey(key).executeAsOneOrNull()
-        val stored = row?.let { runCatching {
-            json.decodeFromString<List<StationRecord>>(it.payload).map(StationRecord::model).sortedWith(
-                compareBy<Station> { it.normalizedName != normalized }.thenBy { it.normalizedName },
-            )
-        }.getOrNull() }
+        val storedRecords = row?.let { runCatching { json.decodeFromString<List<StationRecord>>(it.payload) }.getOrNull() }
+        val stored = storedRecords?.let { rankStationSuggestions(normalized, it.map(StationRecord::model)) }
+        // Category-aware rows can still contain the reviewed result-set-dependent IDs.
+        // Upgrade once online; never infer location refs or discard legacy offline/error data.
+        val currentIdentity = storedRecords?.all {
+            it.searchCategory != null && it.autocompleteIdentityVersion == STATION_IDENTITY_VERSION
+        } == true
+        // Older rows did not record aggregation completeness. Revalidate them online once,
+        // retaining their IDs and offline/error fallback. Empty rows never suppress a lookup.
+        val currentFormat = currentIdentity && storedRecords.all {
+            it.autocompleteCacheVersion == STATION_AUTOCOMPLETE_CACHE_VERSION
+        } == true
         val fetched = row?.let { Instant.fromEpochMilliseconds(it.fetched_at) }
-        if (stored != null && fetched != null && online() && clock.now() - fetched < policy.stationTtl)
+        if (currentFormat && !stored.isNullOrEmpty() && fetched != null && online() && clock.now() - fetched < policy.stationTtl)
             return@withContext DataResult.Data(stored, DataFreshness.Fresh(fetched, null))
         val result = if (online()) provider.searchStations(normalized) else null
-        if (result is ProviderResult.Success) {
-            queries.putCache(key, json.encodeToString(result.value.map { StationRecord(it.id.value, it.name) }),
-                result.metadata.fetchedAt.toEpochMilliseconds(), null)
-            DataResult.Data(result.value, DataFreshness.Fresh(result.metadata.fetchedAt, null))
+        if (result is ProviderResult.Success && !result.complete) {
+            // Useful now, but never replace a complete persistent snapshot or suppress recovery.
+            DataResult.Data(rankStationSuggestions(normalized, result.value),
+                DataFreshness.Stale(result.metadata.fetchedAt,
+                    (clock.now() - result.metadata.fetchedAt).coerceAtLeast(Duration.ZERO), null), DomainFailure.TEMPORARY)
+        } else if (result is ProviderResult.Success && (currentIdentity || stored.isNullOrEmpty() || result.value.isNotEmpty())) {
+            val ranked = rankStationSuggestions(normalized, result.value)
+            // Adapter-local negative caches already bound repeated HTTP. Do not persist emptiness
+            // for the 24-hour positive TTL; previously stored negatives also bypass the read above.
+            if (ranked.isNotEmpty()) queries.putCache(key, json.encodeToString(ranked.map {
+                StationRecord(it.id.value, it.name, it.searchCategory.name, STATION_IDENTITY_VERSION,
+                    STATION_AUTOCOMPLETE_CACHE_VERSION)
+            }), result.metadata.fetchedAt.toEpochMilliseconds(), null)
+            DataResult.Data(ranked, DataFreshness.Fresh(result.metadata.fetchedAt, null))
         } else {
             val error = if (!online()) DomainFailure.OFFLINE else DomainFailure.TEMPORARY
             if (stored != null && fetched != null) DataResult.Data(stored,
@@ -164,6 +181,8 @@ class SqlDelightJourneyRepository(
  * change without a key bump can never serve foreign coverage either.
  */
 private val JourneySearchRequest.cacheKey: String get() = "journey-v2:$key"
+private const val STATION_IDENTITY_VERSION = 2
+private const val STATION_AUTOCOMPLETE_CACHE_VERSION = 1
 private fun ProviderFailure.domainFailure(): DomainFailure = when (this) {
     ProviderFailure.PROTOCOL, ProviderFailure.PARSING -> DomainFailure.INVALID_RESPONSE
     ProviderFailure.UNSUPPORTED -> DomainFailure.UNSUPPORTED

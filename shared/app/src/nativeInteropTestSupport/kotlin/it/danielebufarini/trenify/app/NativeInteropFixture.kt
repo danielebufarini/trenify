@@ -129,6 +129,17 @@ class NativeInteropFixture private constructor(
         private set
     var homeObservations: Int = 0
         private set
+    private var stationCatalog: it.danielebufarini.trenify.core.testing.StationAutocompleteFixture? = null
+
+    /** Opt-in recorded HTTP replay through production providers, repository/cache and Decompose. */
+    fun useRecordedStationCatalog() {
+        val catalog = it.danielebufarini.trenify.core.testing.StationAutocompleteFixture()
+        stationCatalog = catalog
+        val repository = it.danielebufarini.trenify.data.SqlDelightJourneyRepository(
+            TrenifyDatabase(driver), catalog.provider, scope, dispatcher = Dispatchers.Main.immediate,
+        )
+        (journeyRepository as FakeJourneyRepository).stationLookup = repository::searchStations
+    }
     private val history = object : HistoryRepository by repositories {
         override fun observeSearchHistory(): Flow<List<SearchHistoryEntry>> {
             homeObservations++
@@ -717,6 +728,7 @@ class NativeInteropFixture private constructor(
      */
     fun close() {
         scope.cancel()
+        stationCatalog?.close()
         session.close()
     }
 }

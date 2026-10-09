@@ -45,7 +45,12 @@ fun normalizeStationQuery(value: String): String = value.trim().lowercase()
         }
     }.joinToString("").replace(Regex("\\s+"), " ")
 
-data class Station(val id: StationId, val name: String) {
+data class Station(
+    val id: StationId,
+    val name: String,
+    /** Autocomplete evidence only; absent source metadata remains unknown. Never part of identity. */
+    val searchCategory: StationSearchCategory = StationSearchCategory.UNKNOWN,
+) {
     val normalizedName: String get() = normalizeStationQuery(name)
 }
 data class Operator(val name: String)

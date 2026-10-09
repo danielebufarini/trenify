@@ -21,19 +21,39 @@ class MultiSourceJourneyProvider(
     override val id: ProviderId = ProviderId("multi-source-journey")
 
     override suspend fun searchStations(query: String): ProviderResult<List<Station>> = coroutineScope {
-        val results = sources.map { source -> async {
-            instrumentation.span("provider.total", mapOf("provider" to source.id.value, "operation" to "station_search")) {
-                sourceBoundary { source.searchStations(query) }
-            }
-        } }.awaitAll()
+        val primary = sources.map { source -> async { stationSearch(source, query) } }.awaitAll()
+        val tokens = stationSearchText(query).split(' ')
+        // Only an empty aggregate expands once. Successful primary responses (including
+        // aliases) stay authoritative; failed sources are not retried in the same lookup.
+        val fallback = primary.any { it is ProviderResult.Success } &&
+            primary.filterIsInstance<ProviderResult.Success<List<Station>>>().all { it.value.isEmpty() } &&
+            tokens.size > 1 && tokens.first().length >= 2
+        val results = if (fallback) primary.mapIndexed { index, result -> async {
+            if (result is ProviderResult.Success) {
+                val expanded = stationSearch(sources[index], tokens.first())
+                if (expanded is ProviderResult.Success) expanded else result.copy(complete = false)
+            } else result
+        } }.awaitAll() else primary
         val successes = results.filterIsInstance<ProviderResult.Success<List<Station>>>()
         if (successes.isEmpty()) failure(results) else ProviderResult.Success(
-            successes.flatMap { it.value }.distinctBy { it.normalizedName }.sortedWith(
-                compareBy<Station> { it.normalizedName != normalizeStationQuery(query) }.thenBy { it.normalizedName },
-            ),
+            rankStationSuggestions(query, successes.flatMap { it.value }.let { candidates ->
+                if (!fallback) candidates else candidates.filter { station ->
+                    val words = stationSearchText(station.name).split(' ')
+                    words.windowed(tokens.size).any { window ->
+                        tokens.indices.all { window[it].startsWith(tokens[it]) }
+                    }
+                }
+            }),
             ProviderMetadata(id, clock.now()),
+            complete = primary.all { it is ProviderResult.Success && it.complete } &&
+                results.all { it is ProviderResult.Success && it.complete },
         )
     }
+
+    private suspend fun stationSearch(source: JourneySource, query: String): ProviderResult<List<Station>> =
+        instrumentation.span("provider.total", mapOf("provider" to source.id.value, "operation" to "station_search")) {
+            sourceBoundary { source.searchStations(query) }
+        }
 
     override suspend fun search(request: JourneySearchRequest): ProviderResult<JourneySearchResult> =
         searchProgressively(request) { }

@@ -13,8 +13,16 @@ import kotlinx.serialization.modules.contextual
 import kotlin.time.Instant
 
 // Persistence DTOs belong to data; the railway model has no serialization dependency.
-@Serializable internal data class StationRecord(val id: String, val name: String) {
-    fun model() = Station(StationId(id), name)
+@Serializable internal data class StationRecord(
+    val id: String,
+    val name: String,
+    val searchCategory: String? = null,
+    val autocompleteIdentityVersion: Int? = null,
+    // Only complete, nonempty snapshots written under the corrected cache policy carry this marker.
+    val autocompleteCacheVersion: Int? = null,
+) {
+    fun model() = Station(StationId(id), name,
+        StationSearchCategory.entries.firstOrNull { it.name == searchCategory } ?: StationSearchCategory.UNKNOWN)
 }
 private fun Station.record() = StationRecord(id.value, name)
 

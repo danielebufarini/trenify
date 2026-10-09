@@ -20,7 +20,7 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.hours
 
-/** Unofficial LeFrecce consumer protocol. Wire IDs and session references never leave this file. */
+/** Unofficial LeFrecce consumer protocol. Wire DTOs and request mapping stay adapter-local. */
 class TrenitaliaJourneyAdapter(
     private val client: HttpClient,
     private val clock: Clock = Clock.System,
@@ -37,15 +37,28 @@ class TrenitaliaJourneyAdapter(
      * cache. Positive resolutions live 24 hours; an empty successful
      * response ("unknown station") lives only 1 hour, so a transient empty
      * reply cannot hide a station for a day. Transport/parse failures throw
-     * and are never cached. Wire ids never leave this file: hits rebuild
-     * domain [Station] values through the same mapping as fresh fetches.
+     * and are never cached. Hits rebuild domain [Station] values through
+     * the same provider-reference identity mapping as fresh fetches.
      */
     private val stationCache = ProviderLocalCache<List<LocationWire>>(
         clock, STATION_TTL, negativeTtl = STATION_NEGATIVE_TTL, isNegative = { it.isEmpty() },
     )
 
     override suspend fun searchStations(query: String): ProviderResult<List<Station>> = journeyRequest {
-        ProviderResult.Success(locations(query, "station.search").map { station(it.name) }, ProviderMetadata(id, clock.now()))
+        val normalized = normalizeStationSearchQuery(query)
+        var candidates = locations(normalized, "station.search")
+        val tokens = stationSearchText(query).split(' ')
+        // Reuse previously retrieved city/token candidates for punctuation variants.
+        // Never turn an empty provider response into an additional HTTP request.
+        if (candidates.isEmpty() && tokens.size > 1 && tokens.first().length >= 2) {
+            candidates = stationCache.peek(tokens.first()).orEmpty().filter {
+                val words = stationSearchText(it.name).split(' ')
+                words.windowed(tokens.size).any { window -> tokens.indices.all { window[it].startsWith(tokens[it]) } }
+            }
+        }
+        ProviderResult.Success(candidates.map { location ->
+            station(location.name).copy(id = locationId(location))
+        }, ProviderMetadata(id, clock.now()))
     }
 
     override suspend fun search(request: JourneySearchRequest): ProviderResult<JourneySearchResult> =
@@ -56,9 +69,9 @@ class TrenitaliaJourneyAdapter(
         publish: suspend (ProviderResult.Success<JourneySearchResult>) -> Unit,
     ): ProviderResult<JourneySearchResult> = journeyRequest {
         val origin = locations(request.origin.name, "station.origin.resolve")
-            .singleOrNull { station(it.name).normalizedName == request.origin.normalizedName }
+            .singleOrNull { matchesLocation(request.origin, it) }
         val destination = locations(request.destination.name, "station.destination.resolve")
-            .singleOrNull { station(it.name).normalizedName == request.destination.normalizedName }
+            .singleOrNull { matchesLocation(request.destination, it) }
         if (origin == null || destination == null) return@journeyRequest ProviderResult.Unavailable(false, ProviderFailure.UNSUPPORTED)
         val journeys = mutableListOf<Journey>()
         var complete = false
@@ -104,10 +117,21 @@ class TrenitaliaJourneyAdapter(
         instrumentation.span(operation, mapOf("provider" to id.value)) {
             stationCache.getOrFetch(normalizeStationQuery(query)) {
                 journeyJson.decodeFromString<List<LocationWire>>(
-                    client.get("${BASE}locations/search") { parameter("name", query); parameter("limit", 30) }.journeyBody(),
-                ).filter { !it.multistation && it.name.isNotBlank() }
+                    client.get("${BASE}locations/search") { parameter("name", query); parameter("limit", 100) }.journeyBody(),
+                ).filter { !it.multistation && it.name.isNotBlank() }.distinctBy { it.id }
             }
         }
+
+    // Identity uses the wire reference, never the query, name, or other returned candidates.
+    // Persisted legacy selections still resolve by an exact, unique name below.
+    private fun locationId(location: LocationWire) =
+        StationId("location:${id.value}:${location.id}")
+
+    // Own references match exactly. Legacy/other-catalog selections retain the name bridge;
+    // the caller's singleOrNull rejects every ambiguous bridge instead of choosing a row.
+    private fun matchesLocation(selected: Station, location: LocationWire): Boolean =
+        station(location.name).normalizedName == selected.normalizedName &&
+            (!selected.id.value.startsWith("location:${id.value}:") || selected.id == locationId(location))
 
     private companion object {
         const val BASE = "https://www.lefrecce.it/Channels.Website.BFF.WEB/website/"

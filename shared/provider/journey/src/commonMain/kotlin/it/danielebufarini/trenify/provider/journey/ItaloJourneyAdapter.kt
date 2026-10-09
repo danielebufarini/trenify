@@ -24,7 +24,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
-/** Unofficial consumer search. Guest cookies, operation IDs and station codes are adapter-local. */
+/** Unofficial consumer search. Guest cookies, operation IDs and wire DTOs are adapter-local. */
 class ItaloJourneyAdapter(
     private val client: HttpClient,
     private val clock: Clock = Clock.System,
@@ -45,8 +45,8 @@ class ItaloJourneyAdapter(
      *   persisted.
      * - The station catalogue is quasi-static and lives 24 hours.
      *
-     * Wire codes never leave this file: hits rebuild domain [Station] values
-     * through the same mapping as fresh fetches.
+     * Hits rebuild domain [Station] values through the same mapping and
+     * provider-reference identity mapping as fresh fetches.
      */
     private val stationCache = ProviderLocalCache<List<ItaloStationWire>>(
         clock, STATION_TTL, negativeTtl = STATION_NEGATIVE_TTL, isNegative = { it.isEmpty() },
@@ -60,7 +60,19 @@ class ItaloJourneyAdapter(
                     ?: guest().also { stationSession = it }
             }
         }
-        ProviderResult.Success(resolve(query, session, "station.search").map { station(it.name) }, ProviderMetadata(id, clock.now()))
+        val normalized = normalizeStationSearchQuery(query)
+        var candidates = resolve(normalized, session, "station.search")
+        val tokens = stationSearchText(query).split(' ')
+        if (candidates.isEmpty() && tokens.size > 1 && tokens.first().length >= 2) {
+            candidates = stationCache.peek(tokens.first()).orEmpty().filter {
+                val words = stationSearchText(it.name).split(' ')
+                words.windowed(tokens.size).any { window -> tokens.indices.all { window[it].startsWith(tokens[it]) } }
+            }
+        }
+        ProviderResult.Success(candidates.map { location ->
+            station(location.name).copy(id = locationId(location), searchCategory =
+                if (location.isItaloStation) StationSearchCategory.RAILWAY else StationSearchCategory.UNKNOWN)
+        }, ProviderMetadata(id, clock.now()))
     }
 
     override suspend fun search(request: JourneySearchRequest): ProviderResult<JourneySearchResult> =
@@ -81,9 +93,9 @@ class ItaloJourneyAdapter(
         suspend fun resolveCached(query: String, operation: String): List<ItaloStationWire> =
             stationCache.getOrFetch(normalizeStationQuery(query)) { locations(query, session(), operation) }
         val origin = resolveCached(request.origin.name, "station.origin.resolve")
-            .singleOrNull { station(it.name).normalizedName == request.origin.normalizedName }
+            .singleOrNull { matchesLocation(request.origin, it) }
         val destination = resolveCached(request.destination.name, "station.destination.resolve")
-            .singleOrNull { station(it.name).normalizedName == request.destination.normalizedName }
+            .singleOrNull { matchesLocation(request.destination, it) }
         if (origin == null || destination == null) return@journeyRequest ProviderResult.Unavailable(false, ProviderFailure.UNSUPPORTED)
         val live = session()
         val catalogue = catalogueCache.getOrFetch(CATALOGUE_KEY) {
@@ -150,9 +162,19 @@ class ItaloJourneyAdapter(
             journeyJson.decodeFromString<ItaloStationsWire>(client.get("${API}stations") {
                 authenticate(session)
                 parameter("sn", query); parameter("onlyitalo", true); parameter("exItabus", true); parameter("exb", true)
-                parameter("culture", "it-IT"); parameter("pn", 1); parameter("ps", 30)
+                parameter("culture", "it-IT"); parameter("pn", 1); parameter("ps", 100)
             }.journeyBody()).stations.filter { !it.isMAC && !it.isItabusStation && !it.isPort && it.name.isNotBlank() }
+                .distinctBy { it.stationCode }
         }
+
+    // Names and result-set collisions never determine a provider location's identity.
+    private fun locationId(location: ItaloStationWire) =
+        StationId("location:${id.value}:${location.stationCode}")
+
+    // Bind own references exactly; singleOrNull makes the legacy/other-catalog name bridge safe.
+    private fun matchesLocation(selected: Station, location: ItaloStationWire): Boolean =
+        station(location.name).normalizedName == selected.normalizedName &&
+            (!selected.id.value.startsWith("location:${id.value}:") || selected.id == locationId(location))
 
     private suspend fun completeSearch(initial: HttpResponse, session: GuestSession): HttpResponse {
         var response = initial
@@ -188,6 +210,7 @@ private data class GuestSession(val token: String, val workingId: String, val cr
 @Serializable private data class ItaloStationWire(
     val stationCode: String, val name: String, val isMAC: Boolean = false,
     val isItabusStation: Boolean = false, val isPort: Boolean = false,
+    val isItaloStation: Boolean = false,
 )
 @Serializable private data class StationNameWire(val name: String)
 @Serializable private data class ItaloSearchWire(

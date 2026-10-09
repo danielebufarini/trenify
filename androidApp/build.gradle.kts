@@ -14,6 +14,9 @@ kotlin {
 dependencies {
     androidTestImplementation(project(":shared:core:platform"))
     androidTestImplementation(project(":shared:core:testing"))
+    androidTestImplementation(project(":shared:data"))
+    androidTestImplementation(project(":shared:core:database"))
+    androidTestImplementation(libs.sqldelight.android.driver)
     androidTestImplementation(project(":shared:core:ui"))
     androidTestImplementation(project(":shared:feature:home"))
     androidTestImplementation(project(":shared:feature:journey"))

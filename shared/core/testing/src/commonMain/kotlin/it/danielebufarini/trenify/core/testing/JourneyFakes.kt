@@ -49,9 +49,11 @@ class FakeJourneyProvider(private val clock: Clock = MutableClock()) : JourneyPr
 
 class FakeJourneyRepository : JourneyRepository {
     var calls = 0
+    /** Optional production station pipeline for UI tests; existing journey fixtures stay unchanged. */
+    var stationLookup: (suspend (String) -> DataResult<List<Station>>)? = null
     var beforeSearch: suspend () -> Unit = {}
     val state = MutableStateFlow<DataResult<JourneySearchResult>>(DataResult.Data(journeyResult, DataFreshness.Fresh(MutableClock().now(), null)))
-    override suspend fun searchStations(query: String) = DataResult.Data(
+    override suspend fun searchStations(query: String): DataResult<List<Station>> = stationLookup?.invoke(query) ?: DataResult.Data(
         listOf(testStation, journeyDestination).filter { normalizeStationQuery(query) in it.normalizedName }, DataFreshness.Unknown)
     override fun observe(request: JourneySearchRequest): Flow<DataResult<JourneySearchResult>> = state
     override suspend fun search(request: JourneySearchRequest, force: Boolean): DataResult<JourneySearchResult> {

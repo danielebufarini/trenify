@@ -210,6 +210,9 @@ INSERT OR REPLACE INTO station_external_id VALUES (?, ?, ?);
 searchStations:
 SELECT * FROM station WHERE instr(normalized_name, :query) > 0 ORDER BY normalized_name LIMIT 30;
 
+autocompleteStationCandidates:
+SELECT * FROM station WHERE instr(normalized_name, :query) > 0;
+
 putTrain:
 INSERT OR REPLACE INTO train_run VALUES (?, ?, ?, ?, ?, ?, ?);
 

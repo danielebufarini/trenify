@@ -14,6 +14,15 @@ import kotlin.test.*
 import kotlin.time.Instant
 
 class ViaggiaTrenoContractTest {
+    @Test fun stationRelevancePrecedesTheProviderAdapterLimitAndKeepsDistinctReferences() = runTest {
+        // Synthetic wire-shape fixture: verifies truncation semantics, not live catalog coverage.
+        val body = "Cisternino|a\nTerni|b\nTerni|c\nTerni Cospea|d"
+        withAdapter(body) { adapter, _ ->
+            val stations = assertIs<ProviderResult.Success<List<ProviderStation>>>(adapter.searchStations("terni", 2)).value
+            assertEquals(listOf(ExternalStationRef("b"), ExternalStationRef("c")), stations.map { it.ref })
+            assertEquals(4, assertIs<ProviderResult.Success<List<ProviderStation>>>(adapter.searchStations("terni", 100)).value.size)
+        }
+    }
     private val ref = ProviderTrainRunRef(TrainNumber("2493"), ExternalStationRef("S01700"), LocalDate.parse("2026-09-05"))
     private suspend fun withAdapter(body: String, code: HttpStatusCode = HttpStatusCode.OK,
         block: suspend (ViaggiaTrenoAdapter, MockEngine) -> Unit) {

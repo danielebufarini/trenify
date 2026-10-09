@@ -31,11 +31,14 @@ class ViaggiaTrenoAdapter(
 
     override suspend fun searchStations(query: String, limit: Int): ProviderResult<List<ProviderStation>> =
         request(listOf("autocompletaStazione", query)) { body ->
-            lines(body).map { line ->
+            val candidates = lines(body).map { line ->
                 val fields = line.split('|')
                 require(fields.size == 2 && fields.all { it.isNotBlank() })
                 ProviderStation(ExternalStationRef(fields[1]), fields[0])
-            }.distinctBy { it.ref }.take(limit.coerceIn(1, 100))
+            }.distinctBy { it.ref }
+            val byId = candidates.associateBy { it.ref.value }
+            rankStationSuggestions(query, candidates.map { Station(StationId(it.ref.value), it.name) })
+                .take(limit.coerceIn(1, 100)).map { byId.getValue(it.id.value) }
         }
 
     override suspend fun findTrainCandidates(

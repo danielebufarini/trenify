@@ -125,7 +125,7 @@ class ProviderStationCacheTest {
             val first = assertIs<ProviderResult.Success<List<Station>>>(adapter.searchStations("Roma Termini"))
             val second = assertIs<ProviderResult.Success<List<Station>>>(adapter.searchStations("Roma Termini"))
             assertEquals(first.value, second.value)
-            assertEquals(StationId("station:roma termini"), first.value.single().id)
+            assertEquals(StationId("location:trenitalia-journeys:1"), first.value.single().id)
             assertEquals(1, calls)
         }
     }

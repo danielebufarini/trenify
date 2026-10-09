@@ -98,6 +98,7 @@ REQUIRED_PRODUCTION = frozenset({
     "ModelOperator",
     "ModelSearchHistoryEntry",
     "ModelStation",
+    "ModelStationSearchCategory",
     "ModelStopProgress",
     "ModelStopStatus",
     "ModelStrike",

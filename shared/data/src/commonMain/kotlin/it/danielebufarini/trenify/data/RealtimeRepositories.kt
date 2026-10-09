@@ -132,19 +132,22 @@ class RealtimeRepositories(
             .flowOn(dispatcher)
 
     override suspend fun searchStations(query: String, force: Boolean): DataResult<List<Station>> = withContext(dispatcher) {
-        val normalized = normalizeStationQuery(query)
+        val normalized = normalizeStationSearchQuery(query)
         if (normalized.isBlank()) return@withContext DataResult.Data(emptyList(), DataFreshness.Unknown)
         val key = "stations:$normalized"
         flights.run(key) {
-            val cached = cached<List<Station>>(key, policy.stationTtl)
+            val cached = cached<List<Station>>(key, policy.stationTtl)?.let {
+                it.copy(value = rankStationSuggestions(normalized, it.value))
+            }
             if (!force && cached?.freshness is DataFreshness.Fresh) return@run cached
-            val local = queries.searchStations(normalized).executeAsList().map { Station(StationId(it.id), it.name) }
+            val local = rankStationSuggestions(normalized, queries.autocompleteStationCandidates(normalized).executeAsList()
+                .map { Station(StationId(it.id), it.name) })
             val fallback = cached ?: local.takeIf { it.isNotEmpty() }?.let { DataResult.Data(it, DataFreshness.Unknown) }
             if (!online()) return@run failed(key, fallback, DomainFailure.OFFLINE)
-            when (val result = provider.searchStations(normalized, 30)) {
+            when (val result = provider.searchStations(normalized, 100)) {
                 is ProviderResult.Success -> {
                     database.transaction {
-                        save(key, result.value.map { station(it, result.metadata) }.distinctBy { it.id }, result.metadata)
+                        save(key, rankStationSuggestions(normalized, result.value.map { station(it, result.metadata) }), result.metadata)
                     }
                     warnings.update { it - key }
                     cached<List<Station>>(key, policy.stationTtl)!!
