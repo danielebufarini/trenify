@@ -35,7 +35,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * T8.14 deterministic performance baseline (JVM, androidHostTest).
+ * Deterministic performance baseline (JVM, androidHostTest).
  *
  * Measures production projection paths over large deterministic fixtures and
  * prints `T8.14-PERF` lines consumed by `doc/design/review/t8_14/`.
@@ -74,7 +74,7 @@ class T814PerformanceBaselineTest {
     }
 
     /**
-     * Corrective T8.14-R2: every timed iteration publishes a deterministically
+     * Every timed iteration publishes a deterministically
      * DISTINCT shared state (departures shifted by the iteration index), so
      * StateFlow conflation cannot suppress the emission and each iteration
      * executes the real component-sort + facade-projection path. A projection

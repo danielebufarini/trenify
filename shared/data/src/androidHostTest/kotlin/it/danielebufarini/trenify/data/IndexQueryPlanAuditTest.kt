@@ -9,13 +9,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * T8.14 SQL/index audit guard (JVM, in-memory SQLite).
+ * SQL/index audit guard (JVM, in-memory SQLite).
  *
  * High-frequency production queries must resolve through an index or primary
  * key rather than a full table scan. Each case runs EXPLAIN QUERY PLAN
  * against the real schema and asserts the plan touches an index. Queries
  * whose access pattern cannot use an index (station substring search) are
- * covered functionally instead; see the T8.14 evidence document.
+ * covered functionally instead; see the document.
  */
 class IndexQueryPlanAuditTest {
     private fun plan(driver: SqlDriver, sql: String): List<String> =
@@ -102,7 +102,7 @@ class IndexQueryPlanAuditTest {
         repeat(40) { i ->
             queries.putStation("s$i", "Stazione Test $i", "stazione test $i", 0L)
         }
-        // Corrected T8.14-R8 wording: LIMIT 30 bounds RETURNED rows, not
+        // Corrected wording: LIMIT 30 bounds RETURNED rows, not
         // scanned rows. instr() cannot use the normalized-name B-tree index
         // (substring predicate), so SQLite scans candidate rows; correctness
         // of the bound is what this asserts. Scan cost itself is measured at
@@ -111,7 +111,7 @@ class IndexQueryPlanAuditTest {
     }
 
     /**
-     * T8.14-R3 genuine worst case: deterministic 3000-row dataset (~network
+     * Genuine worst case: deterministic 3000-row dataset (~network
      * scale) where the ordered index scan cannot stop early.
      *
      * - Case A (no-match): the substring occurs in ZERO rows, forcing

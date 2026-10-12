@@ -32,7 +32,7 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * T8.14-R4 bounded native Android performance evidence (instrumented).
+ * Bounded native Android performance evidence (instrumented).
  *
  * Renders production content composables with large deterministic fixtures on
  * the test emulator (Pixel_9 AVD, API 36.1 image, Debug) and reports

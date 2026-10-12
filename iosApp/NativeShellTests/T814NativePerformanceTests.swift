@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 @preconcurrency import SharedApp
 
-/// T8.14-R5 bounded native iOS performance evidence (simulator).
+/// Bounded native iOS performance evidence (simulator).
 ///
 /// No invented thresholds: every case asserts functional completion and
 /// attaches a `T8.14-IOS-PERF` median/range summary for continuous
@@ -28,7 +28,7 @@ final class T814NativePerformanceTests: XCTestCase {
         add(attachment)
     }
 
-    // MARK: - Journey Results production render (T8.14-R3)
+    // MARK: - Journey Results production render
 
     private func poll(_ description: String, _ predicate: @escaping () -> Bool) async {
         let settled = expectation(description: description)
@@ -58,7 +58,7 @@ final class T814NativePerformanceTests: XCTestCase {
     /// journeys end to end (fixture graph -> shared facade -> model -> SwiftUI),
     /// times repeated host/layout/draw passes, scrolls past the first viewport
     /// through the real UIScrollView and proves late content renders. The screen
-    /// also exercises the glass-styled refresh/sort buttons (R3 §6 sanity).
+    /// also exercises the glass-styled refresh/sort buttons.
     func testJourneyResults200RenderAndScroll() async {
         let fixture = NativeInteropFixture()
         defer { fixture.close() }
@@ -148,7 +148,7 @@ final class T814NativePerformanceTests: XCTestCase {
         XCTAssertFalse(TrenifyActionMaterialPolicy.usesGlass(osMajor: 18, reduceTransparency: false, increasedContrast: false))
     }
 
-    // MARK: - Row formatting hot path (T8.14-C2 production path)
+    // MARK: - Row formatting hot path
 
     func testRowFormatting500() {
         let epochs: [Int64] = (0..<500).map { 1_788_610_200 + Int64($0 * 120) }

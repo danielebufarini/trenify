@@ -18,10 +18,12 @@ sealed interface ProviderResult<out T> {
      * Successful provider response.
      *
      * [complete] is provider-neutral snapshot completeness: true when
-     * no source record was skipped while producing [value], so absence from
-     * [value] is meaningful evidence for the requested scope. Parsers that
+     * every required source succeeded and no source record was skipped while
+     * producing [value], so absence from [value] is meaningful evidence for the requested scope. Parsers that
      * skip undecodable records must report false here while keeping their
-     * diagnostics adapter-local; repositories must not treat an incomplete
+     * diagnostics adapter-local; aggregators preserve incompleteness when a source fails.
+     * Successful empty responses still count as successful sources.
+     * Repositories must not treat an incomplete
      * snapshot as proof of emptiness. Defaults to true so providers without
      * partial-parse observability keep their established behavior.
      */
