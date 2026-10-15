@@ -92,10 +92,10 @@ class ItaloJourneyAdapter(
                 .also { session = it }
         suspend fun resolveCached(query: String, operation: String): List<ItaloStationWire> =
             stationCache.getOrFetch(normalizeStationQuery(query)) { locations(query, session(), operation) }
-        val origin = resolveCached(request.origin.name, "station.origin.resolve")
-            .singleOrNull { matchesLocation(request.origin, it) }
-        val destination = resolveCached(request.destination.name, "station.destination.resolve")
-            .singleOrNull { matchesLocation(request.destination, it) }
+        suspend fun resolveSelected(selected: Station, operation: String) =
+            resolveJourneyLocation(selected, stationCache::peek, { resolveCached(it, operation) }) { matchesLocation(selected, it) }
+        val origin = resolveSelected(request.origin, "station.origin.resolve")
+        val destination = resolveSelected(request.destination, "station.destination.resolve")
         if (origin == null || destination == null) return@journeyRequest ProviderResult.Unavailable(false, ProviderFailure.UNSUPPORTED)
         val live = session()
         val catalogue = catalogueCache.getOrFetch(CATALOGUE_KEY) {
@@ -173,7 +173,7 @@ class ItaloJourneyAdapter(
 
     // Bind own references exactly; singleOrNull makes the legacy/other-catalog name bridge safe.
     private fun matchesLocation(selected: Station, location: ItaloStationWire): Boolean =
-        station(location.name).normalizedName == selected.normalizedName &&
+        normalizeJourneyStationName(location.name) == normalizeJourneyStationName(selected.name) &&
             (!selected.id.value.startsWith("location:${id.value}:") || selected.id == locationId(location))
 
     private suspend fun completeSearch(initial: HttpResponse, session: GuestSession): HttpResponse {

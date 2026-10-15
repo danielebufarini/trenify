@@ -148,6 +148,14 @@ fun TrenifyJourneyResultsContent(
                         errorTag = "journey-results-error-cached",
                     )
                 }
+                if (!state.loading && state.incompleteProviders != null) item {
+                    Text(
+                        stringResource(R.string.journey_incomplete_providers, state.incompleteProviders!!),
+                        Modifier.testTag("journey-results-provider-unavailable"),
+                        style = TrenifyTheme.typography.body,
+                        color = TrenifyTheme.colors.textSecondary,
+                    )
+                }
                 item {
                     JourneySortControl(selected = state.sort, onSort = onSort)
                 }

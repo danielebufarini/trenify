@@ -68,10 +68,8 @@ class TrenitaliaJourneyAdapter(
         request: JourneySearchRequest,
         publish: suspend (ProviderResult.Success<JourneySearchResult>) -> Unit,
     ): ProviderResult<JourneySearchResult> = journeyRequest {
-        val origin = locations(request.origin.name, "station.origin.resolve")
-            .singleOrNull { matchesLocation(request.origin, it) }
-        val destination = locations(request.destination.name, "station.destination.resolve")
-            .singleOrNull { matchesLocation(request.destination, it) }
+        val origin = resolve(request.origin, "station.origin.resolve")
+        val destination = resolve(request.destination, "station.destination.resolve")
         if (origin == null || destination == null) return@journeyRequest ProviderResult.Unavailable(false, ProviderFailure.UNSUPPORTED)
         val journeys = mutableListOf<Journey>()
         var complete = false
@@ -102,6 +100,11 @@ class TrenitaliaJourneyAdapter(
             }
             rejected = rejected || mapped.size != wire.solutions.size
             journeys += mapped
+            instrumentation.event("journey.page", mapOf(
+                "provider" to id.value, "page" to page.toString(),
+                "received" to wire.solutions.size.toString(), "mapped" to mapped.size.toString(),
+                "matching" to mapped.count { it.matches(request) }.toString(),
+            ))
             complete = wire.solutions.isEmpty() || wire.solutions.size < PAGE_SIZE ||
                 mapped.any { it.departure > request.departureUntil }
             val update = result(request, mergeJourneys(journeys), complete && !rejected, clock.now())
@@ -112,6 +115,9 @@ class TrenitaliaJourneyAdapter(
         if (journeys.isEmpty() && rejected) ProviderResult.Unavailable(false, ProviderFailure.PROTOCOL)
         else result(request, mergeJourneys(journeys), complete && !rejected, clock.now())
     }
+
+    private suspend fun resolve(selected: Station, operation: String): LocationWire? =
+        resolveJourneyLocation(selected, stationCache::peek, { locations(it, operation) }) { matchesLocation(selected, it) }
 
     private suspend fun locations(query: String, operation: String): List<LocationWire> =
         instrumentation.span(operation, mapOf("provider" to id.value)) {
@@ -130,7 +136,7 @@ class TrenitaliaJourneyAdapter(
     // Own references match exactly. Legacy/other-catalog selections retain the name bridge;
     // the caller's singleOrNull rejects every ambiguous bridge instead of choosing a row.
     private fun matchesLocation(selected: Station, location: LocationWire): Boolean =
-        station(location.name).normalizedName == selected.normalizedName &&
+        normalizeJourneyStationName(location.name) == normalizeJourneyStationName(selected.name) &&
             (!selected.id.value.startsWith("location:${id.value}:") || selected.id == locationId(location))
 
     private companion object {

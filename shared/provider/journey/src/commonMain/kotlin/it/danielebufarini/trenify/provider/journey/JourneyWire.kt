@@ -59,4 +59,29 @@ internal fun JourneySource.result(
         JourneyCoverage(id, (operators + journeys.flatMap { it.operators }).distinct(), services, JourneySourceStatus.AVAILABLE, complete),
     ), request.departureFrom, request.departureUntil),
     ProviderMetadata(id, at),
+    complete = complete,
 )
+
+/**
+ * A dotted catalog spelling can yield HTTP 200 with no locations in the other
+ * provider. Reuse its cached prefix catalog first; otherwise expand once only
+ * after the exact lookup fails. Match the full comparison name and own reference,
+ * never a city, substring or the first candidate. Ambiguity fails closed.
+ */
+internal suspend fun <T> resolveJourneyLocation(
+    selected: Station,
+    cached: suspend (String) -> List<T>?,
+    fetch: suspend (String) -> List<T>,
+    matches: (T) -> Boolean,
+): T? {
+    val query = normalizeStationQuery(selected.name)
+    val prefix = query.substringBefore(' ')
+    val expand = '.' in query && prefix.length >= 2 && prefix != query
+    val catalog = if (expand) cached(prefix) else null
+    val known = catalog?.filter(matches).orEmpty()
+    if (known.isNotEmpty()) return known.singleOrNull()
+    val exact = fetch(selected.name).filter(matches)
+    if (exact.isNotEmpty()) return exact.singleOrNull()
+    if (!expand || catalog != null) return null
+    return fetch(prefix).filter(matches).singleOrNull()
+}

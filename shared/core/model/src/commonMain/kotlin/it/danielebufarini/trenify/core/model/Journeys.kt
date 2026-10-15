@@ -116,7 +116,8 @@ data class JourneySearchResult(
 }
 
 fun Journey.matches(request: JourneySearchRequest): Boolean =
-    origin.normalizedName == request.origin.normalizedName && destination.normalizedName == request.destination.normalizedName &&
+    normalizeJourneyStationName(origin.name) == normalizeJourneyStationName(request.origin.name) &&
+        normalizeJourneyStationName(destination.name) == normalizeJourneyStationName(request.destination.name) &&
         departure >= request.departureFrom && departure <= request.departureUntil &&
         (request.mode != JourneySearchMode.ARRIVE_BY || arrival <= request.at)
 
@@ -128,3 +129,11 @@ fun List<Journey>.sortedBy(sort: JourneySort): List<Journey> = sortedWith(
         JourneySort.CHANGES -> compareBy { it.changes }
     }.thenBy { it.departure }.thenBy { it.arrival },
 )
+
+/**
+ * Journey catalog comparison only: providers spell dotted abbreviations with
+ * different spacing (S.M. / S. M.). Keep every other character and all persistent
+ * station IDs/cache keys unchanged; adapters still require a unique location.
+ */
+fun normalizeJourneyStationName(value: String): String =
+    normalizeStationQuery(value).replace(Regex("\\.\\s+"), ".")

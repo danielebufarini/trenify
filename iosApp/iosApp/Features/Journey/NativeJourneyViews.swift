@@ -119,6 +119,12 @@ struct NativeJourneyResultsView: View {
             if state.failure != nil {
                 journeyFailure(state: state, cached: true)
             }
+            if !state.loading, let providers = state.incompleteProviders {
+                Text(String(format: journeyString("journey.incompleteProviders"), providers))
+                    .font(TrenifyTypography.body)
+                    .foregroundStyle(TrenifyColors.textSecondary)
+                    .accessibilityIdentifier("journey-results-provider-unavailable")
+            }
             sortControl(state)
             if state.empty {
                 journeyText("journey.empty")

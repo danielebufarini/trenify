@@ -77,6 +77,22 @@ class MultiSourceJourneyProvider(
                         }
                     }
                 }
+                instrumentation.event("provider.result", buildMap {
+                    put("provider", source.id.value)
+                    when (result) {
+                        is ProviderResult.Success -> {
+                            put("status", if (result.value.journeys.isEmpty()) "success_empty" else "success_with_results")
+                            put("count", result.value.journeys.size.toString())
+                            put("complete", (!result.value.partial).toString())
+                        }
+                        is ProviderResult.Unavailable -> {
+                            put("status", "unavailable")
+                            put("cause", result.cause.name)
+                            put("retryable", result.retryable.toString())
+                        }
+                        ProviderResult.NotFound -> put("status", "unsupported")
+                    }
+                })
                 channel.send(Update.Finished(index, result))
             } catch (cancelled: kotlinx.coroutines.CancellationException) {
                 channel.close(cancelled)
@@ -141,6 +157,7 @@ class MultiSourceJourneyProvider(
                 request.departureUntil,
             ),
             ProviderMetadata(id, successes.minOf { it.metadata.fetchedAt }),
+            complete = coverage.all { it.status == JourneySourceStatus.AVAILABLE && it.complete },
         )
     }
 
@@ -153,7 +170,7 @@ class MultiSourceJourneyProvider(
 // Compare complete scheduled leg sequences; never combine fragments of conflicting timetables.
 internal fun mergeJourneys(journeys: List<Journey>): List<Journey> = journeys.groupBy { journey ->
     journey.legs.map { leg -> listOf(
-        leg.origin.normalizedName, leg.destination.normalizedName,
+        normalizeJourneyStationName(leg.origin.name), normalizeJourneyStationName(leg.destination.name),
         leg.departure.toString(), leg.arrival.toString(), leg.number?.value.orEmpty(),
         leg.operator?.name?.let(::normalizeStationQuery).orEmpty(),
         leg.category?.let(::normalizeStationQuery).orEmpty(),

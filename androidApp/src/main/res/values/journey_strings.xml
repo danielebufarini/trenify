@@ -58,4 +58,5 @@
     <string name="journey_sources">Sources: %1$s</string>
     <string name="journey_source_unknown">Source unknown</string>
     <string name="journey_favorite_error">The favorite could not be updated.</string>
+    <string name="journey_incomplete_providers">Results may be incomplete: %1$s is temporarily unavailable or has incomplete coverage. Try refreshing.</string>
 </resources>

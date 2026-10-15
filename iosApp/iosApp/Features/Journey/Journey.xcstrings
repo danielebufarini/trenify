@@ -18,6 +18,23 @@
     }
    }
   },
+  "journey.incompleteProviders": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Results may be incomplete: %@ is temporarily unavailable or has incomplete coverage. Try refreshing."
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "I risultati potrebbero essere incompleti: %@ è temporaneamente non disponibile o ha una copertura incompleta. Prova ad aggiornare."
+     }
+    }
+   }
+  },
   "journey.back": {
    "extractionState": "manual",
    "localizations": {

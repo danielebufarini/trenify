@@ -10,6 +10,7 @@ import it.danielebufarini.trenify.core.model.DataFreshness
 import it.danielebufarini.trenify.core.model.Journey
 import it.danielebufarini.trenify.core.model.JourneyLeg
 import it.danielebufarini.trenify.core.model.JourneySort
+import it.danielebufarini.trenify.core.model.JourneySourceStatus
 import it.danielebufarini.trenify.core.model.TrainStatus
 import it.danielebufarini.trenify.core.model.TrainRun
 import it.danielebufarini.trenify.core.model.TrainStop
@@ -154,6 +155,8 @@ data class NativeJourneyResultsState(
     val strikesUnknown: Boolean,
     val sort: JourneySort,
     val journeys: List<NativeJourneyCardPresentation>,
+    /** Providers whose final coverage is unavailable or incomplete; shown after loading. */
+    val incompleteProviders: String? = null,
 )
 
 /** Typed actions over one existing Results component; all semantics stay in that component. */
@@ -354,10 +357,13 @@ private fun JourneyResultsComponent.projected(state: JourneyResultsState): Nativ
         loading = state.results.loading,
         failure = state.results.failure,
         hasContent = state.results.data != null,
-        empty = state.results.data != null && journeys.isEmpty(),
+        empty = state.results.data != null && journeys.isEmpty() && state.results.data?.partial == false,
         // Presentation policy: never surface technical Stale as "outdated".
         stale = false,
         partial = state.results.data?.partial == true,
+        incompleteProviders = state.results.data?.coverage
+            ?.filter { it.status != JourneySourceStatus.AVAILABLE || !it.complete }
+            ?.map { it.source }?.toSet()?.let(::journeySourceNames),
         strikesStale = state.strikesStale,
         strikesFailed = state.strikesFailed,
         strikesUnknown = state.strikesUnknown,
