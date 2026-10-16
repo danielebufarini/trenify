@@ -1,7 +1,7 @@
 import SwiftUI
 @preconcurrency import SharedApp
 
-/// iOS 26 publication of SKIE-observed state. Decompose owns every route.
+/// iOS 27 publication of SKIE-observed state. Decompose owns every route.
 @MainActor
 final class NativeShellModel: ObservableObject {
     let session: NativeApplicationSession

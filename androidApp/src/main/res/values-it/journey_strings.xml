@@ -59,4 +59,11 @@
     <string name="journey_source_unknown">Fonte sconosciuta</string>
     <string name="journey_favorite_error">Non è stato possibile aggiornare il preferito.</string>
     <string name="journey_incomplete_providers">I risultati potrebbero essere incompleti: %1$s è temporaneamente non disponibile o ha una copertura incompleta. Prova ad aggiornare.</string>
+    <string name="journey_actual_departure">Partenza effettiva: %1$s</string>
+    <string name="journey_actual_arrival">Arrivo effettivo: %1$s</string>
+    <string name="journey_last_observation">Ultimo rilevamento: %1$s</string>
+    <string name="journey_realtime_stale">Rilevamento in tempo reale non aggiornato</string>
+    <string name="journey_realtime_ambiguous">Più servizi ferroviari corrispondono a questo viaggio</string>
+    <string name="journey_realtime_rejected">Il servizio in tempo reale non corrisponde a questo viaggio</string>
+    <string name="journey_realtime_unresolved">Identità del servizio ferroviario non verificata</string>
 </resources>

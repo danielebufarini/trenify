@@ -12,6 +12,7 @@ import SwiftUI
 /// feed back, keeping selected, swapped and prefilled stations resolved.
 struct NativeHomeView: View {
     @ObservedObject var model: NativeHomeModel
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var origin = HomeComposerTextState()
     @State private var destination = HomeComposerTextState()
     @State private var tabChromeOverlap: CGFloat = 0
@@ -43,7 +44,7 @@ struct NativeHomeView: View {
                 )
                 .accessibilityIdentifier("home-search")
                 routeFavoriteControl
-                HStack(spacing: TrenifySpacing.s) {
+                adaptiveControls {
                     TrenifySecondaryAction(
                         title: NSLocalizedString("home.trainEntry", tableName: "Home", bundle: homeBundle, comment: ""),
                         action: { model.openTrainSearch() }
@@ -87,6 +88,18 @@ struct NativeHomeView: View {
         .onChange(of: model.journeyInput?.destinationText ?? "") { destination.applyShared($0) }
     }
 
+    /// Compact native pickers and large action labels have intrinsic minimum
+    /// widths. Stack these controls at accessibility sizes so they do not widen
+    /// the whole vertical ScrollView beyond a narrow viewport.
+    @ViewBuilder
+    private func adaptiveControls<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: TrenifySpacing.s, content: content)
+        } else {
+            HStack(spacing: TrenifySpacing.s, content: content)
+        }
+    }
+
     // MARK: - Composer
 
     private var composerCard: some View {
@@ -117,7 +130,7 @@ struct NativeHomeView: View {
                 Button {
                     model.swap()
                 } label: {
-                    Text("⇅")
+                    Text(verbatim: "⇅")
                         .font(TrenifyTypography.screenTitle)
                         .foregroundStyle(TrenifyColors.accent)
                         .frame(minWidth: 44, minHeight: 44)
@@ -162,13 +175,14 @@ struct NativeHomeView: View {
                     .accessibilityIdentifier("home-suggestion-\(station.stationIdentity)")
                 }
             }
-            HStack(spacing: TrenifySpacing.s) {
+            adaptiveControls {
                 datePicker
                 timePicker
             }
         }
         .padding(TrenifySpacing.l)
         .background(TrenifyColors.surfaceRaised, in: RoundedRectangle(cornerRadius: TrenifyShapes.cardLarge))
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("home-composer")
     }
 
@@ -187,7 +201,7 @@ struct NativeHomeView: View {
     private func stationField(label: String, placeholder: String, text: Binding<String>, field: HomeField, identifier: String) -> some View {
         VStack(alignment: .leading, spacing: TrenifySpacing.xs) {
             Text(label).font(TrenifyTypography.label).foregroundStyle(TrenifyColors.textSecondary)
-            TextField("", text: text, prompt: Text(placeholder))
+            TextField(text: text, prompt: Text(placeholder)) { Text(verbatim: label) }
                 .font(TrenifyTypography.routeStation)
                 .foregroundStyle(TrenifyColors.textPrimary)
                 .frame(minHeight: 44)
@@ -198,6 +212,7 @@ struct NativeHomeView: View {
                         .strokeBorder(TrenifyColors.divider, lineWidth: 1)
                 }
                 .focused($focusedField, equals: field)
+                .accessibilityLabel(Text(verbatim: label))
                 .accessibilityIdentifier(identifier)
         }
     }
@@ -208,7 +223,6 @@ struct NativeHomeView: View {
                 .font(TrenifyTypography.label).foregroundStyle(TrenifyColors.textSecondary)
             if let input = model.journeyInput {
                 DatePicker(
-                    "",
                     selection: Binding(
                         get: {
                             RomeDateConversion.date(year: Int(input.date.year), month: Int(input.date.monthNumber), day: Int(input.date.day)) ?? Date()
@@ -216,13 +230,12 @@ struct NativeHomeView: View {
                         set: { setRomeDate($0) }
                     ),
                     displayedComponents: .date
-                )
+                ) { Text("home.date", tableName: "Home", bundle: homeBundle) }
                 .datePickerStyle(.compact)
                 .labelsHidden()
                 .environment(\.calendar, RomeDateConversion.romeCalendar)
                 .environment(\.timeZone, RomeDateConversion.romeTimeZone)
                 .frame(minHeight: 44)
-                .accessibilityLabel(Text("home.date", tableName: "Home", bundle: homeBundle))
                 .accessibilityIdentifier("home-date")
             }
         }
@@ -237,7 +250,6 @@ struct NativeHomeView: View {
                 .font(TrenifyTypography.label).foregroundStyle(TrenifyColors.textSecondary)
             if let input = model.journeyInput {
                 DatePicker(
-                    "",
                     selection: Binding(
                         get: {
                             RomeDateConversion.dateTime(year: Int(input.date.year), month: Int(input.date.monthNumber), day: Int(input.date.day), hour: Int(input.timeHour), minute: Int(input.timeMinute)) ?? Date()
@@ -245,13 +257,12 @@ struct NativeHomeView: View {
                         set: { setRomeTime($0) }
                     ),
                     displayedComponents: .hourAndMinute
-                )
+                ) { Text("home.time", tableName: "Home", bundle: homeBundle) }
                 .datePickerStyle(.compact)
                 .labelsHidden()
                 .environment(\.calendar, RomeDateConversion.romeCalendar)
                 .environment(\.timeZone, RomeDateConversion.romeTimeZone)
                 .frame(minHeight: 44)
-                .accessibilityLabel(Text("home.time", tableName: "Home", bundle: homeBundle))
                 .accessibilityIdentifier("home-time")
             }
         }

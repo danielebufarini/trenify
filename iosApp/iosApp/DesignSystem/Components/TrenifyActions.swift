@@ -72,7 +72,7 @@ struct TrenifyActionStyle: ViewModifier {
 
     @ViewBuilder
     func body(content: Content) -> some View {
-        // iOS 26+ only: Liquid Glass is baseline. The opaque bordered styles
+        // iOS 27+ only: Liquid Glass is baseline. The opaque bordered styles
         // remain solely as the Reduce Transparency / Increased Contrast
         // accessibility adaptation, never as an OS-version fallback.
         if TrenifyActionMaterialPolicy.usesGlass(

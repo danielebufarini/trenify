@@ -23,6 +23,8 @@ import it.danielebufarini.trenify.app.NativeJourneyDetailPresentation
 import it.danielebufarini.trenify.app.NativeJourneyDetailState
 import it.danielebufarini.trenify.app.NativeLegDetailPresentation
 import it.danielebufarini.trenify.core.model.TrainStatus
+import it.danielebufarini.trenify.core.domain.JourneyCorrelationStatus
+import it.danielebufarini.trenify.core.domain.DomainFailure
 import it.danielebufarini.trenify.feature.journey.RouteFavoriteState
 import it.danielebufarini.trenify.design.component.TrenifySecondaryAction
 import it.danielebufarini.trenify.design.component.TrenifySectionHeader
@@ -294,6 +296,33 @@ private fun LegSection(
                     )
                 }
                 LegStatusRow(leg = leg, index = index, correlating = correlating)
+                val correlationDiagnostic = when (leg.correlationStatus) {
+                    JourneyCorrelationStatus.AMBIGUOUS -> R.string.journey_realtime_ambiguous
+                    JourneyCorrelationStatus.REJECTED -> R.string.journey_realtime_rejected
+                    JourneyCorrelationStatus.UNRESOLVED -> R.string.journey_realtime_unresolved
+                    else -> null
+                }
+                correlationDiagnostic?.let {
+                    Text(stringResource(it), Modifier.testTag("journey-realtime-diagnostic-$index"),
+                        style = TrenifyTheme.typography.caption, color = TrenifyTheme.colors.textSecondary)
+                }
+                leg.actualDepartureEpochSeconds?.let {
+                    Text(stringResource(R.string.journey_actual_departure, railwayTime(it)),
+                        Modifier.testTag("journey-actual-departure-$index"), style = TrenifyTheme.typography.metadata)
+                }
+                leg.actualArrivalEpochSeconds?.let {
+                    Text(stringResource(R.string.journey_actual_arrival, railwayTime(it)),
+                        Modifier.testTag("journey-actual-arrival-$index"), style = TrenifyTheme.typography.metadata)
+                }
+                if (leg.observationStationName != null || leg.observationEpochSeconds != null) {
+                    Text(stringResource(R.string.journey_last_observation,
+                        listOfNotNull(leg.observationStationName, leg.observationEpochSeconds?.let { "${railwayDate(it)} ${railwayTime(it)}" }).joinToString(" · ")),
+                        Modifier.testTag("journey-observation-$index"), style = TrenifyTheme.typography.caption)
+                }
+                if (leg.realtimeStale) {
+                    Text(stringResource(R.string.journey_realtime_stale),
+                        Modifier.testTag("journey-realtime-stale-$index"), style = TrenifyTheme.typography.caption)
+                }
                 // Expected/actual platforms, each only when available.
                 leg.scheduledPlatform?.let {
                     Text(
@@ -363,6 +392,11 @@ private fun LegStatusRow(leg: NativeLegDetailPresentation, index: Int, correlati
 
 @Composable
 private fun legStatusLabel(leg: NativeLegDetailPresentation): String {
+    if (leg.realtimeFailed) return stringResource(when (leg.correlationFailure) {
+        DomainFailure.OFFLINE -> R.string.journey_error_offline
+        DomainFailure.INVALID_RESPONSE -> R.string.journey_error_invalid_response
+        else -> R.string.journey_error_temporary
+    })
     val delay = leg.delayMinutes
     if (delay != null && delay > 0 && (leg.realtimeStatus == TrainStatus.RUNNING || leg.realtimeStatus == TrainStatus.NOT_DEPARTED)) {
         return stringResource(R.string.journey_status_delayed, delay)

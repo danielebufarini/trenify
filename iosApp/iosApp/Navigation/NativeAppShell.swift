@@ -71,7 +71,7 @@ struct NativeAppShell: View {
         }
         // All production destinations use native chrome.
         .toolbar(.visible, for: .navigationBar)
-        .navigationTitle(Text(title(route.destination), tableName: "Shell", bundle: Bundle(for: NativeShellModel.self)))
+        .navigationTitle(Text(verbatim: NSLocalizedString(title(route.destination), tableName: "Shell", bundle: Bundle(for: NativeShellModel.self), comment: "")))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             if route.destination != .settings {
@@ -85,7 +85,7 @@ struct NativeAppShell: View {
         }
     }
 
-    private func title(_ destination: NativeDestination) -> LocalizedStringKey {
+    private func title(_ destination: NativeDestination) -> String {
         switch destination {
         case .main, .home: return "shell.search"
         case .trainSearch: return "shell.trainSearch"
@@ -136,13 +136,13 @@ struct NativeShellNavigation<Content: View>: View {
         }
     }
 
-    private func area(_ area: NativePrimaryArea, label: LocalizedStringKey, symbol: String) -> some View {
+    private func area(_ area: NativePrimaryArea, label: String, symbol: String) -> some View {
         NavigationStack(path: path(area)) {
             content(area, nil)
                 .navigationDestination(for: ShellRoute.self) { content(area, $0) }
         }
         .tabItem {
-            Label { Text(label, tableName: "Shell", bundle: Bundle(for: NativeShellModel.self)) }
+            Label { Text(verbatim: NSLocalizedString(label, tableName: "Shell", bundle: Bundle(for: NativeShellModel.self), comment: "")) }
                 icon: { Image(systemName: symbol) }
         }
         .tag(area)

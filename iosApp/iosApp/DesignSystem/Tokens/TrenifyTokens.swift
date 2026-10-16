@@ -55,11 +55,11 @@ enum TrenifyMotionRole: CaseIterable {
     }
 }
 
-/// A visual policy only (iOS 26+ baseline; the osMajor gate is a formality).
+/// A visual policy only (iOS 27+ baseline; the osMajor gate is a formality).
 /// The bordered styles apply solely as the Reduce Transparency / Increased
 /// Contrast accessibility adaptation.
 enum TrenifyActionMaterialPolicy {
     static func usesGlass(osMajor: Int, reduceTransparency: Bool, increasedContrast: Bool) -> Bool {
-        osMajor >= 26 && !reduceTransparency && !increasedContrast
+        osMajor >= 27 && !reduceTransparency && !increasedContrast
     }
 }

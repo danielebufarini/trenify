@@ -115,7 +115,7 @@ struct TabChromeOverlapReader: UIViewRepresentable {
 }
 
 /// Applies the measured chrome overlap as scroll inset. `contentMargins`
-/// compose with the automatic safe-area margins on iOS 26+.
+/// compose with the automatic safe-area margins on iOS 27+.
 struct HomeTabReachabilityInset: ViewModifier {
     let overlap: CGFloat
 

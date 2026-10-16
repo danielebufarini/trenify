@@ -81,6 +81,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
         }
         commonTest.dependencies {
+            implementation(libs.ktor.client.mock)
             implementation(libs.kotlinx.coroutines.test)
             implementation(project(":shared:core:testing"))
             implementation(libs.kotlin.test)
@@ -91,5 +92,18 @@ kotlin {
         iosTest.dependencies {
             implementation(libs.sqldelight.native.driver)
         }
+    }
+}
+
+// SKIE 0.10.15 generates Swift 5 bridge code. Use the approved Swift 6.4.0
+// compiler in compatibility mode only for this generated framework boundary.
+// All first-party Swift (including XCTest) stays in Swift 6 Xcode targets.
+skie {
+    build {
+        freeSwiftCompilerArgs.set(listOf("-swift-version", "5"))
+    }
+    swiftBundling {
+        // First-party Swift must never be bundled into the compatibility unit.
+        enabled = false
     }
 }

@@ -442,6 +442,38 @@ struct NativeJourneyDetailView: View {
                         .accessibilityIdentifier("journey-operator-\(index)")
                 }
                 legStatus(leg, index: index, state: state)
+                if let key = correlationDiagnosticKey(leg) {
+                    Text(journeyString(key))
+                        .font(TrenifyTypography.caption)
+                        .foregroundStyle(TrenifyColors.textSecondary)
+                        .accessibilityIdentifier("journey-realtime-diagnostic-\(index)")
+                }
+                if let departure = leg.actualDepartureEpochSeconds {
+                    Text(String.localizedStringWithFormat(journeyString("journey.actualDeparture"),
+                        RailwayFormatting.time(departure.int64Value)))
+                        .font(TrenifyTypography.metadata)
+                        .accessibilityIdentifier("journey-actual-departure-\(index)")
+                }
+                if let arrival = leg.actualArrivalEpochSeconds {
+                    Text(String.localizedStringWithFormat(journeyString("journey.actualArrival"),
+                        RailwayFormatting.time(arrival.int64Value)))
+                        .font(TrenifyTypography.metadata)
+                        .accessibilityIdentifier("journey-actual-arrival-\(index)")
+                }
+                if leg.observationStationName != nil || leg.observationEpochSeconds != nil {
+                    let time = leg.observationEpochSeconds.map {
+                        "\(RailwayFormatting.date($0.int64Value)) \(RailwayFormatting.time($0.int64Value))"
+                    }
+                    Text(String.localizedStringWithFormat(journeyString("journey.lastObservation"),
+                        [leg.observationStationName, time].compactMap { $0 }.joined(separator: " · ")))
+                        .font(TrenifyTypography.caption)
+                        .accessibilityIdentifier("journey-observation-\(index)")
+                }
+                if leg.realtimeStale {
+                    Text(journeyString("journey.realtimeStale"))
+                        .font(TrenifyTypography.caption)
+                        .accessibilityIdentifier("journey-realtime-stale-\(index)")
+                }
                 // Expected/actual platforms, each only when available.
                 if let expected = leg.scheduledPlatform {
                     Text(String.localizedStringWithFormat(
@@ -505,6 +537,13 @@ struct NativeJourneyDetailView: View {
     }
 
     private func legStatusLabel(_ leg: NativeLegDetailPresentation) -> String {
+        if leg.realtimeFailed {
+            switch leg.correlationFailure {
+            case .offline: return journeyString("journey.errorOffline")
+            case .invalidResponse: return journeyString("journey.errorInvalidResponse")
+            default: return journeyString("journey.errorTemporary")
+            }
+        }
         let delay = leg.delayMinutes.map { Int(truncating: $0) }
         if let delay, delay > 0,
            leg.realtimeStatus == .running || leg.realtimeStatus == .notDeparted {
@@ -520,6 +559,15 @@ struct NativeJourneyDetailView: View {
         case .rescheduled: return journeyString("journey.rescheduled")
         case .unknown: return journeyString("journey.noRealtime")
         @unknown default: return journeyString("journey.noRealtime")
+        }
+    }
+
+    private func correlationDiagnosticKey(_ leg: NativeLegDetailPresentation) -> String? {
+        switch leg.correlationStatus {
+        case .ambiguous: return "journey.realtimeAmbiguous"
+        case .rejected: return "journey.realtimeRejected"
+        case .unresolved: return "journey.realtimeUnresolved"
+        default: return nil
         }
     }
 

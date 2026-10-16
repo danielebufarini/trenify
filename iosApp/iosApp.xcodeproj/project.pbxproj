@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		A82000000000000000000003 /* iosApp/Interop/NativeHomeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82000000000000000000002 /* iosApp/Interop/NativeHomeObserver.swift */; };
+		A8F000000000000000000002 /* Configuration/SwiftBaseline.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F000000000000000000001 /* Configuration/SwiftBaseline.swift */; };
+		A8F000000000000000000003 /* Configuration/SwiftBaseline.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F000000000000000000001 /* Configuration/SwiftBaseline.swift */; };
+		A8F000000000000000000004 /* Configuration/SwiftBaseline.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F000000000000000000001 /* Configuration/SwiftBaseline.swift */; };
+		A8F000000000000000000005 /* Configuration/SwiftBaseline.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F000000000000000000001 /* Configuration/SwiftBaseline.swift */; };
+		A8F000000000000000000006 /* Configuration/SwiftBaseline.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F000000000000000000001 /* Configuration/SwiftBaseline.swift */; };
+		A8F000000000000000000007 /* Configuration/SwiftBaseline.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F000000000000000000001 /* Configuration/SwiftBaseline.swift */; };
+		A8F000000000000000000008 /* Configuration/SwiftBaseline.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F000000000000000000001 /* Configuration/SwiftBaseline.swift */; };
+		A8F000000000000000000009 /* Configuration/SwiftBaseline.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F000000000000000000001 /* Configuration/SwiftBaseline.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,6 +33,13 @@
 			remoteGlobalIDString = A83100000000000000000005;
 			remoteInfo = DesignSystemPreviewHost;
 		};
+		64F09C9D3082019400B3F1EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D91023E2B3E98A03AFB61C3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A8D000000000000000000005;
+			remoteInfo = NativeAccessibilityTestHost;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +50,9 @@
 		A83100000000000000000001 /* DesignSystemPreviewHost.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = DesignSystemPreviewHost.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A84000000000000000000001 /* NativeShellTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = NativeShellTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A84100000000000000000001 /* NativeShellTestHost.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = NativeShellTestHost.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8D000000000000000000001 /* NativeAccessibilityTestHost.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = NativeAccessibilityTestHost.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8E000000000000000000001 /* NativeAccessibilityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = NativeAccessibilityTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8F000000000000000000001 /* Configuration/SwiftBaseline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration/SwiftBaseline.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -151,6 +169,16 @@
 			path = iosApp/Features/Settings;
 			sourceTree = "<group>";
 		};
+		A8D000000000000000000002 /* NativeAccessibilityTestHost */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NativeAccessibilityTestHost;
+			sourceTree = "<group>";
+		};
+		A8E000000000000000000002 /* NativeAccessibilityTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NativeAccessibilityTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +217,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A8D000000000000000000008 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A8E000000000000000000008 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A92EB6094D705E81577496DA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -202,6 +244,8 @@
 		1F7B2D0C144C1E637720BA85 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				A8E000000000000000000001 /* NativeAccessibilityTests.xctest */,
+				A8D000000000000000000001 /* NativeAccessibilityTestHost.app */,
 				419371860631532D146829AC /* Trenify.app */,
 				A84100000000000000000001 /* NativeShellTestHost.app */,
 				A84000000000000000000001 /* NativeShellTests.xctest */,
@@ -225,6 +269,9 @@
 		AEDC1B915DB2610DD2FC7973 = {
 			isa = PBXGroup;
 			children = (
+				A8E000000000000000000002 /* NativeAccessibilityTests */,
+				A8D000000000000000000002 /* NativeAccessibilityTestHost */,
+				A8F000000000000000000001 /* Configuration/SwiftBaseline.swift */,
 				A78B1302CEADB7E0936EBB20 /* Configuration */,
 				A84100000000000000000002 /* NativeShellTestHost */,
 				A84000000000000000000002 /* NativeShellTests */,
@@ -365,6 +412,58 @@
 			productReference = A84100000000000000000001 /* NativeShellTestHost.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A8D000000000000000000005 /* NativeAccessibilityTestHost */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A8D000000000000000000006 /* Build configuration list for PBXNativeTarget "NativeAccessibilityTestHost" */;
+			buildPhases = (
+				A8D000000000000000000012 /* Build shell fixture and shared resources */,
+				A8D000000000000000000007 /* Sources */,
+				A8D000000000000000000008 /* Frameworks */,
+				A8D000000000000000000009 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A83000000000000000000003 /* iosApp/DesignSystem */,
+				A84000000000000000000003 /* iosApp/Navigation */,
+				A85000000000000000000001 /* iosApp/Features/Home */,
+				A86000000000000000000001 /* iosApp/Features/Journey */,
+				A87000000000000000000001 /* iosApp/Features/StationTrain */,
+				A88000000000000000000001 /* iosApp/Presentation */,
+				A89000000000000000000001 /* iosApp/Features/Monitoring */,
+				A8A00000000000000000001 /* iosApp/Features/Saved */,
+				A8B00000000000000000001 /* iosApp/Features/Alerts */,
+				A8C00000000000000000001 /* iosApp/Features/Settings */,
+				A8D000000000000000000002 /* NativeAccessibilityTestHost */,
+			);
+			name = NativeAccessibilityTestHost;
+			productName = NativeAccessibilityTestHost;
+			productReference = A8D000000000000000000001 /* NativeAccessibilityTestHost.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A8E000000000000000000005 /* NativeAccessibilityTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A8E000000000000000000006 /* Build configuration list for PBXNativeTarget "NativeAccessibilityTests" */;
+			buildPhases = (
+				A8E000000000000000000007 /* Sources */,
+				A8E000000000000000000008 /* Frameworks */,
+				A8E000000000000000000009 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A8E00000000000000000000A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A8E000000000000000000002 /* NativeAccessibilityTests */,
+			);
+			name = NativeAccessibilityTests;
+			productName = NativeAccessibilityTests;
+			productReference = A8E000000000000000000001 /* NativeAccessibilityTests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		F3317EAF32E7BCCEF33CEF1C /* iosApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CB26824A0B7121D368173068 /* Build configuration list for PBXNativeTarget "iosApp" */;
@@ -418,6 +517,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				A8E000000000000000000005 /* NativeAccessibilityTests */,
+				A8D000000000000000000005 /* NativeAccessibilityTestHost */,
 				A84100000000000000000005 /* NativeShellTestHost */,
 				A84000000000000000000005 /* NativeShellTests */,
 				A83100000000000000000005 /* DesignSystemPreviewHost */,
@@ -464,6 +565,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A8D000000000000000000009 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A8E000000000000000000009 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -484,7 +599,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :shared:app:embedAndSignAppleFrameworkForXcode\n";
+			shellScript = "set -e\npython3 \"$SRCROOT/verify-ios-baseline.py\"\nif [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\npython3 iosApp/verify-ios-baseline.py\n./gradlew :shared:app:embedAndSignAppleFrameworkForXcode\ncase \"$PLATFORM_NAME\" in\n  iphoneos) SKIE_TARGET=iosArm64 ;;\n  iphonesimulator) SKIE_TARGET=iosSimulatorArm64 ;;\n  *) echo \"Unsupported iOS platform: $PLATFORM_NAME\" >&2; exit 1 ;;\nesac\ncase \"$CONFIGURATION\" in\n  Debug) SKIE_BINARY=debugFramework; SKIE_BUILD_TYPE=DEBUG ;;\n  Release) SKIE_BINARY=releaseFramework; SKIE_BUILD_TYPE=RELEASE ;;\n  *) echo \"Unsupported iOS configuration: $CONFIGURATION\" >&2; exit 1 ;;\nesac\npython3 iosApp/verify-ios-baseline.py --skie-output \"shared/app/build/skie/binaries/$SKIE_BINARY/$SKIE_BUILD_TYPE/$SKIE_TARGET\"\n";
 		};
 		A82000000000000000000007 /* Compile deterministic interop framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -499,7 +614,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/..\"\n./gradlew :shared:app:linkDebugFrameworkIosSimulatorArm64 -Ptrenify.nativeInteropTests=true\n";
+			shellScript = "set -e\ncd \"$SRCROOT/..\"\npython3 iosApp/verify-ios-baseline.py\n./gradlew :shared:app:linkDebugFrameworkIosSimulatorArm64 -Ptrenify.nativeInteropTests=true\npython3 iosApp/verify-ios-baseline.py --skie-output shared/app/build/skie/binaries/debugFramework/DEBUG/iosSimulatorArm64\n";
 		};
 		A84000000000000000000012 /* Build shell fixture and shared resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -514,7 +629,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/..\"\n./gradlew :shared:app:linkDebugFrameworkIosSimulatorArm64 :shared:core:ui:iosSimulatorArm64ProcessResources -Ptrenify.nativeInteropTests=true\nmkdir -p \"$BUILT_PRODUCTS_DIR/NativeShellTestHost.app/compose-resources\"\nif [ -d shared/core/ui/build/processedResources/iosSimulatorArm64/main ]; then\ncp -R shared/core/ui/build/processedResources/iosSimulatorArm64/main/. \"$BUILT_PRODUCTS_DIR/NativeShellTestHost.app/compose-resources/\"\nfi\n";
+			shellScript = "set -e\ncd \"$SRCROOT/..\"\npython3 iosApp/verify-ios-baseline.py\n./gradlew :shared:app:linkDebugFrameworkIosSimulatorArm64 :shared:core:ui:iosSimulatorArm64ProcessResources -Ptrenify.nativeInteropTests=true\npython3 iosApp/verify-ios-baseline.py --skie-output shared/app/build/skie/binaries/debugFramework/DEBUG/iosSimulatorArm64\nmkdir -p \"$BUILT_PRODUCTS_DIR/NativeShellTestHost.app/compose-resources\"\nif [ -d shared/core/ui/build/processedResources/iosSimulatorArm64/main ]; then\ncp -R shared/core/ui/build/processedResources/iosSimulatorArm64/main/. \"$BUILT_PRODUCTS_DIR/NativeShellTestHost.app/compose-resources/\"\nfi\n";
+		};
+		A8D000000000000000000012 /* Build shell fixture and shared resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Build shell fixture and shared resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\ncd \"$SRCROOT/..\"\npython3 iosApp/verify-ios-baseline.py\n./gradlew :shared:app:linkDebugFrameworkIosSimulatorArm64 :shared:core:ui:iosSimulatorArm64ProcessResources -Ptrenify.nativeInteropTests=true\npython3 iosApp/verify-ios-baseline.py --skie-output shared/app/build/skie/binaries/debugFramework/DEBUG/iosSimulatorArm64\nmkdir -p \"$BUILT_PRODUCTS_DIR/NativeAccessibilityTestHost.app/compose-resources\"\nif [ -d shared/core/ui/build/processedResources/iosSimulatorArm64/main ]; then\ncp -R shared/core/ui/build/processedResources/iosSimulatorArm64/main/. \"$BUILT_PRODUCTS_DIR/NativeAccessibilityTestHost.app/compose-resources/\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -523,6 +653,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8F000000000000000000002 /* Configuration/SwiftBaseline.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -530,6 +661,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8F000000000000000000003 /* Configuration/SwiftBaseline.swift in Sources */,
 				A82000000000000000000003 /* iosApp/Interop/NativeHomeObserver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -538,6 +670,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8F000000000000000000004 /* Configuration/SwiftBaseline.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -545,6 +678,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8F000000000000000000005 /* Configuration/SwiftBaseline.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -552,6 +686,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8F000000000000000000006 /* Configuration/SwiftBaseline.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -559,6 +694,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8F000000000000000000007 /* Configuration/SwiftBaseline.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A8D000000000000000000007 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8F000000000000000000008 /* Configuration/SwiftBaseline.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A8E000000000000000000007 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8F000000000000000000009 /* Configuration/SwiftBaseline.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -575,6 +727,11 @@
 			target = A84100000000000000000005 /* NativeShellTestHost */;
 			targetProxy = 6400C4693078D7A800F640BD /* PBXContainerItemProxy */;
 		};
+		A8E00000000000000000000A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A8D000000000000000000005 /* NativeAccessibilityTestHost */;
+			targetProxy = 64F09C9D3082019400B3F1EE /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -584,6 +741,7 @@
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -619,7 +777,6 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				EXCLUDED_ARCHS = x86_64;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -643,12 +800,14 @@
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
 		7EF3EC244D7AF6187428A665 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -661,13 +820,14 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lsqlite3",
@@ -677,7 +837,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -685,10 +845,11 @@
 		A82000000000000000000010 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				CODE_SIGN_STYLE = Automatic;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/app/build/bin/iosSimulatorArm64/debugFramework";
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@loader_path/Frameworks",
@@ -704,17 +865,18 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = iphonesimulator;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
 		A82000000000000000000011 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				CODE_SIGN_STYLE = Automatic;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/app/build/bin/iosSimulatorArm64/debugFramework";
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@loader_path/Frameworks",
@@ -730,17 +892,18 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = iphonesimulator;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
 		A83000000000000000000009 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@loader_path/Frameworks",
@@ -750,7 +913,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = iphonesimulator;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DesignSystemPreviewHost.app/DesignSystemPreviewHost";
 			};
 			name = Debug;
@@ -758,10 +921,11 @@
 		A8300000000000000000000A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@loader_path/Frameworks",
@@ -771,7 +935,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = iphonesimulator;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DesignSystemPreviewHost.app/DesignSystemPreviewHost";
 			};
 			name = Release;
@@ -779,11 +943,12 @@
 		A83100000000000000000009 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -791,7 +956,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = it.danielebufarini.trenify.DesignSystemPreviewHost;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = iphonesimulator;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -799,11 +964,12 @@
 		A8310000000000000000000A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -811,7 +977,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = it.danielebufarini.trenify.DesignSystemPreviewHost;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = iphonesimulator;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -819,10 +985,11 @@
 		A84000000000000000000010 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/app/build/bin/iosSimulatorArm64/debugFramework";
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@loader_path/Frameworks",
@@ -838,7 +1005,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = iphonesimulator;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NativeShellTestHost.app/NativeShellTestHost";
 			};
 			name = Debug;
@@ -846,10 +1013,11 @@
 		A84000000000000000000011 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/app/build/bin/iosSimulatorArm64/debugFramework";
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@loader_path/Frameworks",
@@ -865,7 +1033,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = iphonesimulator;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NativeShellTestHost.app/NativeShellTestHost";
 			};
 			name = Release;
@@ -873,13 +1041,14 @@
 		A84100000000000000000010 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				CURRENT_PROJECT_VERSION = 2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NativeShellTestHost/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = it.danielebufarini.trenify.NativeShellTestHost;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -887,7 +1056,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -895,13 +1064,14 @@
 		A84100000000000000000011 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				CURRENT_PROJECT_VERSION = 2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NativeShellTestHost/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = it.danielebufarini.trenify.NativeShellTestHost;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -909,8 +1079,96 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A8D000000000000000000010 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/app/build/bin/iosSimulatorArm64/debugFramework";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@loader_path/Frameworks",
+					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					SharedApp,
+					"-lsqlite3",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = it.danielebufarini.trenify.NativeAccessibilityTestHost;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = iphonesimulator;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A8D000000000000000000011 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/app/build/bin/iosSimulatorArm64/debugFramework";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@loader_path/Frameworks",
+					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					SharedApp,
+					"-lsqlite3",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = it.danielebufarini.trenify.NativeAccessibilityTestHost;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = iphonesimulator;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A8E000000000000000000010 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				PRODUCT_BUNDLE_IDENTIFIER = it.danielebufarini.trenify.NativeAccessibilityTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = iphonesimulator;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = NativeAccessibilityTestHost;
+			};
+			name = Debug;
+		};
+		A8E000000000000000000011 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				PRODUCT_BUNDLE_IDENTIFIER = it.danielebufarini.trenify.NativeAccessibilityTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = iphonesimulator;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = NativeAccessibilityTestHost;
 			};
 			name = Release;
 		};
@@ -920,6 +1178,7 @@
 			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -955,7 +1214,6 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				EXCLUDED_ARCHS = x86_64;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -971,6 +1229,7 @@
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -978,6 +1237,7 @@
 		B3F7BAF80001619E3E00B317 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -990,13 +1250,14 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lsqlite3",
@@ -1006,7 +1267,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -1064,6 +1325,24 @@
 			buildConfigurations = (
 				A84100000000000000000010 /* Debug */,
 				A84100000000000000000011 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A8D000000000000000000006 /* Build configuration list for PBXNativeTarget "NativeAccessibilityTestHost" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A8D000000000000000000010 /* Debug */,
+				A8D000000000000000000011 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A8E000000000000000000006 /* Build configuration list for PBXNativeTarget "NativeAccessibilityTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A8E000000000000000000010 /* Debug */,
+				A8E000000000000000000011 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

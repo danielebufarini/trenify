@@ -986,6 +986,125 @@
      }
     }
    }
+  },
+  "journey.actualDeparture": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Actual departure: %@"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Partenza effettiva: %@"
+     }
+    }
+   }
+  },
+  "journey.actualArrival": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Actual arrival: %@"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Arrivo effettivo: %@"
+     }
+    }
+   }
+  },
+  "journey.lastObservation": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Last observation: %@"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Ultimo rilevamento: %@"
+     }
+    }
+   }
+  },
+  "journey.realtimeStale": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Realtime observation is outdated"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Rilevamento in tempo reale non aggiornato"
+     }
+    }
+   }
+  },
+  "journey.realtimeAmbiguous": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Multiple train services match this journey"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Più servizi ferroviari corrispondono a questo viaggio"
+     }
+    }
+   }
+  },
+  "journey.realtimeRejected": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Realtime service does not match this journey"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Il servizio in tempo reale non corrisponde a questo viaggio"
+     }
+    }
+   }
+  },
+  "journey.realtimeUnresolved": {
+   "extractionState": "manual",
+   "localizations": {
+    "en": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Train service identity could not be verified"
+     }
+    },
+    "it": {
+     "stringUnit": {
+      "state": "translated",
+      "value": "Identità del servizio ferroviario non verificata"
+     }
+    }
+   }
   }
  },
  "version": "1.0"

@@ -529,6 +529,8 @@ data class JourneyDetailState(
      * lookup per leg: observation only, zero refresh calls.
      */
     val correlatedRuns: Map<Int, DataResult<TrainRun>> = emptyMap(),
+    /** Lookup failures and rejected/ambiguous identities are never legitimate empty realtime. */
+    val correlations: Map<Int, JourneyLegCorrelation> = emptyMap(),
 )
 class JourneyDetailComponent(
     componentContext: ComponentContext,
@@ -713,14 +715,21 @@ class JourneyDetailComponent(
         if (correlateUseCase != null) scope.launch {
             for ((index, leg) in resolved.legs.withIndex()) {
                 instrumentation.span("journey.detail.train_correlation", mapOf("leg" to index.toString())) {
-                    correlateUseCase(leg) { platform ->
+                    correlateUseCase.resolve(leg) { platform ->
                         val current = mutable.value
                         mutable.value = current.copy(resolved = current.resolved?.withScheduledPlatform(index, platform))
                     }
-                }?.let { id ->
+                }.let { correlation ->
                     currentCoroutineContext().ensureActive()
-                    mutable.value = mutable.value.copy(trainRuns = mutable.value.trainRuns + (index to id))
-                    watchCorrelatedRun(index, id)
+                    mutable.value = mutable.value.copy(correlations = mutable.value.correlations + (index to correlation))
+                    instrumentation.event("journey.detail.correlation_result", mapOf(
+                        "leg" to index.toString(), "status" to correlation.status.name,
+                        "failure" to (correlation.failure?.name ?: "none"),
+                    ))
+                    correlation.runId?.let { id ->
+                        mutable.value = mutable.value.copy(trainRuns = mutable.value.trainRuns + (index to id))
+                        watchCorrelatedRun(index, id)
+                    }
                 }
             }
             mutable.value = mutable.value.copy(correlating = false)
@@ -796,8 +805,7 @@ class JourneyDetailComponent(
                 // so a later missing/failed realtime observation cannot erase it.
                 // A platform already supplied by the journey stays authoritative.
                 val planned = (result as? DataResult.Data)?.value?.stops?.singleOrNull {
-                    it.station.normalizedName == leg?.origin?.normalizedName &&
-                        it.scheduledDeparture == leg?.departure
+                    leg?.matchesBoardingStop(it) == true
                 }?.scheduledPlatform
                 mutable.value = current.copy(
                     resolved = journey?.withScheduledPlatform(index, planned),

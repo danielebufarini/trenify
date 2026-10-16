@@ -26,29 +26,52 @@ class SearchJourneys(private val repository: JourneyRepository) {
         if (valid(request)) repository.search(request, force) else DataResult.Failure(DomainFailure.INVALID_REQUEST)
 }
 
+enum class JourneyCorrelationStatus { RESOLVED, NO_DATA, UNRESOLVED, AMBIGUOUS, REJECTED, PROVIDER_FAILED }
+
+data class JourneyLegCorrelation(
+    val status: JourneyCorrelationStatus,
+    val runId: TrainRunId? = null,
+    val failure: DomainFailure? = null,
+)
+
 /** Correlate using verified stop schedules. A boarding station is not necessarily the run origin. */
 class CorrelateJourneyLeg(private val trains: TrainRepository) {
-    suspend operator fun invoke(leg: JourneyLeg, onScheduledPlatform: (String) -> Unit = {}): TrainRunId? {
-        val number = leg.number ?: return null
+    suspend operator fun invoke(leg: JourneyLeg, onScheduledPlatform: (String) -> Unit = {}): TrainRunId? =
+        resolve(leg, onScheduledPlatform).runId
+
+    suspend fun resolve(leg: JourneyLeg, onScheduledPlatform: (String) -> Unit = {}): JourneyLegCorrelation {
+        val number = leg.number ?: return JourneyLegCorrelation(JourneyCorrelationStatus.UNRESOLVED)
         val expectedOperator = leg.operator
         val day = RailwayTime.serviceDate(leg.departure)
         val serviceDates = listOf(day, day - DatePeriod(days = 1))
         val searches = serviceDates.map { trains.findTrainRuns(number, it) }
         // Missing candidate coverage is not evidence of uniqueness.
-        if (searches.any { it is DataResult.Failure || (it is DataResult.Data && it.warning != null) }) return null
+        searches.forEach { result ->
+            val failure = when (result) {
+                is DataResult.Failure -> result.error
+                is DataResult.Data -> result.warning
+            }
+            if (failure != null) return JourneyLegCorrelation(JourneyCorrelationStatus.PROVIDER_FAILED, failure = failure)
+        }
         val candidates = searches.filterIsInstance<DataResult.Data<List<TrainRunSummary>>>()
             .flatMap { it.value }.filter { it.id.number == number && it.id.serviceDate in serviceDates }.distinctBy { it.id }
         val matches = mutableListOf<TrainRunId>()
         val scheduledBoardings = mutableListOf<String?>()
+        if (candidates.isEmpty()) return JourneyLegCorrelation(JourneyCorrelationStatus.NO_DATA)
         for (candidate in candidates) {
             val result = trains.refreshTrain(candidate.id)
-            if (result !is DataResult.Data) return null
+            if (result is DataResult.Failure) return JourneyLegCorrelation(
+                if (result.error == DomainFailure.NOT_FOUND && candidates.size == 1) JourneyCorrelationStatus.NO_DATA
+                else JourneyCorrelationStatus.PROVIDER_FAILED,
+                failure = result.error,
+            )
+            result as DataResult.Data
             val run = result.value
             val boarding = run.takeIf { it.summary.id == candidate.id &&
                 (expectedOperator == null || it.summary.operator?.name?.let(::normalizeStationQuery) ==
                     normalizeStationQuery(expectedOperator.name))
             }?.stops?.withIndex()?.filter { (_, stop) ->
-                stop.station.normalizedName == leg.origin.normalizedName && stop.scheduledDeparture == leg.departure
+                leg.matchesBoardingStop(stop)
             }?.singleOrNull()
             // A warning-free provider refresh can carry an older source observation:
             // staleness affects presentation, not the authoritative planned route
@@ -59,17 +82,24 @@ class CorrelateJourneyLeg(private val trains: TrainRepository) {
                 // With incomplete snapshot coverage, only a single candidate
                 // and its exact verified boarding schedule can supply it.
                 if (candidates.size == 1) boarding?.value?.scheduledPlatform?.let(onScheduledPlatform)
-                return null
+                return JourneyLegCorrelation(
+                    if (result.warning != null) JourneyCorrelationStatus.PROVIDER_FAILED else JourneyCorrelationStatus.UNRESOLVED,
+                    failure = result.warning,
+                )
             }
             if (boarding == null) continue
             scheduledBoardings += boarding.value.scheduledPlatform
             if (run.stops.drop(boarding.index + 1).any {
-                it.station.normalizedName == leg.destination.normalizedName && it.scheduledArrival == leg.arrival
+                leg.matchesAlightingStop(it)
             }) matches += candidate.id
         }
         // Planned departure data belongs to the uniquely verified boarding
         // stop. Destination correlation governs realtime navigation separately.
         scheduledBoardings.singleOrNull()?.let(onScheduledPlatform)
-        return matches.singleOrNull()
+        return when (matches.size) {
+            0 -> JourneyLegCorrelation(JourneyCorrelationStatus.REJECTED)
+            1 -> JourneyLegCorrelation(JourneyCorrelationStatus.RESOLVED, matches.single())
+            else -> JourneyLegCorrelation(JourneyCorrelationStatus.AMBIGUOUS)
+        }
     }
 }

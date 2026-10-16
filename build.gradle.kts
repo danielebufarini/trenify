@@ -3,6 +3,10 @@ import org.gradle.api.GradleException
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
+import org.jetbrains.kotlin.konan.target.Family
 
 plugins {
     base
@@ -14,6 +18,37 @@ plugins {
     alias(libs.plugins.kotlinSerialization) apply false
     alias(libs.plugins.skie) apply false
     alias(libs.plugins.sqldelight) apply false
+}
+
+// Every local KMP iOS test uses the same supported runtime baseline as XCTest.
+val ios27Simulator = providers.exec {
+    commandLine("xcrun", "simctl", "list", "devices", "available", "-j")
+}.standardOutput.asText.map { output ->
+    @Suppress("UNCHECKED_CAST")
+    val devices = (groovy.json.JsonSlurper().parseText(output) as Map<String, Any?>)["devices"] as Map<String, List<Map<String, Any?>>>
+    val iphones = devices.filterKeys { runtime ->
+        runtime.substringAfter("SimRuntime.iOS-", "").substringBefore('-').toIntOrNull()?.let { it >= 27 } == true
+    }.values.flatten().filter { it["isAvailable"] == true && (it["name"] as? String)?.startsWith("iPhone") == true }
+    val chosen = iphones.firstOrNull { it["name"] == "iPhone 17" } ?: iphones.firstOrNull()
+        ?: throw GradleException("Local iOS verification requires an available iOS 27+ iPhone simulator.")
+    chosen["udid"] as String
+}
+
+subprojects {
+    plugins.withId("org.jetbrains.kotlin.multiplatform") {
+        tasks.withType<KotlinNativeSimulatorTest>().configureEach {
+            device.set(ios27Simulator)
+        }
+        extensions.configure<KotlinMultiplatformExtension> {
+            targets.withType<KotlinNativeTarget>().configureEach {
+                if (konanTarget.family == Family.IOS) {
+                    binaries.configureEach {
+                        freeCompilerArgs += "-Xoverride-konan-properties=minVersion.ios=27.0;sdkVersion.ios=27.0;osVersionMin.ios_arm64=27.0;osVersionMin.ios_simulator_arm64=27.0"
+                    }
+                }
+            }
+        }
+    }
 }
 
 abstract class SourceFormatCheck : DefaultTask() {
@@ -282,6 +317,21 @@ abstract class IosCatalogParityCheck : DefaultTask() {
     @TaskAction
     fun checkParity() {
         val slurper = groovy.json.JsonSlurper()
+        // Normalize implicit and positional printf arguments to index + type.
+        // Reordering is safe only with explicit positions; %% consumes no argument.
+        fun placeholders(value: String): List<String> {
+            var implicitIndex = 0
+            return Regex("%(?:(\\d+)\\$)?[-+ #0]*\\d*(?:\\.\\d+)?(hh|ll|h|l|z|t|j)?([@diuoxXfFeEgGaAcCsSp%])")
+                .findAll(value).mapNotNull { match ->
+                    val type = match.groupValues[3]
+                    if (type == "%") {
+                        null
+                    } else {
+                        val position = match.groupValues[1].ifEmpty { (++implicitIndex).toString() }
+                        "$position:${match.groupValues[2]}$type"
+                    }
+                }.sorted().toList()
+        }
         data class Entry(val table: String, val value: String)
         val catalogKeys = mutableMapOf<String, MutableList<Entry>>()
         var catalogCount = 0
@@ -302,11 +352,28 @@ abstract class IosCatalogParityCheck : DefaultTask() {
                     @Suppress("UNCHECKED_CAST")
                     val localizations = ((raw as? Map<String, Any?>)?.get("localizations") as? Map<String, Any?>)
                         ?: emptyMap()
+                    val values = mutableMapOf<String, String>()
                     listOf("en", "it").forEach { locale ->
                         @Suppress("UNCHECKED_CAST")
                         val unit = ((localizations[locale] as? Map<String, Any?>)?.get("stringUnit") as? Map<String, Any?>)
                         val value = unit?.get("value") as? String
-                        if (value.isNullOrEmpty()) problems += "${file.name}: $key missing/empty $locale"
+                        if (value.isNullOrBlank()) {
+                            problems += "${file.name}: $key missing/empty $locale"
+                        } else {
+                            values[locale] = value
+                        }
+                    }
+                    values["en"]?.let { english ->
+                        val expected = placeholders(english)
+                        if (placeholders(key).isNotEmpty() && placeholders(key) != expected) {
+                            problems += "${file.name}: $key source/en placeholder mismatch"
+                        }
+                        values["it"]?.let { italian ->
+                            val actual = placeholders(italian)
+                            if (expected != actual) {
+                                problems += "${file.name}: $key placeholder mismatch: en=$expected it=$actual"
+                            }
+                        }
                     }
                     catalogKeys.getOrPut(key) { mutableListOf() } += Entry(table, file.name)
                 }

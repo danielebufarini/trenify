@@ -23,6 +23,7 @@ kotlin {
             api(project(":shared:core:platform"))
             api(libs.kotlinx.coroutines.core)
             implementation(project(":shared:provider:journey"))
+            implementation(project(":shared:provider:viaggiatreno"))
             implementation(project(":shared:core:network"))
             implementation(libs.ktor.client.mock)
             implementation(libs.kotlinx.serialization.json)

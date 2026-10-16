@@ -59,4 +59,11 @@
     <string name="journey_source_unknown">Source unknown</string>
     <string name="journey_favorite_error">The favorite could not be updated.</string>
     <string name="journey_incomplete_providers">Results may be incomplete: %1$s is temporarily unavailable or has incomplete coverage. Try refreshing.</string>
+    <string name="journey_actual_departure">Actual departure: %1$s</string>
+    <string name="journey_actual_arrival">Actual arrival: %1$s</string>
+    <string name="journey_last_observation">Last observation: %1$s</string>
+    <string name="journey_realtime_stale">Realtime observation is outdated</string>
+    <string name="journey_realtime_ambiguous">Multiple train services match this journey</string>
+    <string name="journey_realtime_rejected">Realtime service does not match this journey</string>
+    <string name="journey_realtime_unresolved">Train service identity could not be verified</string>
 </resources>

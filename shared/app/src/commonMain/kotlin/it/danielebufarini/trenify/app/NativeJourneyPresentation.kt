@@ -2,6 +2,7 @@ package it.danielebufarini.trenify.app
 
 import it.danielebufarini.trenify.core.domain.DataResult
 import it.danielebufarini.trenify.core.domain.DomainFailure
+import it.danielebufarini.trenify.core.domain.JourneyCorrelationStatus
 import it.danielebufarini.trenify.core.domain.GeographyEvidence
 import it.danielebufarini.trenify.core.domain.OperatorEvidence
 import it.danielebufarini.trenify.core.domain.ServiceStrikeWarning
@@ -16,6 +17,8 @@ import it.danielebufarini.trenify.core.model.TrainRun
 import it.danielebufarini.trenify.core.model.TrainStop
 import it.danielebufarini.trenify.core.model.journeySourceNames
 import it.danielebufarini.trenify.core.model.trainSourceName
+import it.danielebufarini.trenify.core.model.matchesBoardingStop
+import it.danielebufarini.trenify.core.model.matchesAlightingStop
 import it.danielebufarini.trenify.feature.journey.JourneyDetailComponent
 import it.danielebufarini.trenify.feature.journey.JourneyDetailState
 import it.danielebufarini.trenify.feature.journey.JourneyResultsComponent
@@ -205,6 +208,12 @@ data class NativeLegDetailPresentation(
     val confirmedWarning: Boolean,
     /** Full warning semantics for this leg, in shared evaluation order. */
     val warnings: List<NativeServiceStrikeWarningPresentation>,
+    val correlationStatus: JourneyCorrelationStatus? = null,
+    val correlationFailure: DomainFailure? = null,
+    val actualDepartureEpochSeconds: Long? = null,
+    val actualArrivalEpochSeconds: Long? = null,
+    val observationStationName: String? = null,
+    val observationEpochSeconds: Long? = null,
 )
 
 data class NativeJourneyDetailState(
@@ -292,8 +301,7 @@ private fun JourneyLeg.trainIdentity(): String? =
  */
 private fun TrainRun.boardingStopFor(leg: JourneyLeg): TrainStop? =
     stops.firstOrNull {
-        it.station.normalizedName == leg.origin.normalizedName &&
-            it.scheduledDeparture == leg.departure
+        leg.matchesBoardingStop(it)
     }
 
 private fun List<ServiceStrikeWarning>.warningCount(): Int = size
@@ -443,7 +451,8 @@ private fun JourneyDetailState.projected(): NativeJourneyDetailState {
                 scheduledPlatform = leg.scheduledPlatform ?: boardingStop?.scheduledPlatform,
                 actualPlatform = boardingStop?.actualPlatform,
                 realtimeStale = correlatedFreshness is DataFreshness.Stale,
-                realtimeFailed = failed || correlatedData?.warning != null,
+                realtimeFailed = failed || correlatedData?.warning != null ||
+                    correlations[index]?.status == JourneyCorrelationStatus.PROVIDER_FAILED,
                 hasTrainAction = index in trainRuns,
                 realtimeProvenance = correlatedData?.let { data ->
                     NativeRealtimeProvenancePresentation(
@@ -457,6 +466,13 @@ private fun JourneyDetailState.projected(): NativeJourneyDetailState {
                 warningCount = warnings.warningCount(),
                 confirmedWarning = warnings.confirmed(),
                 warnings = warnings.projected(),
+                correlationStatus = correlations[index]?.status,
+                correlationFailure = (correlatedRuns[index] as? DataResult.Failure)?.error
+                    ?: correlatedData?.warning ?: correlations[index]?.failure,
+                actualDepartureEpochSeconds = boardingStop?.actualDeparture?.epochSeconds,
+                actualArrivalEpochSeconds = correlated?.stops?.singleOrNull { leg.matchesAlightingStop(it) }?.actualArrival?.epochSeconds,
+                observationStationName = correlated?.position?.stationName,
+                observationEpochSeconds = correlated?.position?.observedAt?.epochSeconds,
             )
         }.orEmpty(),
         bookingAvailable = bookingAvailable,
