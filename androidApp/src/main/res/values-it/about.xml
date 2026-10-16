@@ -1,0 +1,6 @@
+<resources>
+    <string name="shell_menu">Menu di navigazione</string>
+    <string name="shell_about">Informazioni</string>
+    <string name="about_build_date">Data build</string>
+    <string name="about_close">Chiudi</string>
+</resources>

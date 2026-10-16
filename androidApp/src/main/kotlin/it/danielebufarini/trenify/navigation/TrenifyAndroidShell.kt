@@ -4,6 +4,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -113,6 +118,8 @@ fun TrenifyShellLayout(
     onSettings: () -> Unit,
     content: @Composable () -> Unit,
 ) {
+    var showMenu by rememberSaveable { mutableStateOf(false) }
+    var showAbout by rememberSaveable { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier.testTag("android-shell"),
         containerColor = TrenifyTheme.colors.background,
@@ -123,8 +130,13 @@ fun TrenifyShellLayout(
             TopAppBar(
                 title = { Text(stringResource(shellTitle(state)), style = TrenifyTheme.typography.sectionTitle) },
                 navigationIcon = {
-                    if (state.canGoBack) IconButton(onClick = onBack, modifier = Modifier.testTag("shell-back")) {
-                        Icon(painterResource(R.drawable.shell_back), stringResource(R.string.shell_back))
+                    Row {
+                        if (state.canGoBack) IconButton(onClick = onBack, modifier = Modifier.testTag("shell-back")) {
+                            Icon(painterResource(R.drawable.shell_back), stringResource(R.string.shell_back))
+                        }
+                        IconButton(onClick = { showMenu = true }, modifier = Modifier.testTag("shell-menu")) {
+                            Icon(painterResource(R.drawable.shell_menu), stringResource(R.string.shell_menu))
+                        }
                     }
                 },
                 actions = {
@@ -140,6 +152,34 @@ fun TrenifyShellLayout(
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)) { content() }
     }
+    if (showMenu) {
+        AboutNavigationMenu(onDismiss = { showMenu = false }, onAbout = { showAbout = true })
+    }
+    if (showAbout) TrenifyAboutDialog { showAbout = false }
+}
+
+@Composable
+private fun AboutNavigationMenu(onDismiss: () -> Unit, onAbout: () -> Unit) {
+    val drawer = rememberDrawerState(DrawerValue.Open)
+    val scope = rememberCoroutineScope()
+    BackHandler { scope.launch { drawer.close() } }
+    LaunchedEffect(drawer.isClosed) { if (drawer.isClosed) onDismiss() }
+    ModalNavigationDrawer(drawerState = drawer, drawerContent = {
+        ModalDrawerSheet(Modifier.testTag("shell-drawer")) {
+            Column(Modifier.fillMaxHeight().verticalScroll(rememberScrollState())
+                .statusBarsPadding().navigationBarsPadding().padding(horizontal = 12.dp, vertical = 24.dp)) {
+                Text(stringResource(R.string.app_name), Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    style = MaterialTheme.typography.titleMedium)
+                NavigationDrawerItem(
+                    label = { Text(stringResource(R.string.shell_about)) },
+                    selected = false,
+                    icon = { Icon(painterResource(R.drawable.shell_info), null, Modifier.size(22.dp)) },
+                    modifier = Modifier.testTag("shell-about"),
+                    onClick = { scope.launch { drawer.close(); onDismiss(); onAbout() } },
+                )
+            }
+        }
+    }) { Box(Modifier.fillMaxSize()) }
 }
 
 internal val NativePrimaryArea.label: Int get() = when (this) {

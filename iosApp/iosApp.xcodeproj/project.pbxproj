@@ -399,6 +399,7 @@
 				A84100000000000000000007 /* Sources */,
 				A84100000000000000000008 /* Frameworks */,
 				A84100000000000000000009 /* Resources */,
+				AB0A00000000000000000003 /* Stamp application build date */,
 			);
 			buildRules = (
 			);
@@ -420,6 +421,7 @@
 				A8D000000000000000000007 /* Sources */,
 				A8D000000000000000000008 /* Frameworks */,
 				A8D000000000000000000009 /* Resources */,
+				AB0A00000000000000000002 /* Stamp application build date */,
 			);
 			buildRules = (
 			);
@@ -472,6 +474,7 @@
 				1D3F44A6E83E7AC54F27C559 /* Sources */,
 				A92EB6094D705E81577496DA /* Frameworks */,
 				1C0CC5E427A149E4D1CB009C /* Resources */,
+				AB0A00000000000000000001 /* Stamp application build date */,
 			);
 			buildRules = (
 			);
@@ -645,6 +648,42 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\ncd \"$SRCROOT/..\"\npython3 iosApp/verify-ios-baseline.py\n./gradlew :shared:app:linkDebugFrameworkIosSimulatorArm64 :shared:core:ui:iosSimulatorArm64ProcessResources -Ptrenify.nativeInteropTests=true\npython3 iosApp/verify-ios-baseline.py --skie-output shared/app/build/skie/binaries/debugFramework/DEBUG/iosSimulatorArm64\nmkdir -p \"$BUILT_PRODUCTS_DIR/NativeAccessibilityTestHost.app/compose-resources\"\nif [ -d shared/core/ui/build/processedResources/iosSimulatorArm64/main ]; then\ncp -R shared/core/ui/build/processedResources/iosSimulatorArm64/main/. \"$BUILT_PRODUCTS_DIR/NativeAccessibilityTestHost.app/compose-resources/\"\nfi\n";
+		};
+		AB0A00000000000000000001 /* Stamp application build date */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = ();
+			inputPaths = ("$(SRCROOT)/generate-about-build-date.sh");
+			name = "Stamp application build date";
+			outputPaths = ("$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/TrenifyBuildDate.txt");
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"$SRCROOT/generate-about-build-date.sh\"";
+		};
+		AB0A00000000000000000002 /* Stamp application build date */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = ();
+			inputPaths = ("$(SRCROOT)/generate-about-build-date.sh");
+			name = "Stamp application build date";
+			outputPaths = ("$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/TrenifyBuildDate.txt");
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"$SRCROOT/generate-about-build-date.sh\"";
+		};
+		AB0A00000000000000000003 /* Stamp application build date */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = ();
+			inputPaths = ("$(SRCROOT)/generate-about-build-date.sh");
+			name = "Stamp application build date";
+			outputPaths = ("$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/TrenifyBuildDate.txt");
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"$SRCROOT/generate-about-build-date.sh\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1090,6 +1129,8 @@
 				ARCHS = arm64;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/app/build/bin/iosSimulatorArm64/debugFramework";
 				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
@@ -1119,6 +1160,8 @@
 				ARCHS = arm64;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/app/build/bin/iosSimulatorArm64/debugFramework";
 				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 27.0;

@@ -4,6 +4,11 @@ import SharedApp
 /// Native system navigation is outermost. Four SEMANTIC tags, never live child tokens.
 struct NativeAppShell: View {
     @ObservedObject var model: NativeShellModel
+    @State private var showAbout = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.trenifyAccessibility) private var accessibility
 
     var body: some View {
         NativeShellNavigation(selection: model.selection, path: model.pathBinding) { area, route in
@@ -17,6 +22,22 @@ struct NativeAppShell: View {
                 }
             }
         }
+        .sheet(isPresented: $showAbout) {
+            if reduceTransparency || accessibility.reduceTransparency {
+                aboutContent.presentationBackground(TrenifyColors.background)
+            } else {
+                aboutContent
+            }
+        }
+    }
+
+    private var aboutContent: some View {
+        NativeAboutView()
+            .environment(\.dynamicTypeSize, dynamicTypeSize)
+            .environment(\.trenifyAccessibility, accessibility)
+            .preferredColorScheme(colorScheme)
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
     }
 
     private func destination(_ route: ShellRoute) -> some View {
@@ -74,12 +95,26 @@ struct NativeAppShell: View {
         .navigationTitle(Text(verbatim: NSLocalizedString(title(route.destination), tableName: "Shell", bundle: Bundle(for: NativeShellModel.self), comment: "")))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Menu {
+                    Button { showAbout = true } label: {
+                        Label { Text("shell.about", tableName: "Shell", bundle: Bundle(for: NativeShellModel.self)) }
+                            icon: { Image(systemName: "info.circle.fill") }
+                    }
+                    .accessibilityIdentifier("shell-about")
+                } label: {
+                    Label { Text("shell.menu", tableName: "Shell", bundle: Bundle(for: NativeShellModel.self)) }
+                        icon: { Image(systemName: "line.3.horizontal") }
+                }
+                .accessibilityIdentifier("shell-menu")
+            }
             if route.destination != .settings {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: model.openSettings) {
                         Label { Text("shell.settings", tableName: "Shell", bundle: Bundle(for: NativeShellModel.self)) }
                             icon: { Image(systemName: "gearshape") }
                     }
+                    .accessibilityIdentifier("shell-settings")
                 }
             }
         }

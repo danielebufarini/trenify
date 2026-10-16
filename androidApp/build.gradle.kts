@@ -1,4 +1,22 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+
+abstract class GenerateAboutBuildDate : DefaultTask() {
+    @get:OutputDirectory
+    abstract val outputDirectory: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        val date = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm 'UTC'")
+            .withZone(ZoneOffset.UTC).format(Instant.now())
+        outputDirectory.file("TrenifyBuildDate.txt").get().asFile.apply {
+            parentFile.mkdirs()
+            writeText("$date\n")
+        }
+    }
+}
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -89,5 +107,17 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+}
+
+// App-owned, variant-specific asset: refresh only packaging inputs, never KMP
+// or Kotlin sources. Like Spesify, each build invocation stamps its artifact.
+androidComponents {
+    onVariants { variant ->
+        val generate = tasks.register<GenerateAboutBuildDate>("generate${variant.name.replaceFirstChar { it.uppercaseChar() }}AboutBuildDate") {
+            outputDirectory.set(layout.buildDirectory.dir("generated/about/${variant.name}/assets"))
+            outputs.upToDateWhen { false }
+        }
+        variant.sources.assets?.addGeneratedSourceDirectory(generate, GenerateAboutBuildDate::outputDirectory)
     }
 }
